@@ -3,351 +3,436 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work in Progress</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Dr. Z. Nafis | Portfolio</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Base Page Setup */
-        body, html {
+        /* CSS Variables for Theming */
+        :root {
+            --bg-color: #050505;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-1: #6366f1; /* Indigo */
+            --accent-2: #ec4899; /* Pink */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Base Reset & Typography */
+        * {
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
-            color: #f8fafc;
+            box-sizing: border-box;
+            cursor: none; /* Hides default cursor for our custom one */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
             overflow-x: hidden;
-            scroll-behavior: smooth;
+            line-height: 1.6;
         }
 
-        /* Fixed Animated Background */
-        .bg-gradient {
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        /* Custom Cursor */
+        .cursor-dot {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0;
+            width: 8px; height: 8px;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        .cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            width: 40px; height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out, width 0.2s, height 0.2s;
+        }
+
+        /* Animated Background Orbs */
+        .bg-orbs {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
             z-index: -1;
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #0ea5e9);
-            background-size: 400% 400%;
-            animation: gradientBG 12s ease infinite;
+            overflow: hidden;
+            filter: blur(100px);
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 20s infinite alternate ease-in-out;
+            opacity: 0.4;
         }
 
-        /* Hero Section (Fills the first screen) */
-        .hero {
-            height: 100vh;
+        .orb-1 {
+            width: 40vw; height: 40vw;
+            background: radial-gradient(circle, var(--accent-1), transparent 70%);
+            top: -10%; left: -10%;
+        }
+
+        .orb-2 {
+            width: 30vw; height: 30vw;
+            background: radial-gradient(circle, var(--accent-2), transparent 70%);
+            bottom: 10%; right: -5%;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(10vw, 10vh) scale(1.2); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 2rem 5%;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: linear-gradient(to bottom, rgba(5,5,5,0.8), transparent);
         }
 
-        /* Glassmorphism Card Effect */
-        .container {
-            padding: 3rem 2rem;
-            backdrop-filter: blur(16px);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
-            width: 85%;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-top: 0;
-            margin-bottom: 1rem;
-            font-weight: 600;
-            letter-spacing: -0.05em;
-            background: linear-gradient(to right, #ffffff, #94a3b8);
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-style: italic;
+            background: linear-gradient(to right, #fff, var(--text-muted));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        p {
-            font-size: 1.25rem;
-            color: #cbd5e1;
-            font-weight: 300;
-            margin-bottom: 2.5rem;
-            line-height: 1.5;
-        }
-
-        /* Loading Dots */
-        .loader {
+        .nav-links {
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 2rem;
+            gap: 2rem;
         }
 
-        .dot {
-            width: 12px;
-            height: 12px;
-            background-color: #38bdf8;
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-        }
-
-        .dot:nth-child(1) { animation-delay: -0.32s; }
-        .dot:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
-            40% { transform: scale(1); opacity: 1; }
-        }
-
-        /* Scroll Down Indicator */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 40px;
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 0.9rem;
-            color: #94a3b8;
-            animation: pulse 2s infinite;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            padding-bottom: 5px;
+            transition: color 0.3s;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; transform: translateY(0); }
-            50% { opacity: 1; transform: translateY(5px); }
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0%; height: 1px;
+            background-color: var(--text-main);
+            transition: width 0.3s ease;
         }
 
-        /* Game Section */
-        .game-section {
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--text-main);
+        }
+
+        .nav-btn.active::after {
+            width: 100%;
+        }
+
+        /* Main Content & Section Transitions */
+        main {
+            padding-top: 120px;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            text-align: center;
-            padding: 2rem;
+            align-items: center;
         }
 
-        .game-wrapper {
-            backdrop-filter: blur(16px);
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .section {
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            width: 90%;
+            max-width: 1100px;
+        }
+
+        .section.active {
+            display: block; /* Shows only the active tab */
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography Styles inside Sections */
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            color: var(--accent-1);
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 5rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-desc {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            font-weight: 300;
+        }
+
+        /* 3D Tilt Cards for Research Tab */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
             border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.1s ease, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+            position: relative;
         }
 
-        canvas {
-            background-color: #0f172a;
-            border-radius: 8px;
-            border: 2px solid #334155;
+        .card:hover {
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            transform: translateZ(30px); /* 3D pop effect */
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            transform: translateZ(20px);
+        }
+
+        /* Simple Contact Layout */
+        .contact-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .contact-link {
             display: block;
-            margin-top: 1rem;
-            max-width: 100%;
-            cursor: pointer;
+            font-size: 2rem;
+            font-family: 'Playfair Display', serif;
+            color: var(--text-main);
+            text-decoration: none;
+            margin-bottom: 1rem;
+            transition: color 0.3s;
         }
 
-        .game-instructions {
-            color: #cbd5e1;
-            font-size: 0.9rem;
-            margin-top: 1rem;
+        .contact-link:hover {
+            color: var(--accent-2);
         }
 
-        @media (max-width: 480px) {
-            h1 { font-size: 2rem; }
-            p { font-size: 1.1rem; }
-            canvas { width: 100%; height: auto; }
+        @media (max-width: 768px) {
+            .nav-links { gap: 1rem; }
+            .nav-btn { font-size: 0.7rem; }
+            .contact-layout { grid-template-columns: 1fr; gap: 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-gradient"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
-    <section class="hero">
-        <div class="container">
-            <h1>Just bought this domain.</h1>
-            <p>This website is currently a work in progress. Something awesome is on the way.</p>
-            
-            <div class="loader">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <nav>
+        <div class="logo">Z. Nafis</div>
+        <div class="nav-links">
+            <button class="nav-btn active" data-target="home">Home</button>
+            <button class="nav-btn" data-target="research">Research</button>
+            <button class="nav-btn" data-target="about">About</button>
+            <button class="nav-btn" data-target="contact">Contact</button>
         </div>
+    </nav>
+
+    <main>
         
-        <div class="scroll-indicator">
-            Scroll down for a break 👇
-        </div>
-    </section>
+        <section id="home" class="section active">
+            <div class="badge">Ph.D. Candidate & Researcher</div>
+            <h1 class="hero-title">Advancing the boundaries of<br>computational theory.</h1>
+            <p class="hero-desc">Exploring the intersection of neural architectures, quantum algorithms, and cognitive linguistic frameworks to build the next generation of intelligent systems.</p>
+        </section>
 
-    <section class="game-section">
-        <div class="game-wrapper">
-            <h2 style="margin: 0 0 5px 0;">Mini Dash</h2>
-            <div style="color: #38bdf8; font-weight: 600;" id="scoreDisplay">Score: 0</div>
+        <section id="research" class="section">
+            <h2 class="hero-title" style="font-size: 3rem;">Published Works & Studies</h2>
+            <p class="hero-desc">A selection of recent academic investigations and peer-reviewed propositions.</p>
             
-            <canvas id="gameCanvas" width="600" height="250"></canvas>
-            
-            <div class="game-instructions">
-                <strong>How to play:</strong> Press Spacebar or Click/Tap the game to jump.
+            <div class="grid">
+                <div class="card tilt-card">
+                    <h3>Quantum Neural Topologies</h3>
+                    <p>An exploratory paper on embedding quantum state vectors into traditional deep learning hidden layers to exponentially decrease processing time in complex simulations.</p>
+                </div>
+                <div class="card tilt-card">
+                    <h3>Algorithmic Linguistics</h3>
+                    <p>Evaluating how large language models intrinsically map phonetic structures in undocumented human languages without direct supervised training.</p>
+                </div>
+                <div class="card tilt-card">
+                    <h3>The Entropy of Data</h3>
+                    <p>A mathematical framework proposing a new method for calculating data degradation in long-term, high-density optical storage environments.</p>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <section id="about" class="section">
+            <div class="contact-layout">
+                <div>
+                    <h2 class="hero-title" style="font-size: 3rem;">The pursuit of<br>absolute clarity.</h2>
+                    <p class="hero-desc">Currently finalizing doctoral research at the nexus of technology and abstract mathematics. My work focuses on stripping away the noise from highly complex systems to find elegant, scalable algorithms.</p>
+                </div>
+                <div style="background: var(--glass-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--glass-border);">
+                    <h3 style="margin-bottom: 1rem;">Core Disciplines</h3>
+                    <ul style="color: var(--text-muted); list-style-position: inside; line-height: 2;">
+                        <li>Advanced Machine Learning Architectures</li>
+                        <li>Theoretical Computer Science</li>
+                        <li>Quantum Cryptography</li>
+                        <li>Computational Biology</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section">
+            <div class="badge">Open to Collaboration</div>
+            <h2 class="hero-title" style="font-size: 4rem;">Let's build the<br>future together.</h2>
+            <div style="margin-top: 3rem;">
+                <p class="hero-desc" style="margin-bottom: 0.5rem;">Academic Inquiries</p>
+                <a href="mailto:research@example.com" class="contact-link interactive">research@zayannafis.com</a>
+                
+                <p class="hero-desc" style="margin-bottom: 0.5rem; margin-top: 2rem;">Connect</p>
+                <a href="#" class="contact-link interactive" style="font-size: 1.5rem;">LinkedIn</a>
+                <a href="#" class="contact-link interactive" style="font-size: 1.5rem;">Google Scholar</a>
+            </div>
+        </section>
+
+    </main>
 
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreDisplay = document.getElementById('scoreDisplay');
+        // --- Custom Cursor Logic ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        const interactives = document.querySelectorAll('button, a, .tilt-card');
 
-        // Game Variables
-        let isGameOver = false;
-        let score = 0;
-        let frames = 0;
-        let gameSpeed = 5;
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
 
-        // Player Object
-        const player = {
-            x: 50,
-            y: 180,
-            width: 30,
-            height: 30,
-            dy: 0,
-            gravity: 0.6,
-            jumpPower: -10,
-            isGrounded: true
-        };
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
 
-        let obstacles = [];
-
-        // Controls
-        function jump() {
-            if (isGameOver) {
-                resetGame();
-                return;
-            }
-            if (player.isGrounded) {
-                player.dy = player.jumpPower;
-                player.isGrounded = false;
-            }
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault(); // Prevent scrolling when pressing space
-                jump();
-            }
-        });
-        canvas.addEventListener('mousedown', jump);
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            jump();
+            // Adding a slight delay to the outline for a fluid effect
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
         });
 
-        function resetGame() {
-            isGameOver = false;
-            score = 0;
-            frames = 0;
-            gameSpeed = 5;
-            obstacles = [];
-            player.y = 180;
-            player.dy = 0;
-            scoreDisplay.innerText = `Score: 0`;
-            gameLoop();
-        }
+        // Enlarge cursor when hovering over clickable things
+        interactives.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                cursorOutline.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                cursorDot.style.backgroundColor = 'var(--accent-2)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursorOutline.style.backgroundColor = 'transparent';
+                cursorDot.style.backgroundColor = 'white';
+            });
+        });
 
-        function gameLoop() {
-            if (isGameOver) return;
-            requestAnimationFrame(gameLoop);
+        // --- Tab Navigation Logic ---
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('.section');
 
-            // Clear Canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons and sections
+                navBtns.forEach(b => b.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
 
-            // Draw Floor
-            ctx.fillStyle = '#334155';
-            ctx.fillRect(0, 210, canvas.width, 40);
-            ctx.fillStyle = '#475569';
-            ctx.fillRect(0, 210, canvas.width, 2);
+                // Add active class to clicked button
+                btn.classList.add('active');
 
-            // Player Physics
-            player.dy += player.gravity;
-            player.y += player.dy;
+                // Find corresponding section and show it
+                const targetId = btn.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
 
-            // Ground Collision
-            if (player.y + player.height >= 210) {
-                player.y = 210 - player.height;
-                player.dy = 0;
-                player.isGrounded = true;
-            }
+        // --- 3D Tilt Effect for Research Cards ---
+        const cards = document.querySelectorAll('.tilt-card');
+        
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left; // x position within the card
+                const y = e.clientY - rect.top;  // y position within the card
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -10; // Max rotation 10deg
+                const rotateY = ((x - centerX) / centerX) * 10;
 
-            // Draw Player (Neon Blue Cube)
-            ctx.fillStyle = '#38bdf8';
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#38bdf8';
-            ctx.fillRect(player.x, player.y, player.width, player.height);
-            ctx.shadowBlur = 0; // Reset shadow for other elements
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
 
-            // Handle Obstacles
-            if (frames % Math.floor(Math.random() * 60 + 60) === 0) {
-                // Spawn obstacle
-                let minHeight = 20;
-                let maxHeight = 40;
-                let height = Math.floor(Math.random() * (maxHeight - minHeight + 1) + minHeight);
-                obstacles.push({
-                    x: canvas.width,
-                    y: 210 - height,
-                    width: 20,
-                    height: height,
-                    passed: false
-                });
-            }
-
-            for (let i = 0; i < obstacles.length; i++) {
-                let obs = obstacles[i];
-                obs.x -= gameSpeed;
-
-                // Draw Obstacle (Neon Pink Rectangle)
-                ctx.fillStyle = '#f43f5e';
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = '#f43f5e';
-                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-                ctx.shadowBlur = 0;
-
-                // Score Logic
-                if (obs.x + obs.width < player.x && !obs.passed) {
-                    score++;
-                    scoreDisplay.innerText = `Score: ${score}`;
-                    obs.passed = true;
-                    // Slightly increase speed as score goes up
-                    if (score % 5 === 0) gameSpeed += 0.5; 
-                }
-
-                // Collision Detection
-                if (
-                    player.x < obs.x + obs.width &&
-                    player.x + player.width > obs.x &&
-                    player.y < obs.y + obs.height &&
-                    player.height + player.y > obs.y
-                ) {
-                    isGameOver = true;
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = '#fff';
-                    ctx.font = 'bold 24px Inter';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 10);
-                    ctx.font = '16px Inter';
-                    ctx.fillText('Click or press Space to restart', canvas.width / 2, canvas.height / 2 + 20);
-                }
-            }
-
-            // Remove off-screen obstacles
-            obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
-
-            frames++;
-        }
-
-        // Start the game
-        gameLoop();
+            card.addEventListener('mouseleave', () => {
+                // Reset card position smoothly
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
+        });
     </script>
 </body>
 </html>
