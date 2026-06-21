@@ -1,10 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My First Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work in Progress</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Base Page Setup */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            /* Animated Gradient Background */
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #0ea5e9);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* Background Animation Keyframes */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism Card Effect */
+        .container {
+            padding: 3rem 2rem;
+            backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 85%;
+        }
+
+        /* Typography Styling */
+        h1 {
+            font-size: 2.5rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.05em;
+            /* Text Gradient */
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            font-weight: 300;
+            margin-bottom: 2.5rem;
+            line-height: 1.5;
+        }
+
+        /* Entrance Animations for Text */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animated Loading Dots */
+        .loader {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background-color: #38bdf8;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive Design for Mobile */
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            p { font-size: 1.1rem; }
+            .container { padding: 2rem 1.5rem; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>I just bought my domain and built this site on GitHub!</p>
+
+    <div class="container">
+        <h1 class="fade-in-up">Just bought this domain.</h1>
+        <p class="fade-in-up delay-1">This website is currently a work in progress. Something awesome is on the way.</p>
+        
+        <div class="loader fade-in-up delay-2">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
 </body>
 </html>
