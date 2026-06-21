@@ -10,15 +10,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 
     <style>
-        /* CSS Variables for a Cyber/Engineering Theme - DESIGN IS SAME */
+        /* CSS Variables - BRIGHTER THEME */
         :root {
-            --bg-color: #020617; /* Very dark slate */
+            --bg-color: #1e293b; /* Sleek, lighter slate gray instead of pitch black */
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-1: #0ea5e9; /* Light Blue */
-            --accent-2: #38bdf8; /* Brighter Blue */
-            --glass-bg: rgba(15, 23, 42, 0.4);
-            --glass-border: rgba(14, 165, 233, 0.2);
+            --text-muted: #cbd5e1; /* Lighter text for better reading */
+            --accent-1: #22d3ee; /* Bright Neon Cyan */
+            --accent-2: #818cf8; /* Soft Indigo twist */
+            --glass-bg: rgba(255, 255, 255, 0.06); /* Lighter glass effect */
+            --glass-border: rgba(255, 255, 255, 0.15);
         }
 
         /* Base Reset & Typography */
@@ -26,7 +26,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none; /* Hides default cursor for our custom high-tech one */
+            cursor: none; 
         }
 
         body {
@@ -48,7 +48,7 @@
             top: 0; left: 0;
             width: 100vw; height: 100vh;
             z-index: -1;
-            pointer-events: none; /* Lets you click through to the canvas */
+            pointer-events: none;
         }
 
         /* Custom High-Tech Cursor */
@@ -56,12 +56,12 @@
             position: fixed;
             top: 0; left: 0;
             width: 6px; height: 6px;
-            background-color: var(--accent-2);
+            background-color: var(--accent-1);
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px var(--accent-2);
+            box-shadow: 0 0 10px var(--accent-1);
             transition: width 0.2s, height 0.2s;
         }
 
@@ -69,7 +69,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 40px; height: 40px;
-            border: 1px solid var(--accent-1);
+            border: 1px solid var(--accent-2);
             border-radius: 50%;
             pointer-events: none;
             z-index: 9998;
@@ -87,8 +87,8 @@
             align-items: center;
             z-index: 100;
             backdrop-filter: blur(8px);
-            background: linear-gradient(to bottom, rgba(2,6,23,0.9), transparent);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: linear-gradient(to bottom, rgba(30, 41, 59, 0.9), transparent);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .logo {
@@ -161,15 +161,14 @@
             display: inline-block;
             padding: 0.5rem 1.2rem;
             border-radius: 4px;
-            border: 1px solid var(--accent-1);
-            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid var(--accent-2);
+            background: rgba(129, 140, 248, 0.1);
             font-family: 'Space Grotesk', sans-serif;
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 1.5rem;
-            color: var(--accent-2);
-            box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+            color: var(--accent-1);
         }
 
         .hero-title {
@@ -189,7 +188,7 @@
             font-size: 1.2rem;
             color: var(--text-muted);
             max-width: 650px;
-            font-weight: 300;
+            font-weight: 400;
         }
 
         /* 3D Tilt Cards for Projects Tab */
@@ -216,20 +215,20 @@
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             border-radius: 12px;
-            background: radial-gradient(circle at top right, rgba(14,165,233,0.1), transparent 50%);
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.05), transparent 60%);
             z-index: -1;
         }
 
         .card:hover {
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 20px rgba(14,165,233,0.2);
-            border-color: rgba(14, 165, 233, 0.5);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3), 0 0 20px rgba(34, 211, 238, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .card h3 {
             font-size: 1.6rem;
             margin-bottom: 1rem;
             color: var(--accent-1);
-            transform: translateZ(40px); /* Pushes text outward in 3D */
+            transform: translateZ(40px);
         }
 
         .card p {
@@ -249,9 +248,10 @@
         .tech-tag {
             font-size: 0.75rem;
             padding: 0.2rem 0.6rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
             border-radius: 4px;
+            color: #fff;
         }
 
         /* Simple Contact Layout */
@@ -275,7 +275,7 @@
 
         .contact-link:hover {
             color: var(--accent-1);
-            text-shadow: 0 0 15px var(--accent-1);
+            text-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
         }
 
         @media (max-width: 768px) {
@@ -369,7 +369,7 @@
             <h2 class="hero-title" style="font-size: 5rem;">Actually<br><span>Contact Me?</span>.</h2>
             <div style="margin-top: 3rem;">
                 <p class="hero-desc" style="margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">Direct Comms</p>
-                <a href="mailto:email@example.com" class="contact-link interactive">email@idk.com</a>
+                <a href="mailto:email@example.com" class="contact-link interactive">email@zayannafis.com</a>
                 
                 <p class="hero-desc" style="margin-bottom: 0.5rem; margin-top: 3rem; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">Where I pretend to know things</p>
                 <a href="#" class="contact-link interactive" style="font-size: 1.8rem;">Fake LinkedIn</a>
@@ -380,11 +380,12 @@
     </main>
 
     <script>
-        // --- THREE.JS "OUT OF THIS WORLD" BACKGROUND LOGIC - LOGIC IS SAME ---
+        // --- THREE.JS "OUT OF THIS WORLD" BACKGROUND LOGIC ---
         const scene = new THREE.Scene();
         
-        // Add some fog to blend the edges into the dark background
-        scene.fog = new THREE.FogExp2(0x020617, 0.015);
+        // FOG UPDATE: Matched the lighter background color (#1e293b is hex 0x1e293b) 
+        // Thinned out the density from 0.015 to 0.008 so you can see the grid better
+        scene.fog = new THREE.FogExp2(0x1e293b, 0.008);
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -392,154 +393,3 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-        // Create a massive 3D Grid/Terrain
-        const geometry = new THREE.PlaneGeometry(200, 100, 60, 30);
-        
-        // High-tech wireframe material
-        const material = new THREE.MeshBasicMaterial({ 
-            color: 0x0ea5e9, 
-            wireframe: true, 
-            transparent: true, 
-            opacity: 0.15 
-        });
-        
-        const plane = new THREE.Mesh(geometry, material);
-        
-        // Tilt the plane so it looks like a floor stretching into the distance
-        plane.rotation.x = -Math.PI / 2 + 0.1;
-        plane.position.y = -15;
-        scene.add(plane);
-
-        camera.position.z = 25;
-
-        // Mouse interaction variables for the 3D scene
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-        const windowHalfX = window.innerWidth / 2;
-        const windowHalfY = window.innerHeight / 2;
-
-        // Get original vertices for wave animation
-        const count = geometry.attributes.position.count;
-        const startZ = new Float32Array(count);
-        for(let i = 0; i < count; i++) {
-            startZ[i] = geometry.attributes.position.getZ(i);
-        }
-
-        let clock = new THREE.Clock();
-
-        function animate3D() {
-            requestAnimationFrame(animate3D);
-            const elapsedTime = clock.getElapsedTime();
-
-            // 1. Wavy Terrain Animation
-            const positions = geometry.attributes.position;
-            for(let i = 0; i < count; i++) {
-                const x = positions.getX(i);
-                const y = positions.getY(i);
-                // Math to create undulating, data-like waves
-                const wave1 = Math.sin(x * 0.1 + elapsedTime * 0.5) * 2;
-                const wave2 = Math.cos(y * 0.1 + elapsedTime * 0.5) * 2;
-                positions.setZ(i, startZ[i] + wave1 + wave2);
-            }
-            positions.needsUpdate = true;
-
-            // 2. Slow forward movement illusion
-            plane.position.z = (elapsedTime * 2) % 10;
-
-            // 3. Camera subtle tracking based on mouse
-            targetX = mouseX * 0.05;
-            targetY = mouseY * 0.05;
-            camera.position.x += (targetX - camera.position.x) * 0.02;
-            camera.position.y += (-targetY - camera.position.y) * 0.02;
-            camera.lookAt(scene.position);
-
-            renderer.render(scene, camera);
-        }
-        animate3D();
-
-        // Handle Window Resize for 3D Canvas
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // --- UI LOGIC (CURSOR & TABS) ---
-        const cursorDot = document.querySelector('.cursor-dot');
-        const cursorOutline = document.querySelector('.cursor-outline');
-        const interactives = document.querySelectorAll('button, a, .tilt-card');
-
-        window.addEventListener('mousemove', (e) => {
-            const posX = e.clientX;
-            const posY = e.clientY;
-            
-            // Feed data to Three.js
-            mouseX = (e.clientX - windowHalfX);
-            mouseY = (e.clientY - windowHalfY);
-
-            // Update Custom Cursor
-            cursorDot.style.left = `${posX}px`;
-            cursorDot.style.top = `${posY}px`;
-
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 200, fill: "forwards" });
-        });
-
-        interactives.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
-                cursorOutline.style.backgroundColor = 'rgba(14, 165, 233, 0.1)';
-                cursorOutline.style.borderColor = 'transparent';
-                cursorDot.style.transform = 'translate(-50%, -50%) scale(0.5)';
-            });
-            el.addEventListener('mouseleave', () => {
-                cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
-                cursorOutline.style.backgroundColor = 'transparent';
-                cursorOutline.style.borderColor = 'var(--accent-1)';
-                cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
-            });
-        });
-
-        const navBtns = document.querySelectorAll('.nav-btn');
-        const sections = document.querySelectorAll('.section');
-
-        navBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                navBtns.forEach(b => b.classList.remove('active'));
-                sections.forEach(s => s.classList.remove('active'));
-
-                btn.classList.add('active');
-                const targetId = btn.getAttribute('data-target');
-                document.getElementById(targetId).classList.add('active');
-            });
-        });
-
-        // --- 3D TILT EFFECT FOR CARDS ---
-        const cards = document.querySelectorAll('.tilt-card');
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left; 
-                const y = e.clientY - rect.top;  
-                
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                const rotateX = ((y - centerY) / centerY) * -15; // Max 15deg tilt
-                const rotateY = ((x - centerX) / centerX) * 15;
-
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-            });
-        });
-    </script>
-</body>
-</html>
