@@ -10,15 +10,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 
     <style>
-        /* CSS Variables for a Cyber/Engineering Theme - DESIGN IS SAME */
+        /* CSS Variables for a Cyber/Engineering Theme - BRIGHTER & LIGHTER */
         :root {
-            --bg-color: #020617; /* Very dark slate */
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-1: #0ea5e9; /* Light Blue */
-            --accent-2: #38bdf8; /* Brighter Blue */
-            --glass-bg: rgba(15, 23, 42, 0.4);
-            --glass-border: rgba(14, 165, 233, 0.2);
+            --bg-color: #1e293b; /* Lighter slate blue */
+            --text-main: #ffffff; /* Pure white for contrast */
+            --text-muted: #cbd5e1; /* Lighter grayish blue */
+            --accent-1: #38bdf8; /* Brighter Blue */
+            --accent-2: #7dd3fc; /* Bright neon cyan */
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(56, 189, 248, 0.5);
         }
 
         /* Base Reset & Typography */
@@ -48,7 +48,7 @@
             top: 0; left: 0;
             width: 100vw; height: 100vh;
             z-index: -1;
-            pointer-events: none; /* Lets you click through to the canvas */
+            pointer-events: none;
         }
 
         /* Custom High-Tech Cursor */
@@ -87,8 +87,8 @@
             align-items: center;
             z-index: 100;
             backdrop-filter: blur(8px);
-            background: linear-gradient(to bottom, rgba(2,6,23,0.9), transparent);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: linear-gradient(to bottom, rgba(30,41,59,0.9), transparent);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .logo {
@@ -131,6 +131,9 @@
 
         .nav-btn:hover, .nav-btn.active { color: var(--text-main); }
         .nav-btn.active::after { width: 100%; }
+        
+        .mystery-btn { color: #f472b6 !important; }
+        .mystery-btn::after { background-color: #f472b6 !important; box-shadow: 0 0 8px #f472b6 !important; }
 
         /* Main Content & Section Transitions */
         main {
@@ -148,6 +151,7 @@
             animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             width: 90%;
             max-width: 1200px;
+            padding-bottom: 50px;
         }
 
         .section.active { display: block; }
@@ -162,14 +166,14 @@
             padding: 0.5rem 1.2rem;
             border-radius: 4px;
             border: 1px solid var(--accent-1);
-            background: rgba(14, 165, 233, 0.1);
+            background: rgba(56, 189, 248, 0.15);
             font-family: 'Space Grotesk', sans-serif;
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 1.5rem;
             color: var(--accent-2);
-            box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
         }
 
         .hero-title {
@@ -192,7 +196,7 @@
             font-weight: 300;
         }
 
-        /* 3D Tilt Cards for Projects Tab */
+        /* 3D Tilt Cards */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -216,20 +220,20 @@
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             border-radius: 12px;
-            background: radial-gradient(circle at top right, rgba(14,165,233,0.1), transparent 50%);
+            background: radial-gradient(circle at top right, rgba(56,189,248,0.2), transparent 50%);
             z-index: -1;
         }
 
         .card:hover {
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 20px rgba(14,165,233,0.2);
-            border-color: rgba(14, 165, 233, 0.5);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 25px rgba(56,189,248,0.4);
+            border-color: rgba(56, 189, 248, 0.8);
         }
 
         .card h3 {
             font-size: 1.6rem;
             margin-bottom: 1rem;
             color: var(--accent-1);
-            transform: translateZ(40px); /* Pushes text outward in 3D */
+            transform: translateZ(40px);
         }
 
         .card p {
@@ -249,8 +253,8 @@
         .tech-tag {
             font-size: 0.75rem;
             padding: 0.2rem 0.6rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
             border-radius: 4px;
         }
 
@@ -278,10 +282,24 @@
             text-shadow: 0 0 15px var(--accent-1);
         }
 
+        /* Game Container Container */
+        #game-container {
+            width: 100%;
+            height: 500px;
+            background-color: #0f172a; /* Dark sewer background */
+            border-radius: 12px;
+            border: 2px solid var(--accent-1);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            position: relative;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
         @media (max-width: 768px) {
-            .nav-links { gap: 1.5rem; }
+            .nav-links { gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
             .nav-btn { font-size: 0.8rem; }
             .contact-layout { grid-template-columns: 1fr; gap: 2rem; }
+            #game-container { height: 400px; }
         }
     </style>
 </head>
@@ -299,6 +317,7 @@
             <button class="nav-btn" data-target="projects">Why Though?</button>
             <button class="nav-btn" data-target="about">The Idea</button>
             <button class="nav-btn" data-target="contact">Reach Out</button>
+            <button class="nav-btn mystery-btn" data-target="mystery">MYSTERY?</button>
         </div>
     </nav>
 
@@ -377,14 +396,24 @@
             </div>
         </section>
 
+        <section id="mystery" class="section">
+            <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Sewer Rat Parkour</div>
+            <h2 class="hero-title" style="font-size: 4rem;">Escape the<br><span style="-webkit-text-stroke: 1px #f472b6;">Sewers</span></h2>
+            <p class="hero-desc" style="margin-bottom: 1rem;">Use the <strong>Left and Right Arrow Keys</strong> to move, and the <strong>Up Arrow Key</strong> to jump. Get to the highest pipe!</p>
+            
+            <div id="game-container">
+                <canvas id="gameCanvas"></canvas>
+            </div>
+        </section>
+
     </main>
 
     <script>
-        // --- THREE.JS "OUT OF THIS WORLD" BACKGROUND LOGIC - LOGIC IS SAME ---
+        // --- THREE.JS BACKGROUND LOGIC (Colors Updated) ---
         const scene = new THREE.Scene();
         
-        // Add some fog to blend the edges into the dark background
-        scene.fog = new THREE.FogExp2(0x020617, 0.015);
+        // Fog updated to match new lighter background (#1e293b)
+        scene.fog = new THREE.FogExp2(0x1e293b, 0.015);
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -393,27 +422,23 @@
         renderer.setPixelRatio(window.devicePixelRatio);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // Create a massive 3D Grid/Terrain
         const geometry = new THREE.PlaneGeometry(200, 100, 60, 30);
         
-        // High-tech wireframe material
+        // Brighter grid lines
         const material = new THREE.MeshBasicMaterial({ 
-            color: 0x0ea5e9, 
+            color: 0x38bdf8, 
             wireframe: true, 
             transparent: true, 
-            opacity: 0.15 
+            opacity: 0.25 
         });
         
         const plane = new THREE.Mesh(geometry, material);
-        
-        // Tilt the plane so it looks like a floor stretching into the distance
         plane.rotation.x = -Math.PI / 2 + 0.1;
         plane.position.y = -15;
         scene.add(plane);
 
         camera.position.z = 25;
 
-        // Mouse interaction variables for the 3D scene
         let mouseX = 0;
         let mouseY = 0;
         let targetX = 0;
@@ -421,7 +446,6 @@
         const windowHalfX = window.innerWidth / 2;
         const windowHalfY = window.innerHeight / 2;
 
-        // Get original vertices for wave animation
         const count = geometry.attributes.position.count;
         const startZ = new Float32Array(count);
         for(let i = 0; i < count; i++) {
@@ -434,22 +458,18 @@
             requestAnimationFrame(animate3D);
             const elapsedTime = clock.getElapsedTime();
 
-            // 1. Wavy Terrain Animation
             const positions = geometry.attributes.position;
             for(let i = 0; i < count; i++) {
                 const x = positions.getX(i);
                 const y = positions.getY(i);
-                // Math to create undulating, data-like waves
                 const wave1 = Math.sin(x * 0.1 + elapsedTime * 0.5) * 2;
                 const wave2 = Math.cos(y * 0.1 + elapsedTime * 0.5) * 2;
                 positions.setZ(i, startZ[i] + wave1 + wave2);
             }
             positions.needsUpdate = true;
 
-            // 2. Slow forward movement illusion
             plane.position.z = (elapsedTime * 2) % 10;
 
-            // 3. Camera subtle tracking based on mouse
             targetX = mouseX * 0.05;
             targetY = mouseY * 0.05;
             camera.position.x += (targetX - camera.position.x) * 0.02;
@@ -460,11 +480,11 @@
         }
         animate3D();
 
-        // Handle Window Resize for 3D Canvas
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            resizeGameCanvas();
         });
 
         // --- UI LOGIC (CURSOR & TABS) ---
@@ -476,11 +496,9 @@
             const posX = e.clientX;
             const posY = e.clientY;
             
-            // Feed data to Three.js
             mouseX = (e.clientX - windowHalfX);
             mouseY = (e.clientY - windowHalfY);
 
-            // Update Custom Cursor
             cursorDot.style.left = `${posX}px`;
             cursorDot.style.top = `${posY}px`;
 
@@ -493,7 +511,7 @@
         interactives.forEach(el => {
             el.addEventListener('mouseenter', () => {
                 cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
-                cursorOutline.style.backgroundColor = 'rgba(14, 165, 233, 0.1)';
+                cursorOutline.style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
                 cursorOutline.style.borderColor = 'transparent';
                 cursorDot.style.transform = 'translate(-50%, -50%) scale(0.5)';
             });
@@ -516,10 +534,20 @@
                 btn.classList.add('active');
                 const targetId = btn.getAttribute('data-target');
                 document.getElementById(targetId).classList.add('active');
+
+                // Game toggle logic
+                if (targetId === 'mystery') {
+                    if (!gameIsRunning) {
+                        gameIsRunning = true;
+                        resizeGameCanvas();
+                        gameLoop();
+                    }
+                } else {
+                    gameIsRunning = false;
+                }
             });
         });
 
-        // --- 3D TILT EFFECT FOR CARDS ---
         const cards = document.querySelectorAll('.tilt-card');
         cards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
@@ -530,7 +558,7 @@
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
                 
-                const rotateX = ((y - centerY) / centerY) * -15; // Max 15deg tilt
+                const rotateX = ((y - centerY) / centerY) * -15; 
                 const rotateY = ((x - centerX) / centerX) * 15;
 
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
@@ -540,6 +568,139 @@
                 card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
             });
         });
+
+        // --- 2D MINIGAME LOGIC: SEWER RAT PARKOUR ---
+        const gameCanvas = document.getElementById('gameCanvas');
+        const ctx = gameCanvas.getContext('2d');
+        let gameIsRunning = false;
+
+        function resizeGameCanvas() {
+            const container = document.getElementById('game-container');
+            if(container) {
+                gameCanvas.width = container.clientWidth;
+                gameCanvas.height = container.clientHeight;
+            }
+        }
+
+        // The Rat
+        const player = {
+            x: 50, y: 350, width: 35, height: 20,
+            dx: 0, dy: 0, speed: 6, jumpPower: -14,
+            grounded: false
+        };
+
+        const keys = { right: false, left: false, up: false };
+
+        // Prevent window from scrolling when pressing arrow keys while playing
+        window.addEventListener('keydown', (e) => {
+            if(!gameIsRunning) return;
+            if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
+                e.preventDefault();
+            }
+            if(e.code === 'ArrowRight') keys.right = true;
+            if(e.code === 'ArrowLeft') keys.left = true;
+            if(e.code === 'ArrowUp' || e.code === 'Space') keys.up = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if(!gameIsRunning) return;
+            if(e.code === 'ArrowRight') keys.right = false;
+            if(e.code === 'ArrowLeft') keys.left = false;
+            if(e.code === 'ArrowUp' || e.code === 'Space') keys.up = false;
+        });
+
+        // Vibrant neon platforms
+        const platforms = [
+            { x: -50, y: 450, w: 2000, h: 100, c: '#39FF14' }, // Base pipe
+            { x: 300, y: 380, w: 120, h: 20, c: '#FF00FF' }, // Magenta
+            { x: 550, y: 310, w: 120, h: 20, c: '#00FFFF' }, // Cyan
+            { x: 300, y: 220, w: 120, h: 20, c: '#FFFF00' }, // Yellow
+            { x: 100, y: 150, w: 120, h: 20, c: '#FF9900' }, // Orange
+            { x: 450, y: 80,  w: 300, h: 20, c: '#39FF14' }  // Top pipe
+        ];
+
+        function gameLoop() {
+            if (!gameIsRunning) return;
+
+            // Physics
+            player.dy += 0.8; // Gravity
+            
+            if (keys.right) player.dx = player.speed;
+            else if (keys.left) player.dx = -player.speed;
+            else player.dx *= 0.8; // Friction
+
+            player.x += player.dx;
+            player.y += player.dy;
+            player.grounded = false;
+
+            // Collision with platforms
+            platforms.forEach(p => {
+                if (player.x < p.x + p.w && player.x + player.width > p.x &&
+                    player.y < p.y + p.h && player.y + player.height > p.y) {
+                    
+                    // Top collision (landing on pipe)
+                    if (player.dy > 0 && player.y + player.height - player.dy <= p.y + 5) {
+                        player.y = p.y - player.height;
+                        player.dy = 0;
+                        player.grounded = true;
+                    }
+                }
+            });
+
+            // Wall constraints
+            if(player.x < 0) player.x = 0;
+            if(player.x + player.width > gameCanvas.width) player.x = gameCanvas.width - player.width;
+
+            // Death by falling
+            if(player.y > gameCanvas.height) {
+                player.x = 50; 
+                player.y = 350; 
+                player.dy = 0;
+            }
+
+            // Jumping
+            if (keys.up && player.grounded) {
+                player.dy = player.jumpPower;
+                player.grounded = false;
+            }
+
+            // --- DRAWING ---
+            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            // Draw Platforms
+            platforms.forEach(p => {
+                ctx.fillStyle = p.c;
+                ctx.fillRect(p.x, p.y, p.w, p.h);
+                // Highlight to make it look like a cylinder
+                ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                ctx.fillRect(p.x, p.y, p.w, 6);
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                ctx.fillRect(p.x, p.y + p.h - 6, p.w, 6);
+            });
+
+            // Draw Toxic Slime at the bottom
+            ctx.fillStyle = 'rgba(57, 255, 20, 0.4)';
+            ctx.fillRect(0, gameCanvas.height - 30, gameCanvas.width, 30);
+            
+            // Draw Rat
+            ctx.fillStyle = '#8B4513'; // Rat brown
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            
+            // Rat Ears
+            ctx.fillStyle = '#A0522D';
+            ctx.fillRect(player.dx >= 0 ? player.x + 25 : player.x + 2, player.y - 6, 8, 8);
+            
+            // Rat Eye
+            ctx.fillStyle = '#FF3333'; // Evil red eye
+            ctx.fillRect(player.dx >= 0 ? player.x + 25 : player.x + 6, player.y + 4, 4, 4);
+
+            // Rat Tail
+            ctx.fillStyle = '#FF9999';
+            ctx.fillRect(player.dx >= 0 ? player.x - 15 : player.x + player.width, player.y + 10, 15, 3);
+
+            requestAnimationFrame(gameLoop);
+        }
+
     </script>
 </body>
 </html>
