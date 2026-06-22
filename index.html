@@ -12,11 +12,11 @@
     <style>
         /* CSS Variables for a Cyber/Engineering Theme - BRIGHTER & LIGHTER */
         :root {
-            --bg-color: #1e293b; /* Lighter slate blue */
-            --text-main: #ffffff; /* Pure white for contrast */
-            --text-muted: #cbd5e1; /* Lighter grayish blue */
-            --accent-1: #38bdf8; /* Brighter Blue */
-            --accent-2: #7dd3fc; /* Bright neon cyan */
+            --bg-color: #1e293b; 
+            --text-main: #ffffff; 
+            --text-muted: #cbd5e1; 
+            --accent-1: #38bdf8; 
+            --accent-2: #7dd3fc; 
             --glass-bg: rgba(30, 41, 59, 0.7);
             --glass-border: rgba(56, 189, 248, 0.5);
         }
@@ -26,7 +26,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none; /* Hides default cursor for our custom high-tech one */
+            cursor: none; 
         }
 
         body {
@@ -282,24 +282,29 @@
             text-shadow: 0 0 15px var(--accent-1);
         }
 
-        /* Game Container Container */
+        /* Game Canvas Window Styling */
         #game-container {
             width: 100%;
-            height: 500px;
-            background-color: #0f172a; /* Dark sewer background */
-            border-radius: 12px;
-            border: 2px solid var(--accent-1);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            height: 550px;
+            background-color: #0b0f19;
+            border-radius: 16px;
+            border: 3px solid #f472b6;
+            box-shadow: 0 0 35px rgba(244, 114, 182, 0.25);
             position: relative;
             overflow: hidden;
-            cursor: crosshair;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
         @media (max-width: 768px) {
             .nav-links { gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
             .nav-btn { font-size: 0.8rem; }
             .contact-layout { grid-template-columns: 1fr; gap: 2rem; }
-            #game-container { height: 400px; }
+            #game-container { height: 420px; }
         }
     </style>
 </head>
@@ -397,9 +402,9 @@
         </section>
 
         <section id="mystery" class="section">
-            <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Sewer Rat Parkour</div>
-            <h2 class="hero-title" style="font-size: 4rem;">Escape the<br><span style="-webkit-text-stroke: 1px #f472b6;">Sewers</span></h2>
-            <p class="hero-desc" style="margin-bottom: 1rem;">Use the <strong>Left and Right Arrow Keys</strong> to move, and the <strong>Up Arrow Key</strong> to jump. Get to the highest pipe!</p>
+            <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Sewer Rat Escape v2.0</div>
+            <h2 class="hero-title" style="font-size: 4rem;">Sewer Rat<br><span style="-webkit-text-stroke: 1px #f472b6;">Parkour</span></h2>
+            <p class="hero-desc" style="margin-bottom: 1.5rem;">Controls: Use <strong>Left / Right Arrow</strong> keys to walk, <strong>Up Arrow or Space</strong> to jump. Hover over menu screens to click using your targeting system.</p>
             
             <div id="game-container">
                 <canvas id="gameCanvas"></canvas>
@@ -409,10 +414,8 @@
     </main>
 
     <script>
-        // --- THREE.JS BACKGROUND LOGIC (Colors Updated) ---
+        // --- THREE.JS BACKGROUND LOGIC (Brightened) ---
         const scene = new THREE.Scene();
-        
-        // Fog updated to match new lighter background (#1e293b)
         scene.fog = new THREE.FogExp2(0x1e293b, 0.015);
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -423,8 +426,6 @@
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
         const geometry = new THREE.PlaneGeometry(200, 100, 60, 30);
-        
-        // Brighter grid lines
         const material = new THREE.MeshBasicMaterial({ 
             color: 0x38bdf8, 
             wireframe: true, 
@@ -439,10 +440,7 @@
 
         camera.position.z = 25;
 
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
+        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
         const windowHalfX = window.innerWidth / 2;
         const windowHalfY = window.innerHeight / 2;
 
@@ -484,7 +482,7 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            resizeGameCanvas();
+            setupCanvasScale();
         });
 
         // --- UI LOGIC (CURSOR & TABS) ---
@@ -535,15 +533,15 @@
                 const targetId = btn.getAttribute('data-target');
                 document.getElementById(targetId).classList.add('active');
 
-                // Game toggle logic
                 if (targetId === 'mystery') {
-                    if (!gameIsRunning) {
-                        gameIsRunning = true;
-                        resizeGameCanvas();
-                        gameLoop();
+                    if (!gameRunning) {
+                        gameRunning = true;
+                        gameState = "MENU";
+                        setupCanvasScale();
+                        requestAnimationFrame(gameUpdate);
                     }
                 } else {
-                    gameIsRunning = false;
+                    gameRunning = false;
                 }
             });
         });
@@ -554,153 +552,460 @@
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left; 
                 const y = e.clientY - rect.top;  
-                
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-                
                 const rotateX = ((y - centerY) / centerY) * -15; 
                 const rotateY = ((x - centerX) / centerX) * 15;
-
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
             });
-
             card.addEventListener('mouseleave', () => {
                 card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
             });
         });
 
-        // --- 2D MINIGAME LOGIC: SEWER RAT PARKOUR ---
-        const gameCanvas = document.getElementById('gameCanvas');
-        const ctx = gameCanvas.getContext('2d');
-        let gameIsRunning = false;
+        // --- 2D SEWER RAT PARKOUR ENGINE (HIGH PIXELS, 5 DOABLE LEVELS) ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let gameRunning = false;
+        let gameState = "MENU"; // MENU, LEVEL_SELECT, PLAYING, WIN, GAME_OVER
+        let currentLevel = 0;
 
-        function resizeGameCanvas() {
-            const container = document.getElementById('game-container');
-            if(container) {
-                gameCanvas.width = container.clientWidth;
-                gameCanvas.height = container.clientHeight;
-            }
+        // Display Constants (Internal Virtual Resolution for crisp structural layout)
+        const vWidth = 1000;
+        const vHeight = 550;
+
+        function setupCanvasScale() {
+            const rect = canvas.parentNode.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(canvas.width / vWidth, canvas.height / vHeight);
+            ctx.imageSmoothingEnabled = false;
         }
 
-        // The Rat
+        // Physics & Entity Definitions
         const player = {
-            x: 50, y: 350, width: 35, height: 20,
-            dx: 0, dy: 0, speed: 6, jumpPower: -14,
-            grounded: false
+            x: 80, y: 400, width: 32, height: 18,
+            vx: 0, vy: 0, speed: 5.5, jumpForce: -13.5,
+            grounded: false, facingRight: true
         };
 
-        const keys = { right: false, left: false, up: false };
+        const inputs = { left: false, right: false, up: false };
+        let drops = [];
+        for (let i = 0; i < 25; i++) {
+            drops.push({ x: Math.random() * vWidth, y: Math.random() * vHeight, speed: 4 + Math.random() * 3, len: 6 + Math.random() * 5 });
+        }
 
-        // Prevent window from scrolling when pressing arrow keys while playing
-        window.addEventListener('keydown', (e) => {
-            if(!gameIsRunning) return;
-            if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
-                e.preventDefault();
+        // Level Select Buttons Coordinate Definitions
+        const levelButtons = [
+            { id: 0, x: 180, y: 320, w: 100, h: 50, label: "Lvl 1" },
+            { id: 1, x: 310, y: 320, w: 100, h: 50, label: "Lvl 2" },
+            { id: 2, x: 440, y: 320, w: 100, h: 50, label: "Lvl 3" },
+            { id: 3, x: 570, y: 320, w: 100, h: 50, label: "Lvl 4" },
+            { id: 4, x: 700, y: 320, w: 100, h: 50, label: "Lvl 5" }
+        ];
+
+        // Doable Layout Map Databases
+        const levels = [
+            // Level 1: Standard Pipes Tutorial
+            {
+                startText: "Escape Route: Floor 1",
+                goal: { x: 900, y: 120, w: 50, h: 50 },
+                platforms: [
+                    { x: 0, y: 500, w: 1000, h: 50, color: "#475569" }, // Floor
+                    { x: 220, y: 410, w: 140, h: 25, color: "#a16207" },
+                    { x: 450, y: 330, w: 150, h: 25, color: "#a16207" },
+                    { x: 700, y: 240, w: 140, h: 25, color: "#a16207" },
+                    { x: 880, y: 170, w: 120, h: 25, color: "#16a34a" }
+                ]
+            },
+            // Level 2: Alternate Heights
+            {
+                startText: "Floor 2: Deep Drains",
+                goal: { x: 50, y: 110, w: 50, h: 50 },
+                platforms: [
+                    { x: 0, y: 500, w: 1000, h: 50, color: "#475569" },
+                    { x: 750, y: 410, w: 160, h: 25, color: "#a16207" },
+                    { x: 480, y: 330, w: 180, h: 25, color: "#a16207" },
+                    { x: 220, y: 240, w: 150, h: 25, color: "#a16207" },
+                    { x: 30, y: 160, w: 110, h: 25, color: "#16a34a" }
+                ]
+            },
+            // Level 3: Precision Flow
+            {
+                startText: "Floor 3: Core Filtration",
+                goal: { x: 920, y: 100, w: 50, h: 50 },
+                platforms: [
+                    { x: 0, y: 500, w: 300, h: 50, color: "#475569" },
+                    { x: 850, y: 500, w: 150, h: 50, color: "#475569" },
+                    { x: 350, y: 410, w: 120, h: 22, color: "#a16207" },
+                    { x: 550, y: 340, w: 120, h: 22, color: "#a16207" },
+                    { x: 750, y: 260, w: 120, h: 22, color: "#a16207" },
+                    { x: 520, y: 180, w: 130, h: 22, color: "#a16207" },
+                    { x: 880, y: 150, w: 120, h: 25, color: "#16a34a" }
+                ]
+            },
+            // Level 4: Vertical Ascent
+            {
+                startText: "Floor 4: Main Inflow Valve",
+                goal: { x: 120, y: 90, w: 50, h: 50 },
+                platforms: [
+                    { x: 0, y: 500, w: 1000, h: 50, color: "#475569" },
+                    { x: 440, y: 420, w: 120, h: 24, color: "#a16207" },
+                    { x: 740, y: 360, w: 110, h: 24, color: "#a16207" },
+                    { x: 440, y: 290, w: 120, h: 24, color: "#a16207" },
+                    { x: 150, y: 230, w: 140, h: 24, color: "#a16207" },
+                    { x: 380, y: 150, w: 110, h: 24, color: "#a16207" },
+                    { x: 90, y: 140, w: 110, h: 25, color: "#16a34a" }
+                ]
+            },
+            // Level 5: The Final Climb
+            {
+                startText: "Floor 5: Surface Access Drain",
+                goal: { x: 880, y: 90, w: 60, h: 50 },
+                platforms: [
+                    { x: 0, y: 500, w: 200, h: 50, color: "#475569" },
+                    { x: 260, y: 420, w: 100, h: 22, color: "#a16207" },
+                    { x: 460, y: 350, w: 100, h: 22, color: "#a16207" },
+                    { x: 680, y: 280, w: 100, h: 22, color: "#a16207" },
+                    { x: 460, y: 210, w: 110, h: 22, color: "#a16207" },
+                    { x: 220, y: 150, w: 130, h: 22, color: "#a16207" },
+                    { x: 500, y: 110, w: 100, h: 22, color: "#a16207" },
+                    { x: 820, y: 140, w: 180, h: 25, color: "#16a34a" }
+                ]
             }
-            if(e.code === 'ArrowRight') keys.right = true;
-            if(e.code === 'ArrowLeft') keys.left = true;
-            if(e.code === 'ArrowUp' || e.code === 'Space') keys.up = true;
+        ];
+
+        function loadLevel(idx) {
+            currentLevel = idx;
+            player.x = 60;
+            player.y = 380;
+            player.vx = 0;
+            player.vy = 0;
+            player.grounded = false;
+            gameState = "PLAYING";
+        }
+
+        // Capture Inputs
+        window.addEventListener('keydown', (e) => {
+            if (!gameRunning || gameState !== "PLAYING") return;
+            if (['ArrowUp', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
+            if (e.code === 'ArrowRight') { inputs.right = true; player.facingRight = true; }
+            if (e.code === 'ArrowLeft') { inputs.left = true; player.facingRight = false; }
+            if (e.code === 'ArrowUp' || e.code === 'Space') inputs.up = true;
         });
 
         window.addEventListener('keyup', (e) => {
-            if(!gameIsRunning) return;
-            if(e.code === 'ArrowRight') keys.right = false;
-            if(e.code === 'ArrowLeft') keys.left = false;
-            if(e.code === 'ArrowUp' || e.code === 'Space') keys.up = false;
+            if (e.code === 'ArrowRight') inputs.right = false;
+            if (e.code === 'ArrowLeft') inputs.left = false;
+            if (e.code === 'ArrowUp' || e.code === 'Space') inputs.up = false;
         });
 
-        // Vibrant neon platforms
-        const platforms = [
-            { x: -50, y: 450, w: 2000, h: 100, c: '#39FF14' }, // Base pipe
-            { x: 300, y: 380, w: 120, h: 20, c: '#FF00FF' }, // Magenta
-            { x: 550, y: 310, w: 120, h: 20, c: '#00FFFF' }, // Cyan
-            { x: 300, y: 220, w: 120, h: 20, c: '#FFFF00' }, // Yellow
-            { x: 100, y: 150, w: 120, h: 20, c: '#FF9900' }, // Orange
-            { x: 450, y: 80,  w: 300, h: 20, c: '#39FF14' }  // Top pipe
-        ];
-
-        function gameLoop() {
-            if (!gameIsRunning) return;
-
-            // Physics
-            player.dy += 0.8; // Gravity
+        // Click Handler for Menu Interfaces
+        canvas.addEventListener('click', (e) => {
+            if (!gameRunning) return;
             
-            if (keys.right) player.dx = player.speed;
-            else if (keys.left) player.dx = -player.speed;
-            else player.dx *= 0.8; // Friction
+            const rect = canvas.getBoundingClientRect();
+            const clickX = ((e.clientX - rect.left) / rect.width) * vWidth;
+            const clickY = ((e.clientY - rect.top) / rect.height) * vHeight;
 
-            player.x += player.dx;
-            player.y += player.dy;
-            player.grounded = false;
-
-            // Collision with platforms
-            platforms.forEach(p => {
-                if (player.x < p.x + p.w && player.x + player.width > p.x &&
-                    player.y < p.y + p.h && player.y + player.height > p.y) {
-                    
-                    // Top collision (landing on pipe)
-                    if (player.dy > 0 && player.y + player.height - player.dy <= p.y + 5) {
-                        player.y = p.y - player.height;
-                        player.dy = 0;
-                        player.grounded = true;
-                    }
+            if (gameState === "MENU") {
+                // Main Play button bounds check
+                if (clickX >= 380 && clickX <= 620 && clickY >= 360 && clickY <= 420) {
+                    gameState = "LEVEL_SELECT";
                 }
-            });
-
-            // Wall constraints
-            if(player.x < 0) player.x = 0;
-            if(player.x + player.width > gameCanvas.width) player.x = gameCanvas.width - player.width;
-
-            // Death by falling
-            if(player.y > gameCanvas.height) {
-                player.x = 50; 
-                player.y = 350; 
-                player.dy = 0;
+            } else if (gameState === "LEVEL_SELECT") {
+                levelButtons.forEach(btn => {
+                    if (clickX >= btn.x && clickX <= btn.x + btn.w && clickY >= btn.y && clickY <= btn.y + btn.h) {
+                        loadLevel(btn.id);
+                    }
+                });
+            } else if (gameState === "WIN" || gameState === "GAME_OVER") {
+                // Continue / Retry button bounds check
+                if (clickX >= 400 && clickX <= 600 && clickY >= 340 && clickY <= 390) {
+                    gameState = "LEVEL_SELECT";
+                }
             }
+        });
 
-            // Jumping
-            if (keys.up && player.grounded) {
-                player.dy = player.jumpPower;
+        // Main Loop Architecture
+        function gameUpdate() {
+            if (!gameRunning) return;
+
+            if (gameState === "PLAYING") {
+                // Compute Motion Physics
+                player.vy += 0.65; // Stable gravity factor
+                if (inputs.right) player.vx = player.speed;
+                else if (inputs.left) player.vx = -player.speed;
+                else player.vx *= 0.75; // Fluid deceleration friction
+
+                player.x += player.vx;
+                player.y += player.vy;
                 player.grounded = false;
+
+                // Process boundaries and collision rules
+                const lvl = levels[currentLevel];
+                lvl.platforms.forEach(p => {
+                    if (player.x < p.x + p.w && player.x + player.width > p.x &&
+                        player.y < p.y + p.h && player.y + player.height > p.y) {
+                        
+                        // Check downward surface collision landing
+                        if (player.vy > 0 && player.y + player.height - player.vy <= p.y + 8) {
+                            player.y = p.y - player.height;
+                            player.vy = 0;
+                            player.grounded = true;
+                        }
+                    }
+                });
+
+                if (player.x < 0) player.x = 0;
+                if (player.x + player.width > vWidth) player.x = vWidth - player.width;
+
+                // Jump Activation Mechanics
+                if (inputs.up && player.grounded) {
+                    player.vy = player.jumpForce;
+                    player.grounded = false;
+                }
+
+                // Hazard liquid volume check
+                if (player.y > vHeight - 45) {
+                    gameState = "GAME_OVER";
+                }
+
+                // Winning condition check
+                if (player.x < lvl.goal.x + lvl.goal.w && player.x + player.width > lvl.goal.x &&
+                    player.y < lvl.goal.y + lvl.goal.h && player.y + player.height > lvl.goal.y) {
+                    gameState = "WIN";
+                }
             }
 
-            // --- DRAWING ---
-            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-
-            // Draw Platforms
-            platforms.forEach(p => {
-                ctx.fillStyle = p.c;
-                ctx.fillRect(p.x, p.y, p.w, p.h);
-                // Highlight to make it look like a cylinder
-                ctx.fillStyle = 'rgba(255,255,255,0.4)';
-                ctx.fillRect(p.x, p.y, p.w, 6);
-                ctx.fillStyle = 'rgba(0,0,0,0.3)';
-                ctx.fillRect(p.x, p.y + p.h - 6, p.w, 6);
-            });
-
-            // Draw Toxic Slime at the bottom
-            ctx.fillStyle = 'rgba(57, 255, 20, 0.4)';
-            ctx.fillRect(0, gameCanvas.height - 30, gameCanvas.width, 30);
-            
-            // Draw Rat
-            ctx.fillStyle = '#8B4513'; // Rat brown
-            ctx.fillRect(player.x, player.y, player.width, player.height);
-            
-            // Rat Ears
-            ctx.fillStyle = '#A0522D';
-            ctx.fillRect(player.dx >= 0 ? player.x + 25 : player.x + 2, player.y - 6, 8, 8);
-            
-            // Rat Eye
-            ctx.fillStyle = '#FF3333'; // Evil red eye
-            ctx.fillRect(player.dx >= 0 ? player.x + 25 : player.x + 6, player.y + 4, 4, 4);
-
-            // Rat Tail
-            ctx.fillStyle = '#FF9999';
-            ctx.fillRect(player.dx >= 0 ? player.x - 15 : player.x + player.width, player.y + 10, 15, 3);
-
-            requestAnimationFrame(gameLoop);
+            renderGameGraphics();
+            requestAnimationFrame(gameUpdate);
         }
 
+        // High Quality Rendering Canvas Layer
+        function renderGameGraphics() {
+            ctx.clearRect(0, 0, vWidth, vHeight);
+
+            if (gameState === "MENU") {
+                // Split-Screen Dynamic Graphic Art
+                // Top Half: Ground Surface Scene
+                ctx.fillStyle = "#60a5fa"; // Bright Sky Blue
+                ctx.fillRect(0, 0, vWidth, vHeight / 2);
+                
+                // Sun Element
+                ctx.fillStyle = "#fef08a";
+                ctx.beginPath();
+                ctx.arc(850, 80, 45, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Surface Grass Layer
+                ctx.fillStyle = "#22c55e"; 
+                ctx.fillRect(0, (vHeight / 2) - 40, vWidth, 40);
+
+                // Underground Brick Section Base
+                ctx.fillStyle = "#0f172a"; 
+                ctx.fillRect(0, vHeight / 2, vWidth, vHeight / 2);
+
+                // Middle Ground Separation (Soil Strata Layer)
+                ctx.fillStyle = "#78350f"; 
+                ctx.fillRect(0, (vHeight / 2) - 15, vWidth, 15);
+
+                // Vertical Surface Entrance Drainage Channel
+                ctx.fillStyle = "#334155";
+                ctx.fillRect(460, (vHeight / 2) - 40, 80, vHeight / 2);
+                
+                // Iron Manhole Grate Design Pattern
+                ctx.fillStyle = "#64748b";
+                ctx.fillRect(450, (vHeight / 2) - 44, 100, 6);
+
+                // Draw Brick Layout Framework for the Bottom Sewer portion
+                ctx.strokeStyle = "rgba(56, 189, 248, 0.08)";
+                ctx.lineWidth = 2;
+                for (let r = vHeight / 2; r < vHeight; r += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, r); ctx.lineTo(vWidth, r);
+                    ctx.stroke();
+                }
+
+                // Glowing Neon Brand Text Display Elements
+                ctx.shadowColor = "#f472b6";
+                ctx.shadowBlur = 20;
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 52px 'Space Grotesk', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("SEWER RAT Escape", vWidth / 2, 160);
+
+                ctx.font = "300 18px 'Inter', sans-serif";
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = "#e2e8f0";
+                ctx.fillText("A High-Quality Parkour Journey", vWidth / 2, 205);
+
+                // Start Game Action Button Layout
+                ctx.fillStyle = "#f472b6";
+                ctx.beginPath();
+                ctx.roundRect(380, 360, 240, 60, 8);
+                ctx.fill();
+
+                ctx.fillStyle = "#0f172a";
+                ctx.font = "bold 22px 'Space Grotesk', sans-serif";
+                ctx.fillText("ENTER SEWERS", vWidth / 2, 397);
+
+            } else if (gameState === "LEVEL_SELECT") {
+                // Level select view panel arrangement
+                ctx.fillStyle = "#0f172a";
+                ctx.fillRect(0, 0, vWidth, vHeight);
+
+                // Decorative Ambient Pipe
+                ctx.fillStyle = "#1e293b";
+                ctx.fillRect(0, 440, vWidth, 40);
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 38px 'Space Grotesk', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("SELECT MISSIONS", vWidth / 2, 160);
+
+                ctx.font = "16px 'Inter', sans-serif";
+                ctx.fillStyle = "#94a3b8";
+                ctx.fillText("Choose a floor to initiate navigation sequence", vWidth / 2, 200);
+
+                // Draw Button Interfaces loops
+                levelButtons.forEach(btn => {
+                    ctx.fillStyle = "rgba(56, 189, 248, 0.15)";
+                    ctx.strokeStyle = "#38bdf8";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.roundRect(btn.x, btn.y, btn.w, btn.h, 6);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "bold 18px 'Space Grotesk', sans-serif";
+                    ctx.fillText(btn.label, btn.x + (btn.w / 2), btn.y + 32);
+                });
+
+            } else if (gameState === "PLAYING" || gameState === "WIN" || gameState === "GAME_OVER") {
+                // Active gameplay environment artwork
+                ctx.fillStyle = "#090d16";
+                ctx.fillRect(0, 0, vWidth, vHeight);
+
+                // Structural Sewer Wall Background Details
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+                ctx.lineWidth = 1;
+                for (let x = 0; x < vWidth; x += 40) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, vHeight); ctx.stroke();
+                }
+                for (let y = 0; y < vHeight; y += 25) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(vWidth, y); ctx.stroke();
+                }
+
+                // Render Dripping Water Particles
+                ctx.fillStyle = "rgba(56, 189, 248, 0.4)";
+                drops.forEach(d => {
+                    ctx.fillRect(d.x, d.y, 1.5, d.len);
+                    d.y += d.speed;
+                    if (d.y > vHeight) { d.y = -10; d.x = Math.random() * vWidth; }
+                });
+
+                // Display Active Level Data Array Object
+                const lvl = levels[currentLevel];
+
+                // Render exit ladder portal structure
+                ctx.strokeStyle = "#fbbf24";
+                ctx.lineWidth = 5;
+                const g = lvl.goal;
+                for (let ly = g.y; ly < g.y + g.h; ly += 10) {
+                    ctx.beginPath(); ctx.moveTo(g.x + 8, ly); ctx.lineTo(g.x + g.w - 8, ly); ctx.stroke();
+                }
+                ctx.beginPath(); ctx.moveTo(g.x + 8, g.y); ctx.lineTo(g.x + 8, g.y + g.h); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(g.x + g.w - 8, g.y); ctx.lineTo(g.x + g.w - 8, g.y + g.h); ctx.stroke();
+
+                // Draw Level Platforms (Iron Cylinder Pipes)
+                lvl.platforms.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.roundRect(p.x, p.y, p.w, p.h, 6);
+                    ctx.fill();
+
+                    // Dimensional Highlight overlays
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
+                    ctx.fillRect(p.x, p.y, p.w, 6);
+                    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+                    ctx.fillRect(p.x, p.y + p.h - 6, p.w, 6);
+                });
+
+                // Hazardous Bottom Slime Layer Fluid Animation
+                const slimeOffset = Math.sin(Date.now() * 0.004) * 4;
+                ctx.fillStyle = "#22c55e";
+                ctx.fillRect(0, vHeight - 35 + slimeOffset, vWidth, 45);
+                ctx.fillStyle = "rgba(34, 197, 94, 0.5)";
+                ctx.fillRect(0, vHeight - 42 - slimeOffset, vWidth, 10);
+
+                // Draw Rat Character Model
+                ctx.save();
+                ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
+                if (!player.facingRight) ctx.scale(-1, 1);
+
+                // Rat Torso Body block
+                ctx.fillStyle = "#64748b"; // Sleek gray rat skin
+                ctx.beginPath();
+                ctx.roundRect(-player.width / 2, -player.height / 2, player.width, player.height, 4);
+                ctx.fill();
+
+                // Snout/Nose
+                ctx.fillStyle = "#f472b6";
+                ctx.fillRect(player.width / 2, -2, 3, 4);
+
+                // Alert Crimson Eye
+                ctx.fillStyle = "#ef4444";
+                ctx.fillRect(player.width / 2 - 8, -5, 3, 3);
+
+                // Rounded Ears
+                ctx.fillStyle = "#475569";
+                ctx.beginPath(); ctx.arc(-2, -player.height / 2, 5, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = "#f472b6";
+                ctx.beginPath(); ctx.arc(-2, -player.height / 2, 2.5, 0, Math.PI * 2); ctx.fill();
+
+                // Extended Tail Wire structure
+                ctx.strokeStyle = "#f472b6";
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(-player.width / 2, 2);
+                ctx.quadraticCurveTo(-player.width / 2 - 12, Math.sin(Date.now() * 0.01) * 4, -player.width / 2 - 16, -2);
+                ctx.stroke();
+
+                ctx.restore();
+
+                // Draw Screen Status Notifications (Wins / Reset screens)
+                if (gameState === "WIN") {
+                    ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+                    ctx.fillRect(0, 0, vWidth, vHeight);
+
+                    ctx.fillStyle = "#38bdf8";
+                    ctx.font = "bold 42px 'Space Grotesk', sans-serif";
+                    ctx.fillText("FLOOR CLEARED!", vWidth / 2, 220);
+
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "bold 20px 'Space Grotesk', sans-serif";
+                    ctx.beginPath(); ctx.roundRect(400, 340, 200, 50, 6); ctx.fill();
+                    ctx.fillStyle = "#0f172a";
+                    ctx.fillText("CONTINUE", vWidth / 2, 372);
+                } else if (gameState === "GAME_OVER") {
+                    ctx.fillStyle = "rgba(220, 38, 38, 0.25)";
+                    ctx.fillRect(0, 0, vWidth, vHeight);
+
+                    ctx.fillStyle = "#ef4444";
+                    ctx.font = "bold 46px 'Space Grotesk', sans-serif";
+                    ctx.fillText("RAT TOXIFIED", vWidth / 2, 220);
+
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "bold 20px 'Space Grotesk', sans-serif";
+                    ctx.beginPath(); ctx.roundRect(400, 340, 200, 50, 6); ctx.fill();
+                    ctx.fillStyle = "#0f172a";
+                    ctx.fillText("RETRY FLIGHT", vWidth / 2, 372);
+                }
+            }
+        }
     </script>
 </body>
 </html>
