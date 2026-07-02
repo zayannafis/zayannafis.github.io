@@ -4,19 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Z. Nafis | Domain Owner</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-
     <style>
         /* CSS Variables for a Cyber/Engineering Theme - BRIGHTER & LIGHTER */
         :root {
-            --bg-color: #1e293b; 
-            --text-main: #ffffff; 
-            --text-muted: #cbd5e1; 
-            --accent-1: #38bdf8; 
-            --accent-2: #7dd3fc; 
+            --bg-color: #1e293b;
+            --text-main: #ffffff;
+            --text-muted: #cbd5e1;
+            --accent-1: #38bdf8;
+            --accent-2: #7dd3fc;
             --glass-bg: rgba(30, 41, 59, 0.7);
             --glass-border: rgba(56, 189, 248, 0.5);
         }
@@ -26,7 +23,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none; 
+            cursor: none;
         }
 
         body {
@@ -45,8 +42,10 @@
         /* 3D Background Canvas Container */
         #canvas-container {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             z-index: -1;
             pointer-events: none;
         }
@@ -54,8 +53,10 @@
         /* Custom High-Tech Cursor */
         .cursor-dot {
             position: fixed;
-            top: 0; left: 0;
-            width: 6px; height: 6px;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 6px;
             background-color: var(--accent-2);
             border-radius: 50%;
             pointer-events: none;
@@ -67,8 +68,10 @@
 
         .cursor-outline {
             position: fixed;
-            top: 0; left: 0;
-            width: 40px; height: 40px;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
             border: 1px solid var(--accent-1);
             border-radius: 50%;
             pointer-events: none;
@@ -80,7 +83,8 @@
         /* Navigation */
         nav {
             position: fixed;
-            top: 0; width: 100%;
+            top: 0;
+            width: 100%;
             padding: 2rem 5%;
             display: flex;
             justify-content: space-between;
@@ -98,7 +102,9 @@
             text-transform: uppercase;
         }
 
-        .logo span { color: var(--accent-1); }
+        .logo span {
+            color: var(--accent-1);
+        }
 
         .nav-links {
             display: flex;
@@ -122,18 +128,31 @@
         .nav-btn::after {
             content: '';
             position: absolute;
-            bottom: 0; left: 0;
-            width: 0%; height: 2px;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
             background-color: var(--accent-1);
             transition: width 0.3s ease;
             box-shadow: 0 0 8px var(--accent-1);
         }
 
-        .nav-btn:hover, .nav-btn.active { color: var(--text-main); }
-        .nav-btn.active::after { width: 100%; }
-        
-        .mystery-btn { color: #f472b6 !important; }
-        .mystery-btn::after { background-color: #f472b6 !important; box-shadow: 0 0 8px #f472b6 !important; }
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--text-main);
+        }
+
+        .nav-btn.active::after {
+            width: 100%;
+        }
+
+        .mystery-btn {
+            color: #f472b6 !important;
+        }
+
+        .mystery-btn::after {
+            background-color: #f472b6 !important;
+            box-shadow: 0 0 8px #f472b6 !important;
+        }
 
         /* Main Content & Section Transitions */
         main {
@@ -154,10 +173,15 @@
             padding-bottom: 50px;
         }
 
-        .section.active { display: block; }
+        .section.active {
+            display: block;
+        }
 
         @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Typography & Badges */
@@ -218,7 +242,10 @@
         .card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             border-radius: 12px;
             background: radial-gradient(circle at top right, rgba(56,189,248,0.2), transparent 50%);
             z-index: -1;
@@ -301,140 +328,159 @@
         }
 
         /* --- CHAT SYSTEM UI --- */
-.chat-container {
-  display: flex;
-  height: 550px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  backdrop-filter: blur(12px);
-  overflow: hidden;
-  margin-top: 1rem;
-}
+        .chat-container {
+            display: flex;
+            height: 550px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            backdrop-filter: blur(12px);
+            overflow: hidden;
+            margin-top: 1rem;
+        }
 
-.chat-sidebar {
-  width: 280px;
-  border-right: 1px solid var(--glass-border);
-  background: rgba(0,0,0,0.2);
-  padding: 1rem;
-}
+        .chat-sidebar {
+            width: 280px;
+            border-right: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+        }
 
-.chat-contact {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 8px;
-  background: rgba(56, 189, 248, 0.1);
-  border: 1px solid var(--accent-1);
-}
+        .chat-contact {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--accent-1);
+        }
 
-.contact-avatar {
-  width: 40px;
-  height: 40px;
-  background: var(--accent-1);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 700;
-  color: var(--bg-color);
-}
+        .contact-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            color: var(--bg-color);
+        }
 
-.contact-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: #fff; }
-.contact-status { font-size: 0.8rem; color: #10b981; }
+        .contact-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            color: #fff;
+        }
 
-.chat-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+        .contact-status {
+            font-size: 0.8rem;
+            color: #10b981;
+        }
 
-.chat-messages {
-  flex: 1;
-  padding: 1.5rem;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
 
-.message {
-  max-width: 70%;
-  padding: 0.8rem 1.2rem;
-  border-radius: 12px;
-  line-height: 1.4;
-  font-size: 0.95rem;
-}
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
 
-/* Gray bubble for messages you receive */
-.message.received {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  align-self: flex-start;
-  border-bottom-left-radius: 2px;
-}
+        .message {
+            max-width: 70%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
 
-/* Blue bubble for messages the user sends */
-.message.sent {
-  background: rgba(56, 189, 248, 0.15);
-  border: 1px solid var(--accent-1);
-  color: #fff;
-  align-self: flex-end;
-  border-bottom-right-radius: 2px;
-}
+        /* Gray bubble for messages you receive */
+        .message.received {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
 
-.chat-input-area {
-  padding: 1rem;
-  border-top: 1px solid var(--glass-border);
-  display: flex;
-  gap: 1rem;
-  background: rgba(0,0,0,0.2);
-}
+        /* Blue bubble for messages the user sends */
+        .message.sent {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid var(--accent-1);
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
 
-.chat-input-area input {
-  flex: 1;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  padding: 0.8rem 1.2rem;
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition: border-color 0.3s;
-}
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            gap: 1rem;
+            background: rgba(0,0,0,0.2);
+        }
 
-.chat-input-area input:focus { border-color: var(--accent-1); }
+        .chat-input-area input {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 0.8rem 1.2rem;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
 
-.chat-input-area button {
-  background: var(--accent-1);
-  color: var(--bg-color);
-  border: none;
-  padding: 0 1.5rem;
-  border-radius: 8px;
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 700;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
+        .chat-input-area input:focus {
+            border-color: var(--accent-1);
+        }
 
-.chat-input-area button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
-}
+        .chat-input-area button {
+            background: var(--accent-1);
+            color: var(--bg-color);
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+        }
 
         @media (max-width: 768px) {
-            .nav-links { gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
-            .nav-btn { font-size: 0.8rem; }
-            .contact-layout { grid-template-columns: 1fr; gap: 2rem; }
-            #game-container { height: 420px; }
+            .nav-links {
+                gap: 1.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .nav-btn {
+                font-size: 0.8rem;
+            }
+            .contact-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            #game-container {
+                height: 420px;
+            }
         }
     </style>
 </head>
 <body>
-
     <div id="canvas-container"></div>
-
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
@@ -450,38 +496,7 @@
         </div>
     </nav>
 
-<section id="messages" class="section">
-  <div class="badge">Secure Comm Link</div>
-  <h2 class="hero-title" style="font-size: 4rem;">Direct <span>Comms</span></h2>
-  
-  <div class="chat-container">
-    <div class="chat-sidebar">
-      <div class="chat-contact">
-        <div class="contact-avatar">Z</div>
-        <div class="contact-info">
-          <div class="contact-name">Z. Nafis (Admin)</div>
-          <div class="contact-status">Online</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="chat-main">
-      <div class="chat-messages" id="chat-box">
-        <div class="message received">
-          <p>System Online. Secure connection established. Send a message to begin.</p>
-        </div>
-        </div>
-      
-      <div class="chat-input-area">
-        <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
-        <button id="send-btn">SEND</button>
-      </div>
-    </div>
-  </div>
-</section>
-    
     <main>
-        
         <section id="home" class="section active">
             <div class="badge">PROUD OWNER OF A DOMAIN</div>
             <h1 class="hero-title">SO I<br><span>BOUGHT A DOMAIN</span></h1>
@@ -491,7 +506,6 @@
         <section id="projects" class="section">
             <div class="badge">The Plan (Or lack thereof)</div>
             <h2 class="hero-title" style="font-size: 4rem;">What now? <span>Ideas</span></h2>
-            
             <div class="grid">
                 <div class="card tilt-card">
                     <h3>Figure Out Web Design</h3>
@@ -548,10 +562,36 @@
             <div style="margin-top: 3rem;">
                 <p class="hero-desc" style="margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">Direct Comms</p>
                 <a href="mailto:email@example.com" class="contact-link interactive">email@idk.com</a>
-                
                 <p class="hero-desc" style="margin-bottom: 0.5rem; margin-top: 3rem; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">Where I pretend to know things</p>
                 <a href="#" class="contact-link interactive" style="font-size: 1.8rem;">Fake LinkedIn</a>
                 <a href="#" class="contact-link interactive" style="font-size: 1.8rem;">Placeholder GitHub</a>
+            </div>
+        </section>
+
+        <section id="messages" class="section">
+            <div class="badge">Secure Comm Link</div>
+            <h2 class="hero-title" style="font-size: 4rem;">Direct <span>Comms</span></h2>
+            <div class="chat-container">
+                <div class="chat-sidebar">
+                    <div class="chat-contact">
+                        <div class="contact-avatar">Z</div>
+                        <div class="contact-info">
+                            <div class="contact-name">Z. Nafis (Admin)</div>
+                            <div class="contact-status">Online</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-main">
+                    <div class="chat-messages" id="chat-box">
+                        <div class="message received">
+                            <p>System Online. Secure connection established. Send a message to begin.</p>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+                        <button id="send-btn">SEND</button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -559,34 +599,24 @@
             <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Sewer Rat Escape v2.0</div>
             <h2 class="hero-title" style="font-size: 4rem;">Sewer Rat<br><span style="-webkit-text-stroke: 1px #f472b6;">Parkour</span></h2>
             <p class="hero-desc" style="margin-bottom: 1.5rem;">Controls: Use <strong>Left / Right Arrow</strong> keys to walk, <strong>Up Arrow or Space</strong> to jump. Hover over menu screens to click using your targeting system.</p>
-            
             <div id="game-container">
                 <canvas id="gameCanvas"></canvas>
             </div>
         </section>
-
     </main>
 
     <script>
         // --- THREE.JS BACKGROUND LOGIC (Brightened) ---
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x1e293b, 0.015);
-
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
         const geometry = new THREE.PlaneGeometry(200, 100, 60, 30);
-        const material = new THREE.MeshBasicMaterial({ 
-            color: 0x38bdf8, 
-            wireframe: true, 
-            transparent: true, 
-            opacity: 0.25 
-        });
-        
+        const material = new THREE.MeshBasicMaterial({color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.25 });
         const plane = new THREE.Mesh(geometry, material);
         plane.rotation.x = -Math.PI / 2 + 0.1;
         plane.position.y = -15;
@@ -609,7 +639,6 @@
         function animate3D() {
             requestAnimationFrame(animate3D);
             const elapsedTime = clock.getElapsedTime();
-
             const positions = geometry.attributes.position;
             for(let i = 0; i < count; i++) {
                 const x = positions.getX(i);
@@ -619,7 +648,6 @@
                 positions.setZ(i, startZ[i] + wave1 + wave2);
             }
             positions.needsUpdate = true;
-
             plane.position.z = (elapsedTime * 2) % 10;
 
             targetX = mouseX * 0.05;
@@ -647,17 +675,11 @@
         window.addEventListener('mousemove', (e) => {
             const posX = e.clientX;
             const posY = e.clientY;
-            
             mouseX = (e.clientX - windowHalfX);
             mouseY = (e.clientY - windowHalfY);
-
             cursorDot.style.left = `${posX}px`;
             cursorDot.style.top = `${posY}px`;
-
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 200, fill: "forwards" });
+            cursorOutline.animate({left: `${posX}px`, top: `${posY}px` }, { duration: 200, fill: "forwards" });
         });
 
         interactives.forEach(el => {
@@ -682,11 +704,9 @@
             btn.addEventListener('click', () => {
                 navBtns.forEach(b => b.classList.remove('active'));
                 sections.forEach(s => s.classList.remove('active'));
-
                 btn.classList.add('active');
                 const targetId = btn.getAttribute('data-target');
                 document.getElementById(targetId).classList.add('active');
-
                 if (targetId === 'mystery') {
                     if (!gameRunning) {
                         gameRunning = true;
@@ -704,11 +724,11 @@
         cards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left; 
-                const y = e.clientY - rect.top;  
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -15; 
+                const rotateX = ((y - centerY) / centerY) * -15;
                 const rotateY = ((x - centerX) / centerX) * 15;
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
             });
@@ -721,10 +741,9 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         let gameRunning = false;
-        let gameState = "MENU"; // MENU, LEVEL_SELECT, PLAYING, WIN, GAME_OVER
-        let currentLevel = 0;
+        let gameState = "MENU"; 
+        let currentLevel = 0; 
 
-        // Display Constants (Internal Virtual Resolution for crisp structural layout)
         const vWidth = 1000;
         const vHeight = 550;
 
@@ -737,20 +756,13 @@
             ctx.imageSmoothingEnabled = false;
         }
 
-        // Physics & Entity Definitions
-        const player = {
-            x: 80, y: 400, width: 32, height: 18,
-            vx: 0, vy: 0, speed: 5.5, jumpForce: -13.5,
-            grounded: false, facingRight: true
-        };
-
+        const player = {x: 80, y: 400, width: 32, height: 18, vx: 0, vy: 0, speed: 5.5, jumpForce: -13.5, grounded: false, facingRight: true };
         const inputs = { left: false, right: false, up: false };
         let drops = [];
         for (let i = 0; i < 25; i++) {
             drops.push({ x: Math.random() * vWidth, y: Math.random() * vHeight, speed: 4 + Math.random() * 3, len: 6 + Math.random() * 5 });
         }
 
-        // Level Select Buttons Coordinate Definitions
         const levelButtons = [
             { id: 0, x: 180, y: 320, w: 100, h: 50, label: "Lvl 1" },
             { id: 1, x: 310, y: 320, w: 100, h: 50, label: "Lvl 2" },
@@ -759,21 +771,18 @@
             { id: 4, x: 700, y: 320, w: 100, h: 50, label: "Lvl 5" }
         ];
 
-        // Doable Layout Map Databases
         const levels = [
-            // Level 1: Standard Pipes Tutorial
             {
                 startText: "Escape Route: Floor 1",
                 goal: { x: 900, y: 120, w: 50, h: 50 },
                 platforms: [
-                    { x: 0, y: 500, w: 1000, h: 50, color: "#475569" }, // Floor
+                    { x: 0, y: 500, w: 1000, h: 50, color: "#475569" }, 
                     { x: 220, y: 410, w: 140, h: 25, color: "#a16207" },
                     { x: 450, y: 330, w: 150, h: 25, color: "#a16207" },
                     { x: 700, y: 240, w: 140, h: 25, color: "#a16207" },
                     { x: 880, y: 170, w: 120, h: 25, color: "#16a34a" }
                 ]
             },
-            // Level 2: Alternate Heights
             {
                 startText: "Floor 2: Deep Drains",
                 goal: { x: 50, y: 110, w: 50, h: 50 },
@@ -785,7 +794,6 @@
                     { x: 30, y: 160, w: 110, h: 25, color: "#16a34a" }
                 ]
             },
-            // Level 3: Precision Flow
             {
                 startText: "Floor 3: Core Filtration",
                 goal: { x: 920, y: 100, w: 50, h: 50 },
@@ -799,7 +807,6 @@
                     { x: 880, y: 150, w: 120, h: 25, color: "#16a34a" }
                 ]
             },
-            // Level 4: Vertical Ascent
             {
                 startText: "Floor 4: Main Inflow Valve",
                 goal: { x: 120, y: 90, w: 50, h: 50 },
@@ -813,7 +820,6 @@
                     { x: 90, y: 140, w: 110, h: 25, color: "#16a34a" }
                 ]
             },
-            // Level 5: The Final Climb
             {
                 startText: "Floor 5: Surface Access Drain",
                 goal: { x: 880, y: 90, w: 60, h: 50 },
@@ -840,7 +846,6 @@
             gameState = "PLAYING";
         }
 
-        // Capture Inputs
         window.addEventListener('keydown', (e) => {
             if (!gameRunning || gameState !== "PLAYING") return;
             if (['ArrowUp', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
@@ -855,16 +860,13 @@
             if (e.code === 'ArrowUp' || e.code === 'Space') inputs.up = false;
         });
 
-        // Click Handler for Menu Interfaces
         canvas.addEventListener('click', (e) => {
             if (!gameRunning) return;
-            
             const rect = canvas.getBoundingClientRect();
             const clickX = ((e.clientX - rect.left) / rect.width) * vWidth;
             const clickY = ((e.clientY - rect.top) / rect.height) * vHeight;
 
             if (gameState === "MENU") {
-                // Main Play button bounds check
                 if (clickX >= 380 && clickX <= 620 && clickY >= 360 && clickY <= 420) {
                     gameState = "LEVEL_SELECT";
                 }
@@ -875,35 +877,27 @@
                     }
                 });
             } else if (gameState === "WIN" || gameState === "GAME_OVER") {
-                // Continue / Retry button bounds check
                 if (clickX >= 400 && clickX <= 600 && clickY >= 340 && clickY <= 390) {
                     gameState = "LEVEL_SELECT";
                 }
             }
         });
 
-        // Main Loop Architecture
         function gameUpdate() {
             if (!gameRunning) return;
-
             if (gameState === "PLAYING") {
-                // Compute Motion Physics
-                player.vy += 0.65; // Stable gravity factor
+                player.vy += 0.65; 
                 if (inputs.right) player.vx = player.speed;
                 else if (inputs.left) player.vx = -player.speed;
-                else player.vx *= 0.75; // Fluid deceleration friction
+                else player.vx *= 0.75; 
 
                 player.x += player.vx;
                 player.y += player.vy;
                 player.grounded = false;
 
-                // Process boundaries and collision rules
                 const lvl = levels[currentLevel];
                 lvl.platforms.forEach(p => {
-                    if (player.x < p.x + p.w && player.x + player.width > p.x &&
-                        player.y < p.y + p.h && player.y + player.height > p.y) {
-                        
-                        // Check downward surface collision landing
+                    if (player.x < p.x + p.w && player.x + player.width > p.x && player.y < p.y + p.h && player.y + player.height > p.y) {
                         if (player.vy > 0 && player.y + player.height - player.vy <= p.y + 8) {
                             player.y = p.y - player.height;
                             player.vy = 0;
@@ -915,115 +909,83 @@
                 if (player.x < 0) player.x = 0;
                 if (player.x + player.width > vWidth) player.x = vWidth - player.width;
 
-                // Jump Activation Mechanics
                 if (inputs.up && player.grounded) {
                     player.vy = player.jumpForce;
                     player.grounded = false;
                 }
 
-                // Hazard liquid volume check
                 if (player.y > vHeight - 45) {
                     gameState = "GAME_OVER";
                 }
 
-                // Winning condition check
-                if (player.x < lvl.goal.x + lvl.goal.w && player.x + player.width > lvl.goal.x &&
-                    player.y < lvl.goal.y + lvl.goal.h && player.y + player.height > lvl.goal.y) {
+                if (player.x < lvl.goal.x + lvl.goal.w && player.x + player.width > lvl.goal.x && player.y < lvl.goal.y + lvl.goal.h && player.y + player.height > lvl.goal.y) {
                     gameState = "WIN";
                 }
             }
-
             renderGameGraphics();
             requestAnimationFrame(gameUpdate);
         }
 
-        // High Quality Rendering Canvas Layer
         function renderGameGraphics() {
             ctx.clearRect(0, 0, vWidth, vHeight);
-
             if (gameState === "MENU") {
-                // Split-Screen Dynamic Graphic Art
-                // Top Half: Ground Surface Scene
-                ctx.fillStyle = "#60a5fa"; // Bright Sky Blue
+                ctx.fillStyle = "#60a5fa"; 
                 ctx.fillRect(0, 0, vWidth, vHeight / 2);
-                
-                // Sun Element
                 ctx.fillStyle = "#fef08a";
                 ctx.beginPath();
                 ctx.arc(850, 80, 45, 0, Math.PI * 2);
                 ctx.fill();
-
-                // Surface Grass Layer
-                ctx.fillStyle = "#22c55e"; 
+                ctx.fillStyle = "#22c55e";
                 ctx.fillRect(0, (vHeight / 2) - 40, vWidth, 40);
-
-                // Underground Brick Section Base
-                ctx.fillStyle = "#0f172a"; 
+                ctx.fillStyle = "#0f172a";
                 ctx.fillRect(0, vHeight / 2, vWidth, vHeight / 2);
-
-                // Middle Ground Separation (Soil Strata Layer)
-                ctx.fillStyle = "#78350f"; 
+                ctx.fillStyle = "#78350f";
                 ctx.fillRect(0, (vHeight / 2) - 15, vWidth, 15);
-
-                // Vertical Surface Entrance Drainage Channel
                 ctx.fillStyle = "#334155";
                 ctx.fillRect(460, (vHeight / 2) - 40, 80, vHeight / 2);
-                
-                // Iron Manhole Grate Design Pattern
                 ctx.fillStyle = "#64748b";
                 ctx.fillRect(450, (vHeight / 2) - 44, 100, 6);
 
-                // Draw Brick Layout Framework for the Bottom Sewer portion
                 ctx.strokeStyle = "rgba(56, 189, 248, 0.08)";
                 ctx.lineWidth = 2;
                 for (let r = vHeight / 2; r < vHeight; r += 30) {
                     ctx.beginPath();
-                    ctx.moveTo(0, r); ctx.lineTo(vWidth, r);
+                    ctx.moveTo(0, r);
+                    ctx.lineTo(vWidth, r);
                     ctx.stroke();
                 }
 
-                // Glowing Neon Brand Text Display Elements
                 ctx.shadowColor = "#f472b6";
                 ctx.shadowBlur = 20;
                 ctx.fillStyle = "#ffffff";
                 ctx.font = "bold 52px 'Space Grotesk', sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("SEWER RAT Escape", vWidth / 2, 160);
-
                 ctx.font = "300 18px 'Inter', sans-serif";
                 ctx.shadowBlur = 0;
                 ctx.fillStyle = "#e2e8f0";
                 ctx.fillText("A High-Quality Parkour Journey", vWidth / 2, 205);
 
-                // Start Game Action Button Layout
                 ctx.fillStyle = "#f472b6";
                 ctx.beginPath();
                 ctx.roundRect(380, 360, 240, 60, 8);
                 ctx.fill();
-
                 ctx.fillStyle = "#0f172a";
                 ctx.font = "bold 22px 'Space Grotesk', sans-serif";
                 ctx.fillText("ENTER SEWERS", vWidth / 2, 397);
-
             } else if (gameState === "LEVEL_SELECT") {
-                // Level select view panel arrangement
                 ctx.fillStyle = "#0f172a";
                 ctx.fillRect(0, 0, vWidth, vHeight);
-
-                // Decorative Ambient Pipe
                 ctx.fillStyle = "#1e293b";
                 ctx.fillRect(0, 440, vWidth, 40);
-
                 ctx.fillStyle = "#ffffff";
                 ctx.font = "bold 38px 'Space Grotesk', sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("SELECT MISSIONS", vWidth / 2, 160);
-
                 ctx.font = "16px 'Inter', sans-serif";
                 ctx.fillStyle = "#94a3b8";
                 ctx.fillText("Choose a floor to initiate navigation sequence", vWidth / 2, 200);
 
-                // Draw Button Interfaces loops
                 levelButtons.forEach(btn => {
                     ctx.fillStyle = "rgba(56, 189, 248, 0.15)";
                     ctx.strokeStyle = "#38bdf8";
@@ -1032,168 +994,123 @@
                     ctx.roundRect(btn.x, btn.y, btn.w, btn.h, 6);
                     ctx.fill();
                     ctx.stroke();
-
                     ctx.fillStyle = "#ffffff";
                     ctx.font = "bold 18px 'Space Grotesk', sans-serif";
-                    ctx.fillText(btn.label, btn.x + (btn.w / 2), btn.y + 32);
+                    ctx.fillText(btn.label, btn.x + btn.w/2, btn.y + btn.h/2 + 6);
                 });
-
-            } else if (gameState === "PLAYING" || gameState === "WIN" || gameState === "GAME_OVER") {
-                // Active gameplay environment artwork
-                ctx.fillStyle = "#090d16";
+            } else if (gameState === "PLAYING") {
+                ctx.fillStyle = "#111827";
                 ctx.fillRect(0, 0, vWidth, vHeight);
+                ctx.fillStyle = "#1e293b";
+                ctx.fillRect(0, vHeight - 45, vWidth, 45);
+                ctx.fillStyle = "#0284c7";
+                ctx.fillRect(0, vHeight - 20, vWidth, 20);
 
-                // Structural Sewer Wall Background Details
-                ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
-                ctx.lineWidth = 1;
-                for (let x = 0; x < vWidth; x += 40) {
-                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, vHeight); ctx.stroke();
-                }
-                for (let y = 0; y < vHeight; y += 25) {
-                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(vWidth, y); ctx.stroke();
-                }
-
-                // Render Dripping Water Particles
-                ctx.fillStyle = "rgba(56, 189, 248, 0.4)";
-                drops.forEach(d => {
-                    ctx.fillRect(d.x, d.y, 1.5, d.len);
-                    d.y += d.speed;
-                    if (d.y > vHeight) { d.y = -10; d.x = Math.random() * vWidth; }
-                });
-
-                // Display Active Level Data Array Object
                 const lvl = levels[currentLevel];
+                ctx.fillStyle = "#22c55e";
+                ctx.fillRect(lvl.goal.x, lvl.goal.y, lvl.goal.w, lvl.goal.h);
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 12px 'Space Grotesk', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("SURFACE", lvl.goal.x + lvl.goal.w/2, lvl.goal.y + lvl.goal.h/2 + 4);
 
-                // Render exit ladder portal structure
-                ctx.strokeStyle = "#fbbf24";
-                ctx.lineWidth = 5;
-                const g = lvl.goal;
-                for (let ly = g.y; ly < g.y + g.h; ly += 10) {
-                    ctx.beginPath(); ctx.moveTo(g.x + 8, ly); ctx.lineTo(g.x + g.w - 8, ly); ctx.stroke();
-                }
-                ctx.beginPath(); ctx.moveTo(g.x + 8, g.y); ctx.lineTo(g.x + 8, g.y + g.h); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(g.x + g.w - 8, g.y); ctx.lineTo(g.x + g.w - 8, g.y + g.h); ctx.stroke();
-
-                // Draw Level Platforms (Iron Cylinder Pipes)
                 lvl.platforms.forEach(p => {
                     ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.roundRect(p.x, p.y, p.w, p.h, 6);
-                    ctx.fill();
-
-                    // Dimensional Highlight overlays
-                    ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
-                    ctx.fillRect(p.x, p.y, p.w, 6);
-                    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
-                    ctx.fillRect(p.x, p.y + p.h - 6, p.w, 6);
+                    ctx.fillRect(p.x, p.y, p.w, p.h);
+                    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(p.x, p.y, p.w, p.h);
                 });
 
-                // Hazardous Bottom Slime Layer Fluid Animation
-                const slimeOffset = Math.sin(Date.now() * 0.004) * 4;
-                ctx.fillStyle = "#22c55e";
-                ctx.fillRect(0, vHeight - 35 + slimeOffset, vWidth, 45);
-                ctx.fillStyle = "rgba(34, 197, 94, 0.5)";
-                ctx.fillRect(0, vHeight - 42 - slimeOffset, vWidth, 10);
+                ctx.fillStyle = "#f472b6";
+                ctx.fillRect(player.x, player.y, player.width, player.height);
+                ctx.fillStyle = "#000000";
+                const eyeX = player.facingRight ? player.x + player.width - 6 : player.x + 4;
+                ctx.fillRect(eyeX, player.y + 3, 3, 3);
 
-                // Draw Rat Character Model
-                ctx.save();
-                ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
-                if (!player.facingRight) ctx.scale(-1, 1);
+                ctx.fillStyle = "rgba(56, 189, 248, 0.4)";
+                drops.forEach(d => {
+                    d.y += d.speed;
+                    if (d.y > vHeight - 45) { d.y = 0; d.x = Math.random() * vWidth; }
+                    ctx.fillRect(d.x, d.y, 1.5, d.len);
+                });
 
-                // Rat Torso Body block
-                ctx.fillStyle = "#64748b"; // Sleek gray rat skin
+                ctx.fillStyle = "rgba(255,255,255,0.7)";
+                ctx.font = "bold 16px 'Space Grotesk', sans-serif";
+                ctx.textAlign = "left";
+                ctx.fillText(lvl.startText, 40, 40);
+            } else if (gameState === "WIN") {
+                ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+                ctx.fillRect(0, 0, vWidth, vHeight);
+                ctx.fillStyle = "#4ade80";
+                ctx.font = "bold 45px 'Space Grotesk', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("FLOOR ESCAPED!", vWidth / 2, 220);
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "16px 'Inter', sans-serif";
+                ctx.fillText("The sewer rat successfully navigated upwards.", vWidth / 2, 265);
+
+                ctx.fillStyle = "#38bdf8";
                 ctx.beginPath();
-                ctx.roundRect(-player.width / 2, -player.height / 2, player.width, player.height, 4);
+                ctx.roundRect(400, 340, 200, 50, 6);
                 ctx.fill();
-
-                // Snout/Nose
-                ctx.fillStyle = "#f472b6";
-                ctx.fillRect(player.width / 2, -2, 3, 4);
-
-                // Alert Crimson Eye
+                ctx.fillStyle = "#0f172a";
+                ctx.font = "bold 18px 'Space Grotesk', sans-serif";
+                ctx.fillText("MISSION SELECT", vWidth / 2, 372);
+            } else if (gameState === "GAME_OVER") {
+                ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
+                ctx.fillRect(0, 0, vWidth, vHeight);
                 ctx.fillStyle = "#ef4444";
-                ctx.fillRect(player.width / 2 - 8, -5, 3, 3);
+                ctx.font = "bold 45px 'Space Grotesk', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("RAT DROWNED", vWidth / 2, 220);
+                ctx.fillStyle = "#94a3b8";
+                ctx.font = "16px 'Inter', sans-serif";
+                ctx.fillText("The toxic sludge consumed your entity.", vWidth / 2, 265);
 
-                // Rounded Ears
-                ctx.fillStyle = "#475569";
-                ctx.beginPath(); ctx.arc(-2, -player.height / 2, 5, 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = "#f472b6";
-                ctx.beginPath(); ctx.arc(-2, -player.height / 2, 2.5, 0, Math.PI * 2); ctx.fill();
-
-                // Extended Tail Wire structure
-                ctx.strokeStyle = "#f472b6";
-                ctx.lineWidth = 2.5;
                 ctx.beginPath();
-                ctx.moveTo(-player.width / 2, 2);
-                ctx.quadraticCurveTo(-player.width / 2 - 12, Math.sin(Date.now() * 0.01) * 4, -player.width / 2 - 16, -2);
-                ctx.stroke();
-
-                ctx.restore();
-
-                // Draw Screen Status Notifications (Wins / Reset screens)
-                if (gameState === "WIN") {
-                    ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-                    ctx.fillRect(0, 0, vWidth, vHeight);
-
-                    ctx.fillStyle = "#38bdf8";
-                    ctx.font = "bold 42px 'Space Grotesk', sans-serif";
-                    ctx.fillText("FLOOR CLEARED!", vWidth / 2, 220);
-
-                    ctx.fillStyle = "#ffffff";
-                    ctx.font = "bold 20px 'Space Grotesk', sans-serif";
-                    ctx.beginPath(); ctx.roundRect(400, 340, 200, 50, 6); ctx.fill();
-                    ctx.fillStyle = "#0f172a";
-                    ctx.fillText("CONTINUE", vWidth / 2, 372);
-                } else if (gameState === "GAME_OVER") {
-                    ctx.fillStyle = "rgba(220, 38, 38, 0.25)";
-                    ctx.fillRect(0, 0, vWidth, vHeight);
-
-                    ctx.fillStyle = "#ef4444";
-                    ctx.font = "bold 46px 'Space Grotesk', sans-serif";
-                    ctx.fillText("RAT TOXIFIED", vWidth / 2, 220);
-
-                    ctx.fillStyle = "#ffffff";
-                    ctx.font = "bold 20px 'Space Grotesk', sans-serif";
-                    ctx.beginPath(); ctx.roundRect(400, 340, 200, 50, 6); ctx.fill();
-                    ctx.fillStyle = "#0f172a";
-                    ctx.fillText("RETRY FLIGHT", vWidth / 2, 372);
-                }
+                ctx.roundRect(400, 340, 200, 50, 6);
+                ctx.fill();
+                ctx.fillStyle = "#0f172a";
+                ctx.font = "bold 18px 'Space Grotesk', sans-serif";
+                ctx.fillText("RETRY ENTRANCE", vWidth / 2, 372);
             }
         }
     </script>
 
-<script type="module">
-  // 1. Import Firebase Core, Analytics, Auth, AND Firestore
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
-  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+    <script type="module">
+        // 1. Import Firebase Core, Analytics, Auth, AND Firestore
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
-  // Your exact Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDMG0JPo0IB8Voc1Y4Qhk0XUGQzvGPtnyA",
-    authDomain: "backend-92af8.firebaseapp.com",
-    projectId: "backend-92af8",
-    storageBucket: "backend-92af8.firebasestorage.app",
-    messagingSenderId: "358664613828",
-    appId: "1:358664613828:web:2f46342863dd3bfbcfbe91",
-    measurementId: "G-G0RC26J94Z"
-  };
+        // Your exact Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMG0JPo0IB8Voc1Y4Qhk0XUGQzvGPtnyA",
+            authDomain: "backend-92af8.firebaseapp.com",
+            projectId: "backend-92af8",
+            storageBucket: "backend-92af8.firebasestorage.app",
+            messagingSenderId: "358664613828",
+            appId: "1:358664613828:web:2f46342863dd3bfbcfbe91",
+            measurementId: "G-G0RC26J94Z"
+        };
 
-  // 2. Initialize Everything
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const auth = getAuth(app);
-  const db = getFirestore(app); // THIS TURNS ON THE MEMORY!
+        // 2. Initialize Everything
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app); 
 
-  // 3. Invisible Login
-  signInAnonymously(auth)
-    .then(() => {
-      console.log("SUCCESS: User is being silently tracked! 🐀");
-    })
-    .catch((error) => {
-      console.error("Auth error:", error);
-    });
-</script>
+        // 3. Invisible Login
+        signInAnonymously(auth)
+            .then(() => {
+                console.log("SUCCESS: User is being silently tracked! 🐀");
+            })
+            .catch((error) => {
+                console.error("Auth error:", error);
+            });
+    </script>
 </body>
 </html>
