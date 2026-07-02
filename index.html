@@ -1195,7 +1195,7 @@
                 });
             }
 
-            // --- ADMIN ONLY: MONITOR ALL RECENT CHAT SESSIONS ---
+           // --- ADMIN ONLY: MONITOR ALL RECENT CHAT SESSIONS (24-HOUR AUTO-CLEAN) ---
             function loadAdminUserList() {
                 // Listens to a master 'active_chats' directory mapping individual users who typed
                 onSnapshot(collection(db, "active_chats"), (snapshot) => {
@@ -1203,79 +1203,59 @@
                     if(!listContainer) return;
                     listContainer.innerHTML = "";
 
+                    // 1. Calculate the exact time 24 hours ago
+                    const now = new Date();
+                    const cutoffTime = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+
                     snapshot.forEach((userDoc) => {
                         const uId = userDoc.id;
+                        const userData = userDoc.data();
                         
-                        const sessionBtn = document.createElement('div');
-                        sessionBtn.className = "interactive"; // add custom cursor hover
-                        sessionBtn.style.padding = "10px";
-                        sessionBtn.style.background = activeChatUserId === uId ? "rgba(244,114,182,0.15)" : "rgba(255,255,255,0.03)";
-                        sessionBtn.style.border = activeChatUserId === uId ? "1px solid #f472b6" : "1px solid rgba(255,255,255,0.1)";
-                        sessionBtn.style.borderRadius = "6px";
-                        sessionBtn.style.fontSize = "0.85rem";
-                        sessionBtn.style.color = "#fff";
-                        sessionBtn.style.fontFamily = "'Space Grotesk', sans-serif";
-                        sessionBtn.innerText = `📦 Session: ${uId.substring(0, 8)}`;
+                        // 2. Convert Firebase timestamp to a normal JavaScript Date object
+                        // (If it's null because it's actively sending, just default to now)
+                        let lastActive = new Date(); 
+                        if (userData.lastActive) {
+                            lastActive = userData.lastActive.toDate();
+                        }
 
-                        sessionBtn.addEventListener('click', () => {
-                            activeChatUserId = uId;
-                            loadAdminUserList(); // Redraw borders
-                            listenToChat(uId); // Swap main screen to this thread
-                        });
-                        
-                        // Re-trigger custom cursor hook for new elements
-                        sessionBtn.addEventListener('mouseenter', () => {
-                            document.querySelector('.cursor-outline').style.transform = 'translate(-50%, -50%) scale(1.5)';
-                            document.querySelector('.cursor-outline').style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
-                            document.querySelector('.cursor-outline').style.borderColor = 'transparent';
-                            document.querySelector('.cursor-dot').style.transform = 'translate(-50%, -50%) scale(0.5)';
-                        });
-                        sessionBtn.addEventListener('mouseleave', () => {
-                            document.querySelector('.cursor-outline').style.transform = 'translate(-50%, -50%) scale(1)';
-                            document.querySelector('.cursor-outline').style.backgroundColor = 'transparent';
-                            document.querySelector('.cursor-outline').style.borderColor = 'var(--accent-1)';
-                            document.querySelector('.cursor-dot').style.transform = 'translate(-50%, -50%) scale(1)';
-                        });
+                        // 3. THE FILTER: Only draw the button if the user was active in the last 24 hours
+                        if (lastActive > cutoffTime) {
+                            const sessionBtn = document.createElement('div');
+                            sessionBtn.className = "interactive"; 
+                            sessionBtn.style.padding = "10px";
+                            sessionBtn.style.background = activeChatUserId === uId ? "rgba(244,114,182,0.15)" : "rgba(255,255,255,0.03)";
+                            sessionBtn.style.border = activeChatUserId === uId ? "1px solid #f472b6" : "1px solid rgba(255,255,255,0.1)";
+                            sessionBtn.style.borderRadius = "6px";
+                            sessionBtn.style.fontSize = "0.85rem";
+                            sessionBtn.style.color = "#fff";
+                            sessionBtn.style.fontFamily = "'Space Grotesk', sans-serif";
+                            
+                            // Format a nice timestamp to show the admin when they last messaged
+                            const timeString = lastActive.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                            sessionBtn.innerHTML = `📦 Session: ${uId.substring(0, 8)}<br><span style="font-size:0.7rem; color:#94a3b8;">Last active: ${timeString}</span>`;
 
-                        listContainer.appendChild(sessionBtn);
+                            sessionBtn.addEventListener('click', () => {
+                                activeChatUserId = uId;
+                                loadAdminUserList(); // Redraw borders
+                                listenToChat(uId); // Swap main screen to this thread
+                            });
+                            
+                            // Re-trigger custom cursor hook for new elements
+                            sessionBtn.addEventListener('mouseenter', () => {
+                                document.querySelector('.cursor-outline').style.transform = 'translate(-50%, -50%) scale(1.5)';
+                                document.querySelector('.cursor-outline').style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
+                                document.querySelector('.cursor-outline').style.borderColor = 'transparent';
+                                document.querySelector('.cursor-dot').style.transform = 'translate(-50%, -50%) scale(0.5)';
+                            });
+                            sessionBtn.addEventListener('mouseleave', () => {
+                                document.querySelector('.cursor-outline').style.transform = 'translate(-50%, -50%) scale(1)';
+                                document.querySelector('.cursor-outline').style.backgroundColor = 'transparent';
+                                document.querySelector('.cursor-outline').style.borderColor = 'var(--accent-1)';
+                                document.querySelector('.cursor-dot').style.transform = 'translate(-50%, -50%) scale(1)';
+                            });
+
+                            listContainer.appendChild(sessionBtn);
+                        }
                     });
                 });
             }
-
-            // --- TRANSMIT MESSAGES TO FIRESTORE ---
-            async function sendMessage() {
-                const text = messageInput.value.trim();
-                if (text === "" || !activeChatUserId) return;
-
-                messageInput.value = "";
-
-                try {
-                    // 1. Write the message into the user's explicit folder thread
-                    await addDoc(collection(db, "chats", activeChatUserId, "messages"), {
-                        text: text,
-                        sender: isAdmin ? "admin" : "user",
-                        timestamp: serverTimestamp()
-                    });
-
-                    // 2. Register/Update the session trace in the index so the admin panel can track it
-                    if (!isAdmin) {
-                        await setDoc(doc(db, "active_chats", activeChatUserId), {
-                            lastActive: serverTimestamp()
-                        });
-                    }
-                } catch (error) {
-                    console.error("Transmission error:", error);
-                }
-            }
-
-            // Begin tracing standard user thread stream immediately upon authentication
-            listenToChat(activeChatUserId);
-
-            sendBtn.addEventListener('click', sendMessage);
-            messageInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessage();
-            });
-        }
-    </script>
-</body>
-</html>
