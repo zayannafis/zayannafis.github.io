@@ -1092,7 +1092,7 @@
         }
     </script>
 
-    <script type="module">
+   <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
@@ -1195,7 +1195,7 @@
                 });
             }
 
-           // --- ADMIN ONLY: MONITOR ALL RECENT CHAT SESSIONS (24-HOUR AUTO-CLEAN) ---
+            // --- ADMIN ONLY: MONITOR ALL RECENT CHAT SESSIONS (24-HOUR AUTO-CLEAN) ---
             function loadAdminUserList() {
                 // Listens to a master 'active_chats' directory mapping individual users who typed
                 onSnapshot(collection(db, "active_chats"), (snapshot) => {
@@ -1212,7 +1212,6 @@
                         const userData = userDoc.data();
                         
                         // 2. Convert Firebase timestamp to a normal JavaScript Date object
-                        // (If it's null because it's actively sending, just default to now)
                         let lastActive = new Date(); 
                         if (userData.lastActive) {
                             lastActive = userData.lastActive.toDate();
@@ -1259,3 +1258,39 @@
                     });
                 });
             }
+
+            // --- TRANSMIT MESSAGES TO FIRESTORE ---
+            async function sendMessage() {
+                const text = messageInput.value.trim();
+                if (text === "" || !activeChatUserId) return;
+
+                messageInput.value = "";
+
+                try {
+                    // 1. Write the message into the user's explicit folder thread
+                    await addDoc(collection(db, "chats", activeChatUserId, "messages"), {
+                        text: text,
+                        sender: isAdmin ? "admin" : "user",
+                        timestamp: serverTimestamp()
+                    });
+
+                    // 2. Register/Update the session trace in the index so the admin panel can track it
+                    if (!isAdmin) {
+                        await setDoc(doc(db, "active_chats", activeChatUserId), {
+                            lastActive: serverTimestamp()
+                        });
+                    }
+                } catch (error) {
+                    console.error("Transmission error:", error);
+                }
+            }
+
+            // Begin tracing standard user thread stream immediately upon authentication
+            listenToChat(activeChatUserId);
+
+            sendBtn.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+        }
+    </script>
