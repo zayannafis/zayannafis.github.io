@@ -1007,5 +1007,37 @@
             }
         }
     </script>
+
+<script type="module">
+  // 1. Import Firebase App, Analytics, AND Authentication
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+  // Your exact web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDMG0JPo0IB8Voc1Y4Qhk0XUGQzvGPtnyA",
+    authDomain: "backend-92af8.firebaseapp.com",
+    projectId: "backend-92af8",
+    storageBucket: "backend-92af8.firebasestorage.app",
+    messagingSenderId: "358664613828",
+    appId: "1:358664613828:web:2f46342863dd3bfbcfbe91",
+    measurementId: "G-G0RC26J94Z"
+  };
+
+  // 2. Initialize Firebase & Analytics
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  
+  // 3. Initialize Auth & Run the Invisible Login
+  const auth = getAuth(app);
+  signInAnonymously(auth)
+    .then(() => {
+      console.log("SUCCESS: User is being silently tracked! 🐀");
+    })
+    .catch((error) => {
+      console.error("Auth error:", error);
+    });
+</script>
 </body>
 </html>
