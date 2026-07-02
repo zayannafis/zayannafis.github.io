@@ -1080,11 +1080,11 @@
     </script>
 
     <script type="module">
-        // 1. Import Firebase Core, Analytics, Auth, AND Firestore
+        // 1. Import Everything we need (Added serverTimestamp and onSnapshot for live chat)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
         // Your exact Firebase config
         const firebaseConfig = {
@@ -1103,14 +1103,79 @@
         const auth = getAuth(app);
         const db = getFirestore(app); 
 
-        // 3. Invisible Login
+        // 3. Invisible Login -> Then Start Chat
         signInAnonymously(auth)
             .then(() => {
                 console.log("SUCCESS: User is being silently tracked! 🐀");
+                setupChat(); // Boot up the chat engine only after we know their ID
             })
             .catch((error) => {
                 console.error("Auth error:", error);
             });
+
+        // 4. THE CHAT ENGINE
+        function setupChat() {
+            const messageInput = document.getElementById('message-input');
+            const sendBtn = document.getElementById('send-btn');
+            const chatBox = document.getElementById('chat-box');
+
+            // A. Listen to the database in real-time
+            const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
+            onSnapshot(q, (snapshot) => {
+                // Clear out the chat box (keeps the default system message)
+                chatBox.innerHTML = `
+                    <div class="message received">
+                        <p>System Online. Secure connection established. Send a message to begin.</p>
+                    </div>
+                `;
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (!data.text) return; // Skip if empty
+
+                    // Check if the current user sent it, or if Admin sent it
+                    const isMe = data.uid === auth.currentUser.uid;
+                    const messageClass = isMe ? "sent" : "received";
+
+                    // Build the chat bubble
+                    const bubble = document.createElement("div");
+                    bubble.className = `message ${messageClass}`;
+                    bubble.innerHTML = `<p>${data.text}</p>`;
+                    
+                    chatBox.appendChild(bubble);
+                });
+
+                // Auto-scroll to the newest message
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+
+            // B. Function to shoot messages to the database
+            async function sendMessage() {
+                const text = messageInput.value.trim();
+                if (text === "") return; // Don't send blanks
+
+                messageInput.value = ""; // Clear the input box instantly
+
+                try {
+                    await addDoc(collection(db, "messages"), {
+                        text: text,
+                        uid: auth.currentUser.uid, // Tag it with their anonymous ID
+                        timestamp: serverTimestamp() // Let Firebase handle exact timing
+                    });
+                    console.log("Message blasted into the void! 🚀");
+                } catch (error) {
+                    console.error("Failed to send message:", error);
+                }
+            }
+
+            // C. Trigger send on Click or Enter Key
+            sendBtn.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
     </script>
 </body>
 </html>
