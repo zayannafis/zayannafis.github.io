@@ -1009,12 +1009,13 @@
     </script>
 
 <script type="module">
-  // 1. Import Firebase App, Analytics, AND Authentication
+  // 1. Import Firebase Core, Analytics, Auth, AND Firestore
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
   import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
-  // Your exact web app's Firebase configuration
+  // Your exact Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyDMG0JPo0IB8Voc1Y4Qhk0XUGQzvGPtnyA",
     authDomain: "backend-92af8.firebaseapp.com",
@@ -1025,12 +1026,13 @@
     measurementId: "G-G0RC26J94Z"
   };
 
-  // 2. Initialize Firebase & Analytics
+  // 2. Initialize Everything
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
-  
-  // 3. Initialize Auth & Run the Invisible Login
   const auth = getAuth(app);
+  const db = getFirestore(app); // THIS TURNS ON THE MEMORY!
+
+  // 3. Invisible Login
   signInAnonymously(auth)
     .then(() => {
       console.log("SUCCESS: User is being silently tracked! 🐀");
