@@ -1079,14 +1079,12 @@
         }
     </script>
 
-    <script type="module">
-        // 1. Import Everything we need (Added serverTimestamp and onSnapshot for live chat)
+   <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
-        // Your exact Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyDMG0JPo0IB8Voc1Y4Qhk0XUGQzvGPtnyA",
             authDomain: "backend-92af8.firebaseapp.com",
@@ -1097,32 +1095,55 @@
             measurementId: "G-G0RC26J94Z"
         };
 
-        // 2. Initialize Everything
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getFirestore(app); 
 
-        // 3. Invisible Login -> Then Start Chat
         signInAnonymously(auth)
             .then(() => {
                 console.log("SUCCESS: User is being silently tracked! 🐀");
-                setupChat(); // Boot up the chat engine only after we know their ID
+                setupChat(); 
             })
             .catch((error) => {
                 console.error("Auth error:", error);
             });
 
-        // 4. THE CHAT ENGINE
+        // 4. THE CHAT ENGINE (NOW WITH ADMIN OVERRIDE)
         function setupChat() {
             const messageInput = document.getElementById('message-input');
             const sendBtn = document.getElementById('send-btn');
             const chatBox = document.getElementById('chat-box');
+            
+            // Grab the UI elements for the secret trigger
+            const secretTrigger = document.querySelector('.contact-avatar'); // The "Z" circle
+            const statusText = document.querySelector('.contact-status');
+
+            let isAdmin = false; // By default, everyone is a normal rat
+
+            // THE SECRET LOGIN DOOR
+            secretTrigger.addEventListener('click', () => {
+                if (isAdmin) {
+                    alert("Admin mode is already engaged.");
+                    return;
+                }
+                
+                const passcode = prompt("SECURITY OVERRIDE:\nEnter Admin Passcode:");
+                
+                if (passcode === "chittypoo99") {
+                    isAdmin = true;
+                    statusText.innerText = "ADMIN MODE ACTIVE";
+                    statusText.style.color = "#f472b6"; // Turn text pink
+                    secretTrigger.style.background = "#f472b6"; // Turn avatar pink
+                    alert("Access Granted. You are now speaking as Admin.");
+                } else if (passcode !== null) {
+                    alert("Access Denied. Nice try.");
+                }
+            });
 
             // A. Listen to the database in real-time
             const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
             onSnapshot(q, (snapshot) => {
-                // Clear out the chat box (keeps the default system message)
                 chatBox.innerHTML = `
                     <div class="message received">
                         <p>System Online. Secure connection established. Send a message to begin.</p>
@@ -1131,38 +1152,57 @@
 
                 snapshot.forEach((doc) => {
                     const data = doc.data();
-                    if (!data.text) return; // Skip if empty
+                    if (!data.text) return; 
 
-                    // Check if the current user sent it, or if Admin sent it
-                    const isMe = data.uid === auth.currentUser.uid;
+                    let isMe = false;
+                    
+                    // Logic to figure out who is who
+                    if (isAdmin) {
+                        isMe = (data.uid === "admin"); // If I am admin, my messages are "admin"
+                    } else {
+                        isMe = (data.uid === auth.currentUser.uid); // Normal users just see their own messages
+                    }
+
                     const messageClass = isMe ? "sent" : "received";
+                    let senderLabel = "";
 
-                    // Build the chat bubble
+                    // If a normal user is looking at a message sent by the admin, label it
+                    if (!isMe && data.uid === "admin") {
+                        senderLabel = `<strong style="color: #38bdf8; font-size: 0.75rem; display: block; margin-bottom: 4px;">Z. Nafis (Admin)</strong>`;
+                    } else if (!isMe && data.uid !== "admin") {
+                        // In case other random users are on the site chatting at the same time
+                        senderLabel = `<strong style="color: #94a3b8; font-size: 0.75rem; display: block; margin-bottom: 4px;">Unknown Entity</strong>`;
+                    }
+
                     const bubble = document.createElement("div");
                     bubble.className = `message ${messageClass}`;
-                    bubble.innerHTML = `<p>${data.text}</p>`;
                     
+                    // Make admin messages pop a bit more for normal users
+                    if (data.uid === "admin" && !isMe) {
+                        bubble.style.border = "1px solid #38bdf8";
+                    }
+
+                    bubble.innerHTML = `${senderLabel}<p>${data.text}</p>`;
                     chatBox.appendChild(bubble);
                 });
 
-                // Auto-scroll to the newest message
                 chatBox.scrollTop = chatBox.scrollHeight;
             });
 
             // B. Function to shoot messages to the database
             async function sendMessage() {
                 const text = messageInput.value.trim();
-                if (text === "") return; // Don't send blanks
+                if (text === "") return; 
 
-                messageInput.value = ""; // Clear the input box instantly
+                messageInput.value = ""; 
 
                 try {
                     await addDoc(collection(db, "messages"), {
                         text: text,
-                        uid: auth.currentUser.uid, // Tag it with their anonymous ID
-                        timestamp: serverTimestamp() // Let Firebase handle exact timing
+                        // If Admin is logged in, tag the message as admin. Otherwise, use their anonymous ID.
+                        uid: isAdmin ? "admin" : auth.currentUser.uid, 
+                        timestamp: serverTimestamp() 
                     });
-                    console.log("Message blasted into the void! 🚀");
                 } catch (error) {
                     console.error("Failed to send message:", error);
                 }
