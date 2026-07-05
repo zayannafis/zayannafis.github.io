@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Z. Nafis | Domain Owner</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
@@ -261,7 +261,6 @@
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
             color: var(--bg-color);
-            cursor: none;
         }
 
         .contact-name {
@@ -353,22 +352,54 @@
             box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
         }
 
+        /* --- MOBILE RESPONSIVE RULES --- */
         @media (max-width: 768px) {
+            nav {
+                padding: 1rem 5%;
+                flex-direction: column;
+                gap: 1rem;
+            }
             .nav-links {
-                gap: 1.5rem;
+                gap: 1rem;
                 flex-wrap: wrap;
                 justify-content: center;
             }
             .nav-btn {
-                font-size: 0.8rem;
+                font-size: 0.85rem;
+            }
+            main {
+                padding-top: 140px; 
+            }
+            .hero-title {
+                font-size: clamp(2.5rem, 12vw, 4rem) !important;
             }
             .chat-container {
                 flex-direction: column;
+                height: 65vh; /* Fits cleanly on phone screens */
+                min-height: 450px;
             }
             .chat-sidebar {
                 width: 100%;
                 border-right: none;
                 border-bottom: 1px solid var(--glass-border);
+                padding: 0.5rem;
+                max-height: 85px; /* Keeps it compact on top */
+            }
+            .chat-input-area input {
+                font-size: 16px; /* 16px explicitly prevents iPhone auto-zoom */
+            }
+            .chat-input-area button {
+                padding: 0 1rem;
+            }
+        }
+
+        /* --- TOUCH DEVICE OPTIMIZATION (KILL CUSTOM CURSOR) --- */
+        @media (hover: none) and (pointer: coarse) {
+            * {
+                cursor: auto !important; /* Restore normal tapping cursor */
+            }
+            .cursor-dot, .cursor-outline {
+                display: none !important; /* Hide custom cursor dots entirely */
             }
         }
     </style>
@@ -396,7 +427,7 @@
 
         <section id="messages" class="section">
             <div class="badge">Secure Comm Link</div>
-            <h2 class="hero-title" style="font-size: 4rem;">Direct <span>Comms</span></h2>
+            <h2 class="hero-title">Direct <span>Comms</span></h2>
             <div class="chat-container">
                 <div class="chat-sidebar">
                     <div id="sidebar-content">
@@ -425,23 +456,23 @@
 
         <section id="mystery" class="section">
             <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Encryption Override v1.0</div>
-            <h2 class="hero-title" style="font-size: 4rem;">System<br><span style="-webkit-text-stroke: 1px #f472b6;">Decryption</span></h2>
+            <h2 class="hero-title">System<br><span style="-webkit-text-stroke: 1px #f472b6;">Decryption</span></h2>
             
-            <div id="cyber-puzzle-container" style="background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); border-radius: 8px; padding: 30px; text-align: center; margin-bottom: 20px; max-width: 600px; margin: 0 auto; backdrop-filter: blur(12px);">
-                <h3 style="color: #38bdf8; font-family: 'Space Grotesk', sans-serif; margin-bottom: 5px; font-size: 1.5rem; text-transform: uppercase;">Node Memory Matrix</h3>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 25px;">Replicate the sequence to decrypt the nodes. Difficulty increases per level.</p>
+            <div id="cyber-puzzle-container" style="background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px; max-width: 600px; margin: 0 auto; backdrop-filter: blur(12px);">
+                <h3 style="color: #38bdf8; font-family: 'Space Grotesk', sans-serif; margin-bottom: 5px; font-size: 1.2rem; text-transform: uppercase;">Node Memory Matrix</h3>
+                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">Replicate the sequence to decrypt the nodes.</p>
         
-                <div style="display: flex; justify-content: space-between; align-items: center; color: #fff; font-family: 'Space Grotesk', sans-serif; margin-bottom: 20px; font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; color: #fff; font-family: 'Space Grotesk', sans-serif; margin-bottom: 20px; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
                     <span id="matrix-level">Level: 1</span>
                     <span id="matrix-score" style="color: #f472b6;">Score: 0</span>
                     <span id="matrix-highscore" style="color: #10b981;">Best: 0</span>
                 </div>
         
-                <div id="matrix-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 300px; margin: 0 auto; pointer-events: none;">
+                <div id="matrix-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 250px; margin: 0 auto; pointer-events: none;">
                     </div>
         
-                <p id="matrix-status" style="color: #38bdf8; margin-top: 25px; height: 24px; font-size: 1rem; font-family: 'Space Grotesk', sans-serif;">System Ready.</p>
-                <button id="matrix-start-btn" class="interactive" style="background: rgba(56,189,248,0.15); border: 1px solid #38bdf8; color: #38bdf8; padding: 12px 30px; border-radius: 6px; font-family: 'Space Grotesk', sans-serif; margin-top: 15px; font-size: 1rem; transition: all 0.2s;">INITIALIZE</button>
+                <p id="matrix-status" style="color: #38bdf8; margin-top: 20px; height: 24px; font-size: 0.9rem; font-family: 'Space Grotesk', sans-serif;">System Ready.</p>
+                <button id="matrix-start-btn" class="interactive" style="background: rgba(56,189,248,0.15); border: 1px solid #38bdf8; color: #38bdf8; padding: 10px 20px; border-radius: 6px; font-family: 'Space Grotesk', sans-serif; margin-top: 15px; font-size: 0.9rem; transition: all 0.2s;">INITIALIZE</button>
             </div>
         </section>
     </main>
@@ -512,35 +543,42 @@
         const cursorOutline = document.querySelector('.cursor-outline');
 
         window.addEventListener('mousemove', (e) => {
-            const posX = e.clientX;
-            const posY = e.clientY;
-            mouseX = (e.clientX - windowHalfX);
-            mouseY = (e.clientY - windowHalfY);
-            cursorDot.style.left = `${posX}px`;
-            cursorDot.style.top = `${posY}px`;
-            cursorOutline.animate({left: `${posX}px`, top: `${posY}px` }, { duration: 200, fill: "forwards" });
+            // Only move custom cursor if it's visible (i.e. not hidden by mobile media query)
+            if (window.getComputedStyle(cursorDot).display !== 'none') {
+                const posX = e.clientX;
+                const posY = e.clientY;
+                mouseX = (e.clientX - windowHalfX);
+                mouseY = (e.clientY - windowHalfY);
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+                cursorOutline.animate({left: `${posX}px`, top: `${posY}px` }, { duration: 200, fill: "forwards" });
+            }
         });
 
         function setupInteractives() {
             const interactives = document.querySelectorAll('button, a, .tilt-card, .interactive');
             interactives.forEach(el => {
                 el.addEventListener('mouseenter', () => {
-                    cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
-                    cursorOutline.style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
-                    cursorOutline.style.borderColor = 'transparent';
-                    cursorDot.style.transform = 'translate(-50%, -50%) scale(0.5)';
+                    if (window.getComputedStyle(cursorOutline).display !== 'none') {
+                        cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                        cursorOutline.style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
+                        cursorOutline.style.borderColor = 'transparent';
+                        cursorDot.style.transform = 'translate(-50%, -50%) scale(0.5)';
+                    }
                 });
                 el.addEventListener('mouseleave', () => {
-                    cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
-                    cursorOutline.style.backgroundColor = 'transparent';
-                    cursorOutline.style.borderColor = 'var(--accent-1)';
-                    cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                    if (window.getComputedStyle(cursorOutline).display !== 'none') {
+                        cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+                        cursorOutline.style.backgroundColor = 'transparent';
+                        cursorOutline.style.borderColor = 'var(--accent-1)';
+                        cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                    }
                 });
             });
         }
         setupInteractives();
 
-        // --- CYBER PUZZLE LOGIC (NOW WITH LOCAL STORAGE HIGHSCORE) ---
+        // --- CYBER PUZZLE LOGIC (WITH LOCAL STORAGE HIGHSCORE) ---
         const navBtns = document.querySelectorAll('.nav-btn');
         const sections = document.querySelectorAll('.section');
 
@@ -583,16 +621,20 @@
                 
                 // Add hover effect programmatically to maintain cursor hook
                 node.addEventListener('mouseenter', () => {
-                    cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
-                    cursorOutline.style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
-                    cursorOutline.style.borderColor = 'transparent';
-                    cursorDot.style.transform = 'translate(-50%, -50%) scale(0.5)';
+                    if (window.getComputedStyle(cursorOutline).display !== 'none') {
+                        cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                        cursorOutline.style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
+                        cursorOutline.style.borderColor = 'transparent';
+                        cursorDot.style.transform = 'translate(-50%, -50%) scale(0.5)';
+                    }
                 });
                 node.addEventListener('mouseleave', () => {
-                    cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
-                    cursorOutline.style.backgroundColor = 'transparent';
-                    cursorOutline.style.borderColor = 'var(--accent-1)';
-                    cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                    if (window.getComputedStyle(cursorOutline).display !== 'none') {
+                        cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+                        cursorOutline.style.backgroundColor = 'transparent';
+                        cursorOutline.style.borderColor = 'var(--accent-1)';
+                        cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                    }
                 });
 
                 node.addEventListener('click', () => handleNodeClick(i, node));
@@ -850,16 +892,20 @@
                             
                             // Re-trigger custom cursor hook for new elements
                             sessionBtn.addEventListener('mouseenter', () => {
-                                document.querySelector('.cursor-outline').style.transform = 'translate(-50%, -50%) scale(1.5)';
-                                document.querySelector('.cursor-outline').style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
-                                document.querySelector('.cursor-outline').style.borderColor = 'transparent';
-                                document.querySelector('.cursor-dot').style.transform = 'translate(-50%, -50%) scale(0.5)';
+                                if (window.getComputedStyle(document.querySelector('.cursor-outline')).display !== 'none') {
+                                    document.querySelector('.cursor-outline').style.transform = 'translate(-50%, -50%) scale(1.5)';
+                                    document.querySelector('.cursor-outline').style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
+                                    document.querySelector('.cursor-outline').style.borderColor = 'transparent';
+                                    document.querySelector('.cursor-dot').style.transform = 'translate(-50%, -50%) scale(0.5)';
+                                }
                             });
                             sessionBtn.addEventListener('mouseleave', () => {
-                                document.querySelector('.cursor-outline').style.transform = 'translate(-50%, -50%) scale(1)';
-                                document.querySelector('.cursor-outline').style.backgroundColor = 'transparent';
-                                document.querySelector('.cursor-outline').style.borderColor = 'var(--accent-1)';
-                                document.querySelector('.cursor-dot').style.transform = 'translate(-50%, -50%) scale(1)';
+                                if (window.getComputedStyle(document.querySelector('.cursor-outline')).display !== 'none') {
+                                    document.querySelector('.cursor-outline').style.transform = 'translate(-50%, -50%) scale(1)';
+                                    document.querySelector('.cursor-outline').style.backgroundColor = 'transparent';
+                                    document.querySelector('.cursor-outline').style.borderColor = 'var(--accent-1)';
+                                    document.querySelector('.cursor-dot').style.transform = 'translate(-50%, -50%) scale(1)';
+                                }
                             });
 
                             listContainer.appendChild(sessionBtn);
