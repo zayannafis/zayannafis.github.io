@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -160,7 +160,8 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            /* Changed to flex-start so long content can scroll normally */
+            align-items: flex-start; 
         }
 
         .section {
@@ -170,7 +171,8 @@
             animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             width: 90%;
             max-width: 1200px;
-            padding-bottom: 50px;
+            padding-bottom: 100px;
+            margin-top: 50px;
         }
 
         .section.active {
@@ -182,6 +184,17 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        /* --- SCROLL REVEAL ANIMATIONS --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Typography & Badges */
@@ -375,7 +388,7 @@
             }
             .chat-container {
                 flex-direction: column;
-                height: 65vh; /* Fits cleanly on phone screens */
+                height: 65vh; 
                 min-height: 450px;
             }
             .chat-sidebar {
@@ -383,10 +396,10 @@
                 border-right: none;
                 border-bottom: 1px solid var(--glass-border);
                 padding: 0.5rem;
-                max-height: 85px; /* Keeps it compact on top */
+                max-height: 85px; 
             }
             .chat-input-area input {
-                font-size: 16px; /* 16px explicitly prevents iPhone auto-zoom */
+                font-size: 16px; 
             }
             .chat-input-area button {
                 padding: 0 1rem;
@@ -396,10 +409,10 @@
         /* --- TOUCH DEVICE OPTIMIZATION (KILL CUSTOM CURSOR) --- */
         @media (hover: none) and (pointer: coarse) {
             * {
-                cursor: auto !important; /* Restore normal tapping cursor */
+                cursor: auto !important; 
             }
             .cursor-dot, .cursor-outline {
-                display: none !important; /* Hide custom cursor dots entirely */
+                display: none !important; 
             }
         }
     </style>
@@ -420,15 +433,40 @@
 
     <main>
         <section id="home" class="section active">
-            <div class="badge">PROUD OWNER OF A DOMAIN</div>
-            <h1 class="hero-title">SO I<br><span>BOUGHT A DOMAIN</span></h1>
-            <p class="hero-desc">I have literally zero experience in web design or programming, but I saw the domain availability and made a snap decision. Now I'm stuck with this empty site and a strange urge to make it look incredibly cool for no reason. Enjoy the 3D grid.</p>
+            <div class="reveal visible">
+                <div class="badge">PROUD OWNER OF A DOMAIN</div>
+                <h1 class="hero-title">SO I<br><span>BOUGHT A DOMAIN</span></h1>
+                <p class="hero-desc">I have literally zero experience in web design or programming, but I saw the domain availability and made a snap decision. Now I'm stuck with this empty site and a strange urge to make it look incredibly cool for no reason. Enjoy the 3D grid.</p>
+            </div>
+
+            <div style="margin-top: 15vh; padding-bottom: 10vh;">
+                <h3 class="reveal" style="color: #38bdf8; font-size: 2rem; margin-bottom: 2rem; font-family: 'Space Grotesk', sans-serif;">SYSTEM MODULES</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div class="reveal interactive" style="transition-delay: 0.1s; background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); padding: 30px; border-radius: 12px; backdrop-filter: blur(10px);">
+                        <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif;">01. Secure Link</h4>
+                        <p style="color: #94a3b8; font-size: 0.95rem;">Direct end-to-end database connections established. Real-time Firebase routing protocols actively running in the background.</p>
+                    </div>
+                    
+                    <div class="reveal interactive" style="transition-delay: 0.2s; background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); padding: 30px; border-radius: 12px; backdrop-filter: blur(10px);">
+                        <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif;">02. Matrix Decryption</h4>
+                        <p style="color: #94a3b8; font-size: 0.95rem;">High-level cognitive override challenge initialized. Unauthorized access attempts automatically logged and filtered.</p>
+                    </div>
+
+                    <div class="reveal interactive" style="transition-delay: 0.3s; background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); padding: 30px; border-radius: 12px; backdrop-filter: blur(10px);">
+                        <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif;">03. Ghost Protocol</h4>
+                        <p style="color: #94a3b8; font-size: 0.95rem;">Anonymous session authentication verified. Zero-trace digital footprint confirmed across the domain network.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="messages" class="section">
-            <div class="badge">Secure Comm Link</div>
-            <h2 class="hero-title">Direct <span>Comms</span></h2>
-            <div class="chat-container">
+            <div class="reveal visible">
+                <div class="badge">Secure Comm Link</div>
+                <h2 class="hero-title">Direct <span>Comms</span></h2>
+            </div>
+            <div class="chat-container reveal visible" style="transition-delay: 0.2s;">
                 <div class="chat-sidebar">
                     <div id="sidebar-content">
                         <div class="chat-contact">
@@ -455,10 +493,12 @@
         </section>
 
         <section id="mystery" class="section">
-            <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Encryption Override v1.0</div>
-            <h2 class="hero-title">System<br><span style="-webkit-text-stroke: 1px #f472b6;">Decryption</span></h2>
+            <div class="reveal visible">
+                <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Encryption Override v1.0</div>
+                <h2 class="hero-title">System<br><span style="-webkit-text-stroke: 1px #f472b6;">Decryption</span></h2>
+            </div>
             
-            <div id="cyber-puzzle-container" style="background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px; max-width: 600px; margin: 0 auto; backdrop-filter: blur(12px);">
+            <div id="cyber-puzzle-container" class="reveal visible" style="transition-delay: 0.2s; background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px; max-width: 600px; margin: 0 auto; backdrop-filter: blur(12px);">
                 <h3 style="color: #38bdf8; font-family: 'Space Grotesk', sans-serif; margin-bottom: 5px; font-size: 1.2rem; text-transform: uppercase;">Node Memory Matrix</h3>
                 <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">Replicate the sequence to decrypt the nodes.</p>
         
@@ -543,7 +583,6 @@
         const cursorOutline = document.querySelector('.cursor-outline');
 
         window.addEventListener('mousemove', (e) => {
-            // Only move custom cursor if it's visible (i.e. not hidden by mobile media query)
             if (window.getComputedStyle(cursorDot).display !== 'none') {
                 const posX = e.clientX;
                 const posY = e.clientY;
@@ -578,7 +617,25 @@
         }
         setupInteractives();
 
-        // --- CYBER PUZZLE LOGIC (WITH LOCAL STORAGE HIGHSCORE) ---
+        // --- SCROLL INTERSECTION OBSERVER (THE MAGIC TRICK) ---
+        const observerOptions = {
+            threshold: 0.1, // Trigger when 10% of the element is visible
+            rootMargin: "0px 0px -50px 0px" // Trigger slightly before it hits the bottom
+        };
+
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Tell the observer to watch all elements with the 'reveal' class
+        document.querySelectorAll('.reveal').forEach(el => {
+            scrollObserver.observe(el);
+        });
+
         const navBtns = document.querySelectorAll('.nav-btn');
         const sections = document.querySelectorAll('.section');
 
@@ -589,9 +646,11 @@
                 btn.classList.add('active');
                 const targetId = btn.getAttribute('data-target');
                 document.getElementById(targetId).classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top on tab switch
             });
         });
 
+        // --- CYBER PUZZLE LOGIC ---
         (function initCyberPuzzle() {
             const grid = document.getElementById('matrix-grid');
             const startBtn = document.getElementById('matrix-start-btn');
@@ -605,11 +664,9 @@
             let level = 1;
             let score = 0;
             
-            // PULL SAVED HIGHSCORE FROM BROWSER MEMORY
             let highScore = localStorage.getItem('cyberMatrixHighScore') || 0;
             highScoreTxt.innerText = `Best: ${highScore}`;
 
-            // Build the 3x3 Grid
             for (let i = 0; i < 9; i++) {
                 const node = document.createElement('div');
                 node.className = 'matrix-node interactive';
@@ -619,7 +676,6 @@
                 node.style.borderRadius = "4px";
                 node.style.transition = "background 0.2s, box-shadow 0.2s";
                 
-                // Add hover effect programmatically to maintain cursor hook
                 node.addEventListener('mouseenter', () => {
                     if (window.getComputedStyle(cursorOutline).display !== 'none') {
                         cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
@@ -642,7 +698,6 @@
             }
 
             const nodes = document.querySelectorAll('.matrix-node');
-
             startBtn.addEventListener('click', startGame);
 
             function startGame() {
@@ -664,9 +719,7 @@
 
                 let delay = 500;
                 sequence.forEach((nodeIndex, i) => {
-                    setTimeout(() => {
-                        flashNode(nodes[nodeIndex]);
-                    }, delay * (i + 1));
+                    setTimeout(() => flashNode(nodes[nodeIndex]), delay * (i + 1));
                 });
 
                 setTimeout(() => {
@@ -718,10 +771,9 @@
                 startBtn.style.display = "inline-block";
                 startBtn.innerText = "REBOOT SYSTEM";
 
-                // CHECK IF WE BEAT THE HIGHSCORE
                 if (score > highScore) {
                     highScore = score;
-                    localStorage.setItem('cyberMatrixHighScore', highScore); // Save to browser
+                    localStorage.setItem('cyberMatrixHighScore', highScore); 
                     highScoreTxt.innerText = `Best: ${highScore}`;
                     statusTxt.style.color = "#10b981"; 
                     statusTxt.innerText = `NEW HIGH SCORE: ${score}! System Rebooting...`;
@@ -786,7 +838,6 @@
             let activeChatUserId = auth.currentUser.uid; 
             let unsubscribeMessages = null;
 
-            // --- ADMIN LOGIN TRIGGER ---
             secretTrigger.addEventListener('click', () => {
                 if (isAdmin) return;
                 const passcode = prompt("SECURITY OVERRIDE:\nEnter Admin Passcode:");
@@ -797,7 +848,6 @@
                     statusText.style.color = "#f472b6"; 
                     secretTrigger.style.background = "#f472b6"; 
                     
-                    // Clear the placeholder user avatar sidebar and load the global session router
                     sidebarContent.innerHTML = `<h4 style="font-family:'Space Grotesk'; font-size:0.8rem; letter-spacing:1px; color:#f472b6; margin-bottom:10px; text-transform:uppercase;">Active Sessions</h4><div id="user-sessions-list" style="display:flex; flex-direction:column; gap:8px;"></div>`;
                     
                     loadAdminUserList();
@@ -807,9 +857,7 @@
                 }
             });
 
-            // --- FUNCTION: LOAD REAL-TIME MESSAGES FOR TARGET USER ---
             function listenToChat(userId) {
-                // Kill the previous active stream listener if switching users
                 if (unsubscribeMessages) unsubscribeMessages();
 
                 const messagesRef = collection(db, "chats", userId, "messages");
@@ -826,7 +874,6 @@
                         const data = doc.data();
                         if (!data.text) return;
 
-                        // Identify if the message bubble is yours or the incoming party's
                         const isSentByMe = isAdmin ? (data.sender === "admin") : (data.sender === "user");
                         const messageClass = isSentByMe ? "sent" : "received";
                         
@@ -846,15 +893,12 @@
                 });
             }
 
-            // --- ADMIN ONLY: MONITOR ALL RECENT CHAT SESSIONS (24-HOUR AUTO-CLEAN) ---
             function loadAdminUserList() {
-                // Listens to a master 'active_chats' directory mapping individual users who typed
                 onSnapshot(collection(db, "active_chats"), (snapshot) => {
                     const listContainer = document.getElementById('user-sessions-list');
                     if(!listContainer) return;
                     listContainer.innerHTML = "";
 
-                    // 1. Calculate the exact time 24 hours ago
                     const now = new Date();
                     const cutoffTime = new Date(now.getTime() - (24 * 60 * 60 * 1000));
 
@@ -862,13 +906,11 @@
                         const uId = userDoc.id;
                         const userData = userDoc.data();
                         
-                        // 2. Convert Firebase timestamp to a normal JavaScript Date object
                         let lastActive = new Date(); 
                         if (userData.lastActive) {
                             lastActive = userData.lastActive.toDate();
                         }
 
-                        // 3. THE FILTER: Only draw the button if the user was active in the last 24 hours
                         if (lastActive > cutoffTime) {
                             const sessionBtn = document.createElement('div');
                             sessionBtn.className = "interactive"; 
@@ -880,17 +922,15 @@
                             sessionBtn.style.color = "#fff";
                             sessionBtn.style.fontFamily = "'Space Grotesk', sans-serif";
                             
-                            // Format a nice timestamp to show the admin when they last messaged
                             const timeString = lastActive.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                             sessionBtn.innerHTML = `📦 Session: ${uId.substring(0, 8)}<br><span style="font-size:0.7rem; color:#94a3b8;">Last active: ${timeString}</span>`;
 
                             sessionBtn.addEventListener('click', () => {
                                 activeChatUserId = uId;
-                                loadAdminUserList(); // Redraw borders
-                                listenToChat(uId); // Swap main screen to this thread
+                                loadAdminUserList(); 
+                                listenToChat(uId); 
                             });
                             
-                            // Re-trigger custom cursor hook for new elements
                             sessionBtn.addEventListener('mouseenter', () => {
                                 if (window.getComputedStyle(document.querySelector('.cursor-outline')).display !== 'none') {
                                     document.querySelector('.cursor-outline').style.transform = 'translate(-50%, -50%) scale(1.5)';
@@ -914,7 +954,6 @@
                 });
             }
 
-            // --- TRANSMIT MESSAGES TO FIRESTORE ---
             async function sendMessage() {
                 const text = messageInput.value.trim();
                 if (text === "" || !activeChatUserId) return;
@@ -922,14 +961,12 @@
                 messageInput.value = "";
 
                 try {
-                    // 1. Write the message into the user's explicit folder thread
                     await addDoc(collection(db, "chats", activeChatUserId, "messages"), {
                         text: text,
                         sender: isAdmin ? "admin" : "user",
                         timestamp: serverTimestamp()
                     });
 
-                    // 2. Register/Update the session trace in the index so the admin panel can track it
                     if (!isAdmin) {
                         await setDoc(doc(db, "active_chats", activeChatUserId), {
                             lastActive: serverTimestamp()
@@ -940,7 +977,6 @@
                 }
             }
 
-            // Begin tracing standard user thread stream immediately upon authentication
             listenToChat(activeChatUserId);
 
             sendBtn.addEventListener('click', sendMessage);
