@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -495,15 +495,14 @@
                 </div>
                 <div class="chat-container reveal fade-up delay-200 visible">
                     <div class="chat-sidebar">
-                        <div id="sidebar-content">
-                            <div class="chat-contact">
-                                <div class="contact-avatar">Z</div>
-                                <div class="contact-info">
-                                    <div class="contact-name">Z. Nafis</div>
-                                    <div class="contact-status">Admin</div>
-                                </div>
+                        <div class="chat-contact">
+                            <div class="contact-avatar">Z</div>
+                            <div class="contact-info">
+                                <div class="contact-name">Z. Nafis</div>
+                                <div class="contact-status">Admin</div>
                             </div>
                         </div>
+                        <div id="sidebar-content"></div>
                     </div>
                     <div class="chat-main">
                         <div class="chat-messages" id="chat-box">
@@ -1219,7 +1218,10 @@
                 if (passcode === "chittypoo99") {
                     isAdmin = true;
                     document.querySelector('.contact-status').innerHTML = `<span style="color:#34c759">Admin Mode</span>`;
-                    sidebarContent.innerHTML = `<h4 style="font-size:0.8rem; margin-bottom:10px; color:#86868b; text-transform:uppercase;">Active Sessions</h4><div id="user-sessions-list" style="display:flex; flex-direction:column; gap:8px;"></div>`;
+                    
+                    // Safely insert the list container so we don't break the profile header
+                    sidebarContent.innerHTML = `<h4 style="font-size:0.8rem; margin-top:20px; margin-bottom:10px; color:#86868b; text-transform:uppercase;">Active Sessions</h4><div id="user-sessions-list" style="display:flex; flex-direction:column; gap:8px;"></div>`;
+                    
                     loadAdminUserList();
                 }
             });
@@ -1353,7 +1355,10 @@
 
                             // Also sync main header status if this is the currently viewed user
                             if (uId === activeChatUserId && isAdmin) {
-                                document.querySelector('.contact-status').innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
+                                const statusEl = document.querySelector('.contact-status');
+                                if (statusEl) {
+                                    statusEl.innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
+                                }
                             }
 
                             const sessionBtn = document.createElement('div');
@@ -1384,8 +1389,10 @@
                                     return;
                                 }
                                 activeChatUserId = uId;
-                                document.querySelector('.contact-name').innerText = contactName;
-                                document.querySelector('.contact-status').innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
+                                const nameEl = document.querySelector('.contact-name');
+                                const statusEl = document.querySelector('.contact-status');
+                                if (nameEl) nameEl.innerText = contactName;
+                                if (statusEl) statusEl.innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
                                 loadAdminUserList(); 
                                 listenToChat(uId); 
                             });
