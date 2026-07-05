@@ -307,26 +307,46 @@
         .contact-name { font-weight: 600; color: #fff; font-size: 1rem; }
         .contact-status { font-size: 0.8rem; color: var(--text-muted); }
 
-        .chat-main { flex: 1; display: flex; flex-direction: column; }
+        .chat-main { flex: 1; display: flex; flex-direction: column; position: relative; }
         .chat-messages {
             flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;
         }
 
-        .message {
-            max-width: 70%; padding: 0.8rem 1.2rem; border-radius: 20px; line-height: 1.4; font-size: 0.95rem;
+        /* Message Reply System Wrappers */
+        .msg-wrapper {
+            position: relative; max-width: 70%;
             animation: messagePop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0; transform: translateY(10px) scale(0.95);
-            word-break: break-word; /* Allows long links to wrap */
+        }
+
+        .message {
+            padding: 0.8rem 1.2rem; border-radius: 20px; line-height: 1.4; font-size: 1.05rem; /* Increased slightly for better emoji mixing */
+            word-break: break-word; 
+        }
+
+        /* Standalone Emoji Styling */
+        .message.standalone-emoji {
+            background: transparent !important;
+            font-size: 4rem;
+            padding: 0.2rem 0;
+            line-height: 1.1;
+        }
+        .message.standalone-emoji .reply-context {
+            font-size: 0.75rem; 
+            margin-bottom: 8px;
+            background: rgba(40,40,40,0.8); /* Darker background so text is readable without the bubble */
+            color: #fff;
+            border-left: 3px solid var(--accent-blue);
         }
 
         @keyframes messagePop {
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .message.received { background: #2c2c2e; color: #fff; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .message.sent { background: var(--accent-blue); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .message.received { background: #2c2c2e; color: #fff; border-bottom-left-radius: 4px; }
+        .message.sent { background: var(--accent-blue); color: #fff; border-bottom-right-radius: 4px; }
 
-        /* Ensure links look good in both sent/received bubbles */
+        /* Links in messages */
         .message a {
             color: #7dd3fc !important;
             text-decoration: underline;
@@ -334,6 +354,26 @@
         }
         .message.sent a { color: #ffffff !important; font-weight: 500; }
         .message a:hover { opacity: 0.8; }
+
+        /* Reply Context Block inside bubbles */
+        .reply-context {
+            font-size: 0.75rem; color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.2); 
+            padding: 6px 10px; border-radius: 8px; margin-bottom: 6px; 
+            border-left: 3px solid rgba(255,255,255,0.5); 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* Reply Button Overlay */
+        .reply-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; 
+            width: 28px; height: 28px; color: white; cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 14px;
+            transition: background 0.2s, transform 0.2s; z-index: 10;
+        }
+        .reply-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-50%) scale(1.1); }
+        .msg-wrapper:hover .reply-btn { display: flex; }
+        .message.sent + .reply-btn { left: -36px; }
+        .message.received + .reply-btn { right: -36px; }
 
         .chat-img {
             max-width: 100%;
@@ -353,6 +393,7 @@
 
         .emoji-picker {
             display: none; position: absolute; bottom: 85px; left: 20px; background: rgba(28, 28, 30, 0.95); border: 1px solid var(--glass-border); padding: 12px; border-radius: 16px; gap: 8px; backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10;
+            flex-wrap: wrap; width: 220px; justify-content: center;
         }
         .emoji-picker.active { display: flex; animation: messagePop 0.2s forwards; }
         
@@ -463,18 +504,34 @@
                     </div>
                     <div class="chat-main">
                         <div class="chat-messages" id="chat-box">
-                            <div class="message received">
-                                <p>iMessage connection established. Send a message to begin.</p>
+                            <div class="msg-wrapper" style="align-self: flex-start; animation: none; opacity: 1; transform: none; max-width: 100%;">
+                                <div class="message received"><p>iMessage connection established. Send a message to begin.</p></div>
                             </div>
                         </div>
+
+                        <div id="reply-preview" style="display: none; padding: 10px 1.5rem; background: rgba(0,0,0,0.3); border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: #ccc; align-items: center; justify-content: space-between;">
+                            <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 90%;">
+                                <strong style="color: var(--accent-blue);">Replying to:</strong> <span id="reply-preview-text"></span>
+                            </div>
+                            <button id="cancel-reply-btn" style="background: none; border: none; color: #fff; cursor: pointer; font-size: 1.2rem; line-height: 1;" title="Cancel Reply">&times;</button>
+                        </div>
+
                         <div class="chat-input-area">
                             <div class="emoji-picker" id="emoji-picker">
                                 <button class="emoji-btn">😀</button>
                                 <button class="emoji-btn">😂</button>
+                                <button class="emoji-btn">😭</button>
+                                <button class="emoji-btn">😢</button>
+                                <button class="emoji-btn">🥺</button>
+                                <button class="emoji-btn">😡</button>
                                 <button class="emoji-btn">🔥</button>
                                 <button class="emoji-btn">❤️</button>
                                 <button class="emoji-btn">✨</button>
                                 <button class="emoji-btn">👍</button>
+                                <button class="emoji-btn">👎</button>
+                                <button class="emoji-btn">🎉</button>
+                                <button class="emoji-btn">👀</button>
+                                <button class="emoji-btn">🤔</button>
                             </div>
                             <button class="chat-action-btn" id="toggle-emoji-btn" title="Add Emoji">😀</button>
                             
@@ -1141,6 +1198,20 @@
             let isAdmin = false;
             let activeChatUserId = auth.currentUser.uid; 
             let unsubscribeMessages = null;
+            let replyingToText = null;
+
+            // Handle Reply Preview Cancel
+            document.getElementById('cancel-reply-btn').addEventListener('click', () => {
+                replyingToText = null;
+                document.getElementById('reply-preview').style.display = 'none';
+            });
+
+            window.initiateReply = function(text) {
+                replyingToText = text;
+                document.getElementById('reply-preview-text').innerText = text;
+                document.getElementById('reply-preview').style.display = 'flex';
+                messageInput.focus();
+            };
 
             secretTrigger.addEventListener('click', () => {
                 if (isAdmin) return;
@@ -1158,7 +1229,11 @@
                 const q = query(collection(db, "chats", userId, "messages"), orderBy("timestamp", "asc"));
 
                 unsubscribeMessages = onSnapshot(q, (snapshot) => {
-                    chatBox.innerHTML = `<div class="message received" style="animation: none; opacity: 1; transform: none;"><p>iMessage connection established.</p></div>`;
+                    chatBox.innerHTML = `
+                    <div class="msg-wrapper" style="align-self: flex-start; animation: none; opacity: 1; transform: none; max-width: 100%;">
+                        <div class="message received"><p>iMessage connection established.</p></div>
+                    </div>`;
+                    
                     snapshot.forEach((doc) => {
                         const data = doc.data();
                         if (!data.text && !data.imageUrl) return; 
@@ -1166,28 +1241,54 @@
                         const isSentByMe = isAdmin ? (data.sender === "admin") : (data.sender === "user");
                         const messageClass = isSentByMe ? "sent" : "received";
                         
+                        let isStandaloneEmoji = false;
+                        if (data.text && !data.imageUrl) {
+                            // Regex detects if string is composed ONLY of emojis and spaces
+                            const emojiRegex = /^[\p{Emoji_Presentation}\p{Extended_Pictographic}\uFE0F\u200D\s]+$/gu;
+                            isStandaloneEmoji = emojiRegex.test(data.text.trim());
+                        }
+
+                        const wrapper = document.createElement("div");
+                        wrapper.className = "msg-wrapper";
+                        wrapper.style.alignSelf = isSentByMe ? "flex-end" : "flex-start";
+                        
                         const bubble = document.createElement("div");
-                        bubble.className = `message ${messageClass}`;
+                        bubble.className = `message ${messageClass} ${isStandaloneEmoji ? 'standalone-emoji' : ''}`;
                         
                         let contentHtml = "";
+
+                        // Render Reply Context Block
+                        if (data.replyTo) {
+                            let safeReply = data.replyTo.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                            contentHtml += `<div class="reply-context"><strong>Replying to:</strong><br>${safeReply}</div>`;
+                        }
+
                         if (data.imageUrl) {
                             contentHtml += `<img src="${data.imageUrl}" class="chat-img" alt="Attached Image">`;
                         }
                         if (data.text) {
-                            // Escape HTML tags to prevent XSS attacks
                             let safeText = data.text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                            
-                            // Find URLs and convert them to clickable anchor tags
                             const urlRegex = /(https?:\/\/[^\s]+)/g;
                             let linkedText = safeText.replace(urlRegex, function(url) {
                                 return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
                             });
-                            
                             contentHtml += `<p>${linkedText}</p>`;
                         }
                         
                         bubble.innerHTML = contentHtml;
-                        chatBox.appendChild(bubble);
+                        
+                        // Setup Reply Button overlay
+                        const replyBtn = document.createElement("button");
+                        replyBtn.className = "reply-btn";
+                        replyBtn.innerHTML = "↩";
+                        replyBtn.title = "Reply";
+                        
+                        let previewText = data.text ? data.text : (data.imageUrl ? "📸 Image" : "Message");
+                        replyBtn.onclick = () => window.initiateReply(previewText);
+
+                        wrapper.appendChild(bubble);
+                        wrapper.appendChild(replyBtn);
+                        chatBox.appendChild(wrapper);
                     });
                     setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
                 });
@@ -1227,11 +1328,24 @@
             async function sendMessage() {
                 const text = messageInput.value.trim();
                 if (text === "" || !activeChatUserId) return;
+                
                 messageInput.value = "";
                 emojiPicker.classList.remove('active'); 
                 
+                const messageData = { 
+                    text: text, 
+                    sender: isAdmin ? "admin" : "user", 
+                    timestamp: serverTimestamp() 
+                };
+
+                if (replyingToText) {
+                    messageData.replyTo = replyingToText;
+                    replyingToText = null;
+                    document.getElementById('reply-preview').style.display = 'none';
+                }
+
                 try {
-                    await addDoc(collection(db, "chats", activeChatUserId, "messages"), { text: text, sender: isAdmin ? "admin" : "user", timestamp: serverTimestamp() });
+                    await addDoc(collection(db, "chats", activeChatUserId, "messages"), messageData);
                     if (!isAdmin) { await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }); }
                 } catch (error) { console.error("Transmission error:", error); }
             }
