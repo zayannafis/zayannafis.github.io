@@ -447,11 +447,23 @@
         <section id="mystery" class="section">
             <div style="padding-top: 15vh;">
                 <div class="reveal fade-up visible">
-                    <h2 class="hero-title" style="font-size: 4rem;">Memory <span>matrix.</span></h2>
-                    <p class="hero-desc" style="margin: 0;">Test your cognitive retention.</p>
+                    <h2 class="hero-title" style="font-size: 4rem;">Terminal <span>arcade.</span></h2>
+                    <p class="hero-desc" style="margin: 0;">Select a module to test your abilities.</p>
+                </div>
+
+                <div id="games-menu" class="reveal fade-up delay-200 visible" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; max-width: 600px; margin: 3rem auto 0 auto;">
+                    <div class="dash-card tilt-effect game-selector" data-game="matrix" style="cursor: pointer; text-align: center; padding: 40px 20px;">
+                        <h4 class="dash-value" style="font-size: 1.8rem; margin-bottom: 10px;">Matrix</h4>
+                        <p class="dash-label">Memory Retention</p>
+                    </div>
+                    <div class="dash-card tilt-effect game-selector" data-game="reaction" style="cursor: pointer; text-align: center; padding: 40px 20px;">
+                        <h4 class="dash-value" style="font-size: 1.8rem; margin-bottom: 10px;">Chrono</h4>
+                        <p class="dash-label">Time Precision</p>
+                    </div>
                 </div>
                 
-                <div id="cyber-puzzle-container" class="reveal fade-up delay-200 visible dash-card tilt-effect" style="margin-top: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center;">
+                <div id="cyber-puzzle-container" class="dash-card tilt-effect" style="display: none; margin-top: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center;">
+                    <button class="back-to-menu" style="background:none; border:none; color:var(--accent-blue); cursor:pointer; font-size:0.9rem; margin-bottom: 20px; text-align: left; width: 100%; font-weight: 500;">← Back to Menu</button>
             
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
                         <span id="matrix-level" style="font-weight: 500; color: var(--text-muted);">Level 1</span>
@@ -460,10 +472,27 @@
                     </div>
             
                     <div id="matrix-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 300px; margin: 0 auto; pointer-events: none;">
-                        </div>
+                    </div>
             
                     <p id="matrix-status" style="color: var(--text-muted); margin-top: 30px; height: 24px; font-weight: 500;">Ready.</p>
                     <button id="matrix-start-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; margin-top: 15px; cursor: pointer; transition: transform 0.2s, background 0.2s;">Start Game</button>
+                </div>
+
+                <div id="reaction-game-container" class="dash-card tilt-effect" style="display: none; margin-top: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center;">
+                    <button class="back-to-menu" style="background:none; border:none; color:var(--accent-blue); cursor:pointer; font-size:0.9rem; margin-bottom: 20px; text-align: left; width: 100%; font-weight: 500;">← Back to Menu</button>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
+                        <span style="font-weight: 500; color: var(--text-muted);">Score: <span id="reaction-score" style="font-weight: 600; color: #fff;">0</span></span>
+                        <span style="font-weight: 500; color: var(--accent-blue);">Best: <span id="reaction-highscore">0</span></span>
+                    </div>
+        
+                    <h3 style="font-size: 1rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 500;">Target Time</h3>
+                    <div id="reaction-target" style="font-size: 3rem; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 15px; color: #fff;">0.00s</div>
+                    
+                    <div id="reaction-display" style="font-size: 2.2rem; font-weight: 500; color: var(--text-muted); margin-bottom: 25px; font-variant-numeric: tabular-nums;">0.00s</div>
+        
+                    <p id="reaction-status" style="color: var(--text-muted); height: 24px; font-weight: 500; margin-bottom: 20px;">Press Start when ready.</p>
+                    <button id="reaction-action-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: transform 0.2s, background 0.2s; width: 200px; font-size: 1rem;">Start</button>
                 </div>
             </div>
         </section>
@@ -472,7 +501,6 @@
     <script>
         // --- 0. CLASSIC PAGE REVEAL ---
         window.addEventListener('load', () => {
-            // A slight delay ensures the page doesn't jarringly snap in before all assets mount
             setTimeout(() => {
                 document.body.classList.remove('loading');
                 document.body.classList.add('loaded');
@@ -741,8 +769,35 @@
             });
         });
 
-        // --- 8. MATRIX GAME LOGIC ---
-        (function initCyberPuzzle() {
+        // --- 8. TERMINAL ARCADE LOGIC ---
+        (function initArcade() {
+            // -- Menu Navigation --
+            const gamesMenu = document.getElementById('games-menu');
+            const matrixGameContainer = document.getElementById('cyber-puzzle-container');
+            const reactionGameContainer = document.getElementById('reaction-game-container');
+            const backBtns = document.querySelectorAll('.back-to-menu');
+            
+            document.querySelectorAll('.game-selector').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    gamesMenu.style.display = 'none';
+                    if (btn.dataset.game === 'matrix') {
+                        matrixGameContainer.style.display = 'block';
+                    } else if (btn.dataset.game === 'reaction') {
+                        reactionGameContainer.style.display = 'block';
+                        setupReactionRound(true); // reset and setup
+                    }
+                });
+            });
+
+            backBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    matrixGameContainer.style.display = 'none';
+                    reactionGameContainer.style.display = 'none';
+                    gamesMenu.style.display = 'grid'; 
+                });
+            });
+
+            // -- Matrix Game Logic --
             const grid = document.getElementById('matrix-grid');
             const startBtn = document.getElementById('matrix-start-btn');
             const statusTxt = document.getElementById('matrix-status');
@@ -754,9 +809,8 @@
             let playerSequence = [];
             let level = 1;
             let score = 0;
-            
-            let highScore = localStorage.getItem('appleMatrixHighScore') || 0;
-            highScoreTxt.innerText = `Best: ${highScore}`;
+            let matrixHighScore = localStorage.getItem('appleMatrixHighScore') || 0;
+            highScoreTxt.innerText = `Best: ${matrixHighScore}`;
 
             for (let i = 0; i < 9; i++) {
                 const node = document.createElement('div');
@@ -764,31 +818,25 @@
                 node.addEventListener('click', () => handleNodeClick(i, node));
                 grid.appendChild(node);
             }
-
             const nodes = document.querySelectorAll('.matrix-node');
-            startBtn.addEventListener('click', startGame);
+            startBtn.addEventListener('click', startMatrixGame);
 
-            function startGame() {
-                sequence = [];
-                level = 1;
-                score = 0;
-                updateUI();
+            function startMatrixGame() {
+                sequence = []; level = 1; score = 0;
+                updateMatrixUI();
                 startBtn.style.display = "none";
-                nextRound();
+                nextMatrixRound();
             }
 
-            function nextRound() {
+            function nextMatrixRound() {
                 playerSequence = [];
                 grid.style.pointerEvents = "none"; 
                 statusTxt.innerText = "Watch the sequence...";
-
                 sequence.push(Math.floor(Math.random() * 9));
-
                 let delay = 400;
                 sequence.forEach((nodeIndex, i) => {
                     setTimeout(() => flashNode(nodes[nodeIndex]), delay * (i + 1));
                 });
-
                 setTimeout(() => {
                     grid.style.pointerEvents = "auto";
                     statusTxt.innerText = "Your turn.";
@@ -806,7 +854,6 @@
 
             function handleNodeClick(index, node) {
                 if (grid.style.pointerEvents === "none") return;
-
                 node.style.background = "#2997ff"; 
                 setTimeout(() => { node.style.background = "rgba(255,255,255,0.05)"; }, 200);
 
@@ -814,47 +861,132 @@
                 const currentStep = playerSequence.length - 1;
 
                 if (playerSequence[currentStep] !== sequence[currentStep]) {
-                    gameOver();
+                    matrixGameOver();
                     return;
                 }
 
                 score += 10;
-                updateUI();
+                updateMatrixUI();
 
                 if (playerSequence.length === sequence.length) {
                     grid.style.pointerEvents = "none";
                     score += (level * 50); 
                     level++;
-                    updateUI();
+                    updateMatrixUI();
                     statusTxt.innerText = "Correct. Next level...";
-                    setTimeout(nextRound, 1000);
+                    setTimeout(nextMatrixRound, 1000);
                 }
             }
 
-            function gameOver() {
+            function matrixGameOver() {
                 grid.style.pointerEvents = "none";
                 startBtn.style.display = "inline-block";
                 startBtn.innerText = "Try Again";
-
-                if (score > highScore) {
-                    highScore = score;
-                    localStorage.setItem('appleMatrixHighScore', highScore); 
-                    highScoreTxt.innerText = `Best: ${highScore}`;
+                if (score > matrixHighScore) {
+                    matrixHighScore = score;
+                    localStorage.setItem('appleMatrixHighScore', matrixHighScore); 
+                    highScoreTxt.innerText = `Best: ${matrixHighScore}`;
                     statusTxt.innerText = `New High Score!`;
                 } else {
                     statusTxt.innerText = "Incorrect sequence.";
                 }
-
                 nodes.forEach(n => {
                     n.style.background = "rgba(255, 59, 48, 0.5)"; 
                     setTimeout(() => { n.style.background = "rgba(255,255,255,0.05)"; }, 500);
                 });
             }
 
-            function updateUI() {
+            function updateMatrixUI() {
                 levelTxt.innerText = `Level ${level}`;
                 scoreTxt.innerText = score;
             }
+
+
+            // -- Chrono (Reaction) Game Logic --
+            const reactScoreEl = document.getElementById('reaction-score');
+            const reactHighScoreEl = document.getElementById('reaction-highscore');
+            const reactTargetEl = document.getElementById('reaction-target');
+            const reactDisplayEl = document.getElementById('reaction-display');
+            const reactStatusEl = document.getElementById('reaction-status');
+            const reactActionBtn = document.getElementById('reaction-action-btn');
+
+            let reactScore = 0;
+            let reactHighScore = localStorage.getItem('appleReactionHighScore') || 0;
+            reactHighScoreEl.innerText = reactHighScore;
+            
+            let reactState = 'idle'; // idle, running, result
+            let targetTimeMs = 0;
+            let startTime = 0;
+            let timerInterval;
+
+            function setupReactionRound(isReset = false) {
+                if(isReset) {
+                    reactScore = 0;
+                    reactScoreEl.innerText = reactScore;
+                    reactHighScoreEl.innerText = reactHighScore;
+                }
+                reactState = 'idle';
+                // Generate a random target time between 1.50s and 4.00s
+                targetTimeMs = Math.floor(Math.random() * 2500) + 1500; 
+                reactTargetEl.innerText = (targetTimeMs / 1000).toFixed(2) + 's';
+                reactDisplayEl.innerText = '0.00s';
+                reactStatusEl.innerText = 'Press Start when ready.';
+                reactActionBtn.innerText = 'Start';
+                reactActionBtn.style.background = "var(--text-main)";
+            }
+
+            reactActionBtn.addEventListener('click', () => {
+                if (reactState === 'idle') {
+                    reactState = 'running';
+                    startTime = performance.now();
+                    reactActionBtn.innerText = 'Stop!';
+                    reactActionBtn.style.background = "#ff3b30"; // Red to stop
+                    reactStatusEl.innerText = 'Wait for it...';
+                    
+                    timerInterval = setInterval(() => {
+                        let elapsed = performance.now() - startTime;
+                        reactDisplayEl.innerText = (elapsed / 1000).toFixed(2) + 's';
+                    }, 10);
+
+                } else if (reactState === 'running') {
+                    clearInterval(timerInterval);
+                    let elapsed = performance.now() - startTime;
+                    reactDisplayEl.innerText = (elapsed / 1000).toFixed(2) + 's';
+                    
+                    let diff = Math.abs(elapsed - targetTimeMs);
+                    
+                    // Tolerance is within 0.15s (150ms)
+                    if (diff <= 150) {
+                        reactState = 'result';
+                        reactScore++;
+                        reactScoreEl.innerText = reactScore;
+                        reactStatusEl.innerText = `Perfect! You were off by only ${(diff/1000).toFixed(2)}s.`;
+                        reactActionBtn.innerText = 'Next Round';
+                        reactActionBtn.style.background = "var(--accent-blue)";
+                    } else {
+                        // Game Over
+                        reactState = 'result';
+                        reactStatusEl.innerText = `Game Over. Off by ${(diff/1000).toFixed(2)}s.`;
+                        reactActionBtn.innerText = 'Try Again';
+                        reactActionBtn.style.background = "var(--text-main)";
+                        
+                        if (reactScore > reactHighScore) {
+                            reactHighScore = reactScore;
+                            localStorage.setItem('appleReactionHighScore', reactHighScore);
+                            reactHighScoreEl.innerText = reactHighScore;
+                            reactStatusEl.innerText = `New High Score! Off by ${(diff/1000).toFixed(2)}s.`;
+                        }
+                        reactScore = 0; // Reset for next loop
+                    }
+                } else if (reactState === 'result') {
+                    if (reactScore === 0) {
+                        setupReactionRound(true); // Restart game
+                    } else {
+                        setupReactionRound(false); // Continue to next round
+                    }
+                }
+            });
+
         })();
     </script>
 
