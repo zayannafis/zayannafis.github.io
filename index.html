@@ -6,6 +6,7 @@
     <title>Z. Nafis | Domain</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         :root {
             --bg-color: #000000;
@@ -451,14 +452,18 @@
                     <p class="hero-desc" style="margin: 0;">Select a module to test your abilities.</p>
                 </div>
 
-                <div id="games-menu" class="reveal fade-up delay-200 visible" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; max-width: 600px; margin: 3rem auto 0 auto;">
-                    <div class="dash-card tilt-effect game-selector" data-game="matrix" style="cursor: pointer; text-align: center; padding: 40px 20px;">
-                        <h4 class="dash-value" style="font-size: 1.8rem; margin-bottom: 10px;">Matrix</h4>
+                <div id="games-menu" class="reveal fade-up delay-200 visible" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; max-width: 700px; margin: 3rem auto 0 auto;">
+                    <div class="dash-card tilt-effect game-selector" data-game="matrix" style="cursor: pointer; text-align: center; padding: 40px 10px;">
+                        <h4 class="dash-value" style="font-size: 1.6rem; margin-bottom: 10px;">Matrix</h4>
                         <p class="dash-label">Memory Retention</p>
                     </div>
-                    <div class="dash-card tilt-effect game-selector" data-game="reaction" style="cursor: pointer; text-align: center; padding: 40px 20px;">
-                        <h4 class="dash-value" style="font-size: 1.8rem; margin-bottom: 10px;">Chrono</h4>
+                    <div class="dash-card tilt-effect game-selector" data-game="reaction" style="cursor: pointer; text-align: center; padding: 40px 10px;">
+                        <h4 class="dash-value" style="font-size: 1.6rem; margin-bottom: 10px;">Chrono</h4>
                         <p class="dash-label">Time Precision</p>
+                    </div>
+                    <div class="dash-card tilt-effect game-selector" data-game="balance" style="cursor: pointer; text-align: center; padding: 40px 10px;">
+                        <h4 class="dash-value" style="font-size: 1.6rem; margin-bottom: 10px;">Equilibria</h4>
+                        <p class="dash-label">Physics Stacker</p>
                     </div>
                 </div>
                 
@@ -491,9 +496,25 @@
                     
                     <div id="reaction-display" style="font-size: 2.2rem; font-weight: 500; color: var(--text-muted); margin-bottom: 25px; font-variant-numeric: tabular-nums;">0.00s</div>
         
-                    <p id="reaction-status" style="color: var(--text-muted); height: 24px; font-weight: 500; margin-bottom: 20px;">Press Start when ready.</p>
+                    <p id="reaction-status" style="color: var(--text-muted); height: 24px; font-weight: 500; margin-bottom: 20px;">Press Start or Space when ready.</p>
                     <button id="reaction-action-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: transform 0.2s, background 0.2s; width: 200px; font-size: 1rem;">Start</button>
                 </div>
+                
+                <div id="balance-game-container" class="dash-card tilt-effect" style="display: none; margin-top: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center; padding-left: 20px; padding-right: 20px;">
+                    <button class="back-to-menu" style="background:none; border:none; color:var(--accent-blue); cursor:pointer; font-size:0.9rem; margin-bottom: 15px; text-align: left; width: 100%; font-weight: 500;">← Back to Menu</button>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">
+                        <span style="font-weight: 500; color: var(--text-muted);">Score: <span id="balance-score" style="font-weight: 600; color: #fff;">0</span></span>
+                        <span style="font-weight: 500; color: var(--accent-blue);">Best: <span id="balance-highscore">0</span></span>
+                    </div>
+        
+                    <div id="balance-canvas-container" style="width: 300px; height: 400px; margin: 0 auto; background: rgba(0,0,0,0.3); border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); cursor: pointer; position: relative;">
+                    </div>
+        
+                    <p id="balance-status" style="color: var(--text-muted); height: 24px; font-weight: 500; margin-top: 20px;">Click canvas or press Space to drop.</p>
+                    <button id="balance-action-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: transform 0.2s, background 0.2s; margin-top: 5px; width: 200px; font-size: 1rem;">Start Game</button>
+                </div>
+
             </div>
         </section>
     </main>
@@ -775,6 +796,7 @@
             const gamesMenu = document.getElementById('games-menu');
             const matrixGameContainer = document.getElementById('cyber-puzzle-container');
             const reactionGameContainer = document.getElementById('reaction-game-container');
+            const balanceGameContainer = document.getElementById('balance-game-container');
             const backBtns = document.querySelectorAll('.back-to-menu');
             
             document.querySelectorAll('.game-selector').forEach(btn => {
@@ -784,7 +806,10 @@
                         matrixGameContainer.style.display = 'block';
                     } else if (btn.dataset.game === 'reaction') {
                         reactionGameContainer.style.display = 'block';
-                        setupReactionRound(true); // reset and setup
+                        setupReactionRound(true); 
+                    } else if (btn.dataset.game === 'balance') {
+                        balanceGameContainer.style.display = 'block';
+                        if (!balanceEngine) setupMatterJS();
                     }
                 });
             });
@@ -793,11 +818,32 @@
                 btn.addEventListener('click', () => {
                     matrixGameContainer.style.display = 'none';
                     reactionGameContainer.style.display = 'none';
+                    balanceGameContainer.style.display = 'none';
                     gamesMenu.style.display = 'grid'; 
                 });
             });
 
-            // -- Matrix Game Logic --
+
+            // -- Global Spacebar Hook for Active Games --
+            window.addEventListener('keydown', (e) => {
+                // Ensure we aren't typing in the chat input
+                if (e.code === 'Space' && document.activeElement.tagName !== 'INPUT') {
+                    if (reactionGameContainer.style.display === 'block') {
+                        e.preventDefault();
+                        document.getElementById('reaction-action-btn').click();
+                    } else if (balanceGameContainer.style.display === 'block') {
+                        e.preventDefault();
+                        if (balanceGameState === 'idle' || balanceGameState === 'result') {
+                            document.getElementById('balance-action-btn').click();
+                        } else if (balanceGameState === 'moving') {
+                            dropBalanceBlock();
+                        }
+                    }
+                }
+            });
+
+
+            // -- 1. Matrix Game Logic --
             const grid = document.getElementById('matrix-grid');
             const startBtn = document.getElementById('matrix-start-btn');
             const statusTxt = document.getElementById('matrix-status');
@@ -902,7 +948,7 @@
             }
 
 
-            // -- Chrono (Reaction) Game Logic --
+            // -- 2. Chrono (Reaction) Game Logic --
             const reactScoreEl = document.getElementById('reaction-score');
             const reactHighScoreEl = document.getElementById('reaction-highscore');
             const reactTargetEl = document.getElementById('reaction-target');
@@ -914,7 +960,7 @@
             let reactHighScore = localStorage.getItem('appleReactionHighScore') || 0;
             reactHighScoreEl.innerText = reactHighScore;
             
-            let reactState = 'idle'; // idle, running, result
+            let reactState = 'idle'; 
             let targetTimeMs = 0;
             let startTime = 0;
             let timerInterval;
@@ -926,11 +972,10 @@
                     reactHighScoreEl.innerText = reactHighScore;
                 }
                 reactState = 'idle';
-                // Generate a random target time between 1.50s and 4.00s
                 targetTimeMs = Math.floor(Math.random() * 2500) + 1500; 
                 reactTargetEl.innerText = (targetTimeMs / 1000).toFixed(2) + 's';
                 reactDisplayEl.innerText = '0.00s';
-                reactStatusEl.innerText = 'Press Start when ready.';
+                reactStatusEl.innerText = 'Press Start or Space when ready.';
                 reactActionBtn.innerText = 'Start';
                 reactActionBtn.style.background = "var(--text-main)";
             }
@@ -940,7 +985,7 @@
                     reactState = 'running';
                     startTime = performance.now();
                     reactActionBtn.innerText = 'Stop!';
-                    reactActionBtn.style.background = "#ff3b30"; // Red to stop
+                    reactActionBtn.style.background = "#ff3b30"; 
                     reactStatusEl.innerText = 'Wait for it...';
                     
                     timerInterval = setInterval(() => {
@@ -955,7 +1000,6 @@
                     
                     let diff = Math.abs(elapsed - targetTimeMs);
                     
-                    // Tolerance is within 0.15s (150ms)
                     if (diff <= 150) {
                         reactState = 'result';
                         reactScore++;
@@ -964,7 +1008,6 @@
                         reactActionBtn.innerText = 'Next Round';
                         reactActionBtn.style.background = "var(--accent-blue)";
                     } else {
-                        // Game Over
                         reactState = 'result';
                         reactStatusEl.innerText = `Game Over. Off by ${(diff/1000).toFixed(2)}s.`;
                         reactActionBtn.innerText = 'Try Again';
@@ -976,17 +1019,159 @@
                             reactHighScoreEl.innerText = reactHighScore;
                             reactStatusEl.innerText = `New High Score! Off by ${(diff/1000).toFixed(2)}s.`;
                         }
-                        reactScore = 0; // Reset for next loop
+                        reactScore = 0; 
                     }
                 } else if (reactState === 'result') {
-                    if (reactScore === 0) {
-                        setupReactionRound(true); // Restart game
-                    } else {
-                        setupReactionRound(false); // Continue to next round
-                    }
+                    if (reactScore === 0) setupReactionRound(true);
+                    else setupReactionRound(false); 
                 }
             });
 
+
+            // -- 3. Equilibria (Balance) Physics Game Logic --
+            let balanceEngine, balanceRender, balanceRunner;
+            let balanceScore = 0;
+            let balanceHighScore = localStorage.getItem('appleBalanceHighScore') || 0;
+            document.getElementById('balance-highscore').innerText = balanceHighScore;
+            
+            let balanceGameState = 'idle'; // idle, moving, falling, result
+            let balanceCurrentBlock;
+            let balanceStack = [];
+            let balanceMoveTime = 0;
+            let balanceSettleTimer = 0;
+
+            function setupMatterJS() {
+                balanceEngine = Matter.Engine.create();
+                balanceRender = Matter.Render.create({
+                    element: document.getElementById('balance-canvas-container'),
+                    engine: balanceEngine,
+                    options: {
+                        width: 300,
+                        height: 400,
+                        wireframes: false,
+                        showPositions: true, // Crucial: draws the centroid (center of mass) dots
+                        background: 'transparent'
+                    }
+                });
+                Matter.Render.run(balanceRender);
+                balanceRunner = Matter.Runner.create();
+                Matter.Runner.run(balanceRunner, balanceEngine);
+
+                Matter.Events.on(balanceEngine, 'beforeUpdate', () => {
+                    if (balanceGameState === 'moving' && balanceCurrentBlock) {
+                        balanceMoveTime += 0.05 + (balanceScore * 0.004); // Speed up slightly based on score
+                        const x = 150 + Math.sin(balanceMoveTime) * 110; // swing left-right
+                        Matter.Body.setPosition(balanceCurrentBlock, { x: x, y: 40 });
+                    } else if (balanceGameState === 'falling') {
+                        let allQuiet = true;
+                        
+                        // Check if current block fell off
+                        if (balanceCurrentBlock.position.y > 420) {
+                            endBalanceGame();
+                            return;
+                        }
+                        if (balanceCurrentBlock.speed > 0.15 || Math.abs(balanceCurrentBlock.angularVelocity) > 0.02) allQuiet = false;
+
+                        // Check if any stacked block fell off or toppled
+                        for(let b of balanceStack) {
+                            if (b.position.y > 420) {
+                                endBalanceGame();
+                                return;
+                            }
+                            if (b.speed > 0.15 || Math.abs(b.angularVelocity) > 0.02) allQuiet = false;
+                        }
+
+                        if (allQuiet) {
+                            balanceSettleTimer++;
+                            if (balanceSettleTimer > 25) { 
+                                successBalanceDrop();
+                            }
+                        } else {
+                            balanceSettleTimer = 0;
+                        }
+                    }
+                });
+            }
+
+            document.getElementById('balance-action-btn').addEventListener('click', () => {
+                if (balanceGameState === 'idle' || balanceGameState === 'result') {
+                    startBalanceGame();
+                }
+            });
+
+            document.getElementById('balance-canvas-container').addEventListener('mousedown', () => {
+                if (balanceGameState === 'moving') dropBalanceBlock();
+            });
+
+            function startBalanceGame() {
+                Matter.Composite.clear(balanceEngine.world);
+                Matter.Engine.clear(balanceEngine);
+                
+                balanceStack = [];
+                balanceScore = 0;
+                document.getElementById('balance-score').innerText = balanceScore;
+                document.getElementById('balance-status').innerText = 'Click or Space to drop.';
+                document.getElementById('balance-action-btn').style.display = 'none';
+                
+                // Static Ground base
+                let ground = Matter.Bodies.rectangle(150, 390, 200, 20, { 
+                    isStatic: true, 
+                    render: { fillStyle: '#86868b' } 
+                });
+                Matter.Composite.add(balanceEngine.world, ground);
+                
+                spawnBalanceBlock();
+            }
+
+            function spawnBalanceBlock() {
+                // Width decreases slightly as you get higher to increase difficulty
+                let w = Math.max(30, 100 - (balanceScore * 4));
+                balanceCurrentBlock = Matter.Bodies.rectangle(150, 40, w, 24, { 
+                    isStatic: true, 
+                    friction: 0.8, // High friction so they grip slightly
+                    restitution: 0.05, // Low bounce
+                    density: 0.05,
+                    render: { fillStyle: '#2997ff' } 
+                });
+                Matter.Composite.add(balanceEngine.world, balanceCurrentBlock);
+                balanceGameState = 'moving';
+                balanceMoveTime = 0;
+                balanceSettleTimer = 0;
+            }
+
+            function dropBalanceBlock() {
+                if (balanceGameState !== 'moving') return;
+                Matter.Body.setStatic(balanceCurrentBlock, false);
+                balanceGameState = 'falling';
+            }
+
+            function successBalanceDrop() {
+                balanceStack.push(balanceCurrentBlock);
+                balanceScore++;
+                document.getElementById('balance-score').innerText = balanceScore;
+                
+                // Shift all bodies downwards in the world to make room for stacking high
+                const shiftAmount = 24;
+                Matter.Composite.allBodies(balanceEngine.world).forEach(b => {
+                    Matter.Body.setPosition(b, { x: b.position.x, y: b.position.y + shiftAmount });
+                });
+
+                spawnBalanceBlock();
+            }
+
+            function endBalanceGame() {
+                balanceGameState = 'result';
+                document.getElementById('balance-status').innerText = 'Structure toppled!';
+                document.getElementById('balance-action-btn').style.display = 'inline-block';
+                document.getElementById('balance-action-btn').innerText = 'Try Again';
+                
+                if (balanceScore > balanceHighScore) {
+                    balanceHighScore = balanceScore;
+                    localStorage.setItem('appleBalanceHighScore', balanceHighScore);
+                    document.getElementById('balance-highscore').innerText = balanceHighScore;
+                    document.getElementById('balance-status').innerText = 'New High Score!';
+                }
+            }
         })();
     </script>
 
