@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -312,15 +312,16 @@
             flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;
         }
 
-        /* Message Reply System Wrappers */
+        /* FIX: Flex layout for the wrapper prevents hover loss in gaps */
         .msg-wrapper {
-            position: relative; max-width: 70%;
+            display: flex; align-items: center; gap: 8px; max-width: 75%;
             animation: messagePop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0; transform: translateY(10px) scale(0.95);
         }
+        .msg-wrapper.sent { flex-direction: row-reverse; }
 
         .message {
-            padding: 0.8rem 1.2rem; border-radius: 20px; line-height: 1.4; font-size: 1.05rem; /* Increased slightly for better emoji mixing */
+            padding: 0.8rem 1.2rem; border-radius: 20px; line-height: 1.4; font-size: 1.05rem; 
             word-break: break-word; 
         }
 
@@ -334,7 +335,7 @@
         .message.standalone-emoji .reply-context {
             font-size: 0.75rem; 
             margin-bottom: 8px;
-            background: rgba(40,40,40,0.8); /* Darker background so text is readable without the bubble */
+            background: rgba(40,40,40,0.8); 
             color: #fff;
             border-left: 3px solid var(--accent-blue);
         }
@@ -365,15 +366,13 @@
 
         /* Reply Button Overlay */
         .reply-btn {
-            position: absolute; top: 50%; transform: translateY(-50%);
+            flex-shrink: 0;
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; 
             width: 28px; height: 28px; color: white; cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 14px;
             transition: background 0.2s, transform 0.2s; z-index: 10;
         }
-        .reply-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-50%) scale(1.1); }
+        .reply-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
         .msg-wrapper:hover .reply-btn { display: flex; }
-        .message.sent + .reply-btn { left: -36px; }
-        .message.received + .reply-btn { right: -36px; }
 
         .chat-img {
             max-width: 100%;
@@ -504,7 +503,7 @@
                     </div>
                     <div class="chat-main">
                         <div class="chat-messages" id="chat-box">
-                            <div class="msg-wrapper" style="align-self: flex-start; animation: none; opacity: 1; transform: none; max-width: 100%;">
+                            <div class="msg-wrapper received" style="align-self: flex-start; animation: none; opacity: 1; transform: none; max-width: 100%;">
                                 <div class="message received"><p>iMessage connection established. Send a message to begin.</p></div>
                             </div>
                         </div>
@@ -1230,7 +1229,7 @@
 
                 unsubscribeMessages = onSnapshot(q, (snapshot) => {
                     chatBox.innerHTML = `
-                    <div class="msg-wrapper" style="align-self: flex-start; animation: none; opacity: 1; transform: none; max-width: 100%;">
+                    <div class="msg-wrapper sent" style="align-self: flex-start; animation: none; opacity: 1; transform: none; max-width: 100%;">
                         <div class="message received"><p>iMessage connection established.</p></div>
                     </div>`;
                     
@@ -1243,13 +1242,12 @@
                         
                         let isStandaloneEmoji = false;
                         if (data.text && !data.imageUrl) {
-                            // Regex detects if string is composed ONLY of emojis and spaces
                             const emojiRegex = /^[\p{Emoji_Presentation}\p{Extended_Pictographic}\uFE0F\u200D\s]+$/gu;
                             isStandaloneEmoji = emojiRegex.test(data.text.trim());
                         }
 
                         const wrapper = document.createElement("div");
-                        wrapper.className = "msg-wrapper";
+                        wrapper.className = `msg-wrapper ${isSentByMe ? 'sent' : 'received'}`;
                         wrapper.style.alignSelf = isSentByMe ? "flex-end" : "flex-start";
                         
                         const bubble = document.createElement("div");
