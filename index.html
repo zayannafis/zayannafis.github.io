@@ -305,7 +305,7 @@
         }
 
         .contact-name { font-weight: 600; color: #fff; font-size: 1rem; }
-        .contact-status { font-size: 0.8rem; color: var(--text-muted); }
+        .contact-status { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; }
 
         .chat-main { flex: 1; display: flex; flex-direction: column; position: relative; min-width: 0; }
         .chat-messages {
@@ -1185,7 +1185,7 @@
                                 sender: isAdmin ? "admin" : "user", 
                                 timestamp: serverTimestamp() 
                             });
-                            if (!isAdmin) { await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }); }
+                            if (!isAdmin) { await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }, { merge: true }); }
                         } catch (error) { console.error("Transmission error:", error); }
                     }
                     img.src = event.target.result;
@@ -1218,11 +1218,23 @@
                 const passcode = prompt("Admin Passcode:");
                 if (passcode === "chittypoo99") {
                     isAdmin = true;
-                    document.querySelector('.contact-status').innerText = "Admin Mode";
+                    document.querySelector('.contact-status').innerHTML = `<span style="color:#34c759">Admin Mode</span>`;
                     sidebarContent.innerHTML = `<h4 style="font-size:0.8rem; margin-bottom:10px; color:#86868b; text-transform:uppercase;">Active Sessions</h4><div id="user-sessions-list" style="display:flex; flex-direction:column; gap:8px;"></div>`;
                     loadAdminUserList();
                 }
             });
+
+            // CLIENT HEARTBEAT: Ping Firebase to show "Online" status
+            if (!isAdmin) {
+                const updatePresence = () => {
+                    setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }, { merge: true }).catch(e => console.error("Presence Error:", e));
+                };
+                updatePresence(); 
+                setInterval(updatePresence, 30000); 
+                document.addEventListener("visibilitychange", () => {
+                    if (document.visibilityState === 'visible') updatePresence();
+                });
+            }
 
             function listenToChat(userId) {
                 if (unsubscribeMessages) unsubscribeMessages();
@@ -1237,7 +1249,7 @@
                 unsubscribeMessages = onSnapshot(q, (snapshot) => {
                     let hasNewMessages = false;
 
-                    // FIX: Process only added docs to stop UI thrashing / resetting scroll completely
+                    // Process only added docs to stop UI thrashing / resetting scroll completely
                     snapshot.docChanges().forEach((change) => {
                         if (change.type === "added") {
                             hasNewMessages = true;
@@ -1251,6 +1263,15 @@
                             if (data.text && !data.imageUrl) {
                                 const emojiRegex = /^[\p{Emoji_Presentation}\p{Extended_Pictographic}\uFE0F\u200D\s]+$/gu;
                                 isStandaloneEmoji = emojiRegex.test(data.text.trim());
+                            }
+
+                            // Format the Timestamp
+                            let timeString = "";
+                            if (data.timestamp) {
+                                const date = data.timestamp.toDate();
+                                timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            } else {
+                                timeString = "Just now"; // Optimistic local render before server confirms
                             }
 
                             const wrapper = document.createElement("div");
@@ -1280,6 +1301,9 @@
                                 contentHtml += `<p>${linkedText}</p>`;
                             }
                             
+                            // Inject timestamp at bottom of bubble
+                            contentHtml += `<div style="font-size: 0.65rem; color: rgba(255,255,255,0.5); text-align: right; margin-top: 4px; pointer-events: none; ${isStandaloneEmoji ? 'text-shadow: 0 1px 3px rgba(0,0,0,0.8);' : ''}">${timeString}</div>`;
+
                             bubble.innerHTML = contentHtml;
                             
                             // Setup Reply Button overlay
@@ -1311,23 +1335,57 @@
                     const listContainer = document.getElementById('user-sessions-list');
                     if(!listContainer) return;
                     listContainer.innerHTML = "";
-                    const cutoffTime = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
+                    
+                    const nowTime = new Date().getTime();
+                    const cutoffTime = new Date(nowTime - (24 * 60 * 60 * 1000));
 
                     snapshot.forEach((userDoc) => {
                         const uId = userDoc.id;
-                        let lastActive = userDoc.data().lastActive ? userDoc.data().lastActive.toDate() : new Date();
+                        const data = userDoc.data();
+                        let lastActive = data.lastActive ? data.lastActive.toDate() : new Date();
+                        let contactName = data.name || `Session: ${uId.substring(0, 6)}...`;
 
                         if (lastActive > cutoffTime) {
+                            
+                            // Check if online (pinged within last 60 seconds)
+                            const isOnline = (nowTime - lastActive.getTime()) < 60000;
+                            const statusColor = isOnline ? '#34c759' : '#86868b'; // Green or Grey
+
+                            // Also sync main header status if this is the currently viewed user
+                            if (uId === activeChatUserId && isAdmin) {
+                                document.querySelector('.contact-status').innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
+                            }
+
                             const sessionBtn = document.createElement('div');
                             sessionBtn.style.padding = "10px";
                             sessionBtn.style.background = activeChatUserId === uId ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)";
                             sessionBtn.style.borderRadius = "12px";
                             sessionBtn.style.fontSize = "0.85rem";
                             sessionBtn.style.cursor = "pointer";
-                            sessionBtn.innerHTML = `Session: ${uId.substring(0, 6)}...`;
+                            sessionBtn.style.display = "flex";
+                            sessionBtn.style.justifyContent = "space-between";
+                            sessionBtn.style.alignItems = "center";
 
-                            sessionBtn.addEventListener('click', () => {
+                            sessionBtn.innerHTML = `
+                                <div style="display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 75%; pointer-events: none;">
+                                    <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${statusColor}; margin-right:8px; flex-shrink: 0; box-shadow: 0 0 5px ${statusColor};"></span>
+                                    <span>${contactName}</span>
+                                </div>
+                                <button class="rename-btn" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; cursor: pointer; padding: 4px 8px; font-size: 10px; transition: background 0.2s;">Rename</button>
+                            `;
+
+                            sessionBtn.addEventListener('click', (e) => {
+                                if (e.target.classList.contains('rename-btn')) {
+                                    e.stopPropagation();
+                                    const newName = prompt("Enter a new name for this contact:", data.name || "");
+                                    if (newName !== null && newName.trim() !== "") {
+                                        setDoc(doc(db, "active_chats", uId), { name: newName.trim() }, { merge: true }).catch(console.error);
+                                    }
+                                    return;
+                                }
                                 activeChatUserId = uId;
+                                document.querySelector('.contact-name').innerText = contactName;
+                                document.querySelector('.contact-status').innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
                                 loadAdminUserList(); 
                                 listenToChat(uId); 
                             });
@@ -1358,7 +1416,7 @@
 
                 try {
                     await addDoc(collection(db, "chats", activeChatUserId, "messages"), messageData);
-                    if (!isAdmin) { await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }); }
+                    if (!isAdmin) { await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }, { merge: true }); }
                 } catch (error) { console.error("Transmission error:", error); }
             }
 
