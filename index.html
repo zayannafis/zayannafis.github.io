@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -37,7 +37,7 @@
             letter-spacing: -0.03em;
         }
 
-        /* --- CINEMATIC CURTAIN LOADER --- */
+        /* --- REALISTIC CURTAIN LOADER --- */
         #loader-screen {
             position: fixed;
             top: 0;
@@ -47,41 +47,50 @@
             z-index: 9999;
             display: flex;
             pointer-events: none;
+            background: #000; /* Behind the curtains */
         }
 
         .curtain {
             width: 50%;
             height: 100%;
-            background: #000000;
-            /* Heavy, physical-feeling ease curve for the opening */
-            transition: transform 1.4s cubic-bezier(0.85, 0, 0.15, 1);
-            will-change: transform;
+            /* Deep, realistic fabric folds simulated via gradients */
+            background: linear-gradient(90deg, 
+                #070707 0%, #1c1c1e 10%, #070707 20%, 
+                #1c1c1e 30%, #070707 40%, #1c1c1e 50%, 
+                #070707 60%, #1c1c1e 70%, #070707 80%, 
+                #1c1c1e 90%, #070707 100%);
+            background-size: 200% 100%;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 0 40px rgba(0,0,0,0.8);
+            /* Easing curve simulates the initial tug, rapid pull, and slow compression */
+            transition: transform 1.8s cubic-bezier(0.75, 0, 0.1, 1), background-position 1.8s cubic-bezier(0.75, 0, 0.1, 1);
+            will-change: transform, background-position;
             z-index: 9998;
         }
 
-        .loader-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            z-index: 10000;
-            transition: opacity 0.4s ease;
+        .curtain-left {
+            transform-origin: left center;
+            border-right: 2px solid rgba(255,255,255,0.05);
         }
 
-        .loader-text {
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
+        .curtain-right {
+            transform-origin: right center;
+            background-position: right top;
+            border-left: 2px solid rgba(255,255,255,0.05);
         }
 
         /* Hide body scroll until loaded */
         body.loading { overflow: hidden; }
 
-        /* The Reveal Physics */
-        body.loaded .curtain-left { transform: translateX(-100%); }
-        body.loaded .curtain-right { transform: translateX(100%); }
+        /* The Reveal Physics: Fabric bunches up by scaling to nearly 0 while gradients shift to simulate folding */
+        body.loaded #loader-screen { background: transparent; transition: background 0.5s; }
+        body.loaded .curtain-left { 
+            transform: scaleX(0.01); 
+            background-position: left top;
+        }
+        body.loaded .curtain-right { 
+            transform: scaleX(0.01);
+            background-position: left top; 
+        }
 
         /* Background Grid Canvas */
         #canvas-container {
@@ -396,9 +405,6 @@
     <div id="loader-screen">
         <div class="curtain curtain-left"></div>
         <div class="curtain curtain-right"></div>
-        <div class="loader-content" id="loader-content">
-            <div class="loader-text" id="loader-text">Initializing Systems</div>
-        </div>
     </div>
 
     <div id="canvas-container"></div>
@@ -523,30 +529,19 @@
     <script>
         // --- 0. CINEMATIC CURTAIN LOADER ---
         window.addEventListener('load', () => {
-            const text = document.getElementById('loader-text');
-            const content = document.getElementById('loader-content');
             const screen = document.getElementById('loader-screen');
             
-            // Sequence the loading text
-            setTimeout(() => { text.innerText = "Loading 3D Meshes..."; }, 300);
-            setTimeout(() => { text.innerText = "Syncing Telemetry..."; }, 700);
-            setTimeout(() => { text.innerText = "System Ready"; }, 1100);
-
-            // Fade out the text
-            setTimeout(() => {
-                content.style.opacity = '0';
-            }, 1400);
-
-            // Trigger the curtain open by adding 'loaded' to body
+            // Wait just a brief moment (500ms) for the user to register the closed curtains
+            // Then trigger the curtain pull
             setTimeout(() => {
                 document.body.classList.remove('loading');
                 document.body.classList.add('loaded');
-            }, 1700);
+            }, 500);
 
-            // Clean up DOM once curtains are off screen
+            // Clean up DOM once curtains are fully compressed and off screen
             setTimeout(() => { 
                 screen.style.display = 'none'; 
-            }, 3200);
+            }, 2500);
         });
 
         // Track global mouse for Parallax
@@ -830,7 +825,6 @@
 
             for (let i = 0; i < 9; i++) {
                 const node = document.createElement('div');
-                // Added proper CSS class which strictly defines height now
                 node.className = 'matrix-node'; 
                 node.addEventListener('click', () => handleNodeClick(i, node));
                 grid.appendChild(node);
