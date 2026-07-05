@@ -37,59 +37,35 @@
             letter-spacing: -0.03em;
         }
 
-        /* --- REALISTIC CURTAIN LOADER --- */
-        #loader-screen {
+        /* --- WATER DROPLET LOADER --- */
+        #water-loader {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
             z-index: 9999;
+            background: linear-gradient(to bottom, #050505, #111);
+            transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 1.5s;
             display: flex;
-            pointer-events: none;
-            background: #000; /* Behind the curtains */
+            justify-content: center;
+            align-items: center;
         }
 
-        .curtain {
-            width: 50%;
+        #water-canvas {
+            display: block;
+            width: 100%;
             height: 100%;
-            /* Deep, realistic fabric folds simulated via gradients */
-            background: linear-gradient(90deg, 
-                #070707 0%, #1c1c1e 10%, #070707 20%, 
-                #1c1c1e 30%, #070707 40%, #1c1c1e 50%, 
-                #070707 60%, #1c1c1e 70%, #070707 80%, 
-                #1c1c1e 90%, #070707 100%);
-            background-size: 200% 100%;
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 0 40px rgba(0,0,0,0.8);
-            /* Easing curve simulates the initial tug, rapid pull, and slow compression */
-            transition: transform 1.8s cubic-bezier(0.75, 0, 0.1, 1), background-position 1.8s cubic-bezier(0.75, 0, 0.1, 1);
-            will-change: transform, background-position;
-            z-index: 9998;
-        }
-
-        .curtain-left {
-            transform-origin: left center;
-            border-right: 2px solid rgba(255,255,255,0.05);
-        }
-
-        .curtain-right {
-            transform-origin: right center;
-            background-position: right top;
-            border-left: 2px solid rgba(255,255,255,0.05);
+            pointer-events: none;
         }
 
         /* Hide body scroll until loaded */
         body.loading { overflow: hidden; }
 
-        /* The Reveal Physics: Fabric bunches up by scaling to nearly 0 while gradients shift to simulate folding */
-        body.loaded #loader-screen { background: transparent; transition: background 0.5s; }
-        body.loaded .curtain-left { 
-            transform: scaleX(0.01); 
-            background-position: left top;
-        }
-        body.loaded .curtain-right { 
-            transform: scaleX(0.01);
-            background-position: left top; 
+        /* The Reveal */
+        body.loaded #water-loader { 
+            opacity: 0; 
+            pointer-events: none; 
         }
 
         /* Background Grid Canvas */
@@ -121,7 +97,7 @@
             background: rgba(0, 0, 0, 0.5);
             border-bottom: 1px solid var(--glass-border);
             transform: translateY(-100%);
-            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s;
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;
         }
         body.loaded nav { transform: translateY(0); }
 
@@ -402,9 +378,8 @@
 </head>
 <body class="loading">
 
-    <div id="loader-screen">
-        <div class="curtain curtain-left"></div>
-        <div class="curtain curtain-right"></div>
+    <div id="water-loader">
+        <canvas id="water-canvas"></canvas>
     </div>
 
     <div id="canvas-container"></div>
@@ -422,9 +397,9 @@
         <section id="home" class="section active">
             <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                 <div>
-                    <div class="badge hero-elem" style="transition-delay: 0.9s;">Domain Owner</div>
-                    <h1 class="hero-title hero-elem" style="transition-delay: 1.0s;">A new digital<br><span>presence.</span></h1>
-                    <p class="hero-desc hero-elem" style="transition-delay: 1.1s;">Designed with zero experience, built with pure intuition. Clean aesthetics, native interactions, and seamless animations. Scroll to explore the framework.</p>
+                    <div class="badge hero-elem" style="transition-delay: 0.6s;">Domain Owner</div>
+                    <h1 class="hero-title hero-elem" style="transition-delay: 0.7s;">A new digital<br><span>presence.</span></h1>
+                    <p class="hero-desc hero-elem" style="transition-delay: 0.8s;">Designed with zero experience, built with pure intuition. Clean aesthetics, native interactions, and seamless animations. Scroll to explore the framework.</p>
                 </div>
             </div>
 
@@ -527,22 +502,112 @@
     </main>
 
     <script>
-        // --- 0. CINEMATIC CURTAIN LOADER ---
-        window.addEventListener('load', () => {
-            const screen = document.getElementById('loader-screen');
+        // --- 0. CANVAS WATER DROPLET PHYSICS ENGINE ---
+        (function initWaterLoader() {
+            const canvas = document.getElementById('water-canvas');
+            const ctx = canvas.getContext('2d');
+            const loaderScreen = document.getElementById('water-loader');
             
-            // Wait just a brief moment (500ms) for the user to register the closed curtains
-            // Then trigger the curtain pull
+            let width, height;
+            let drops = [];
+            let isRunning = true;
+
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Drop {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = -Math.random() * height; // Start above screen
+                    this.r = Math.random() * 4 + 2;   // Radius
+                    this.speed = Math.random() * 3 + 1;
+                    this.wobble = Math.random() * Math.PI * 2;
+                }
+                
+                update() {
+                    this.y += this.speed;
+                    this.wobble += 0.1;
+                    this.x += Math.sin(this.wobble) * 0.5; // Surface tension wobble
+
+                    // Occasional speed burst to mimic merging drops
+                    if (Math.random() < 0.01) this.speed += 2; 
+
+                    // Leave tiny trail
+                    if (Math.random() < 0.1) {
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y - this.r, this.r * 0.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    // Reset if off screen
+                    if (this.y > height + 20) {
+                        this.y = -20;
+                        this.x = Math.random() * width;
+                        this.speed = Math.random() * 3 + 1;
+                    }
+                }
+
+                draw() {
+                    ctx.save();
+                    // Fake 3D Glass / Refraction Effect
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                    ctx.shadowBlur = 8;
+                    ctx.shadowOffsetY = 3;
+
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Tiny highlight reflection
+                    ctx.shadowColor = 'transparent';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.beginPath();
+                    ctx.arc(this.x - this.r * 0.3, this.y - this.r * 0.3, this.r * 0.2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            // Create initial drops
+            for (let i = 0; i < 150; i++) {
+                drops.push(new Drop());
+            }
+
+            function animate() {
+                if (!isRunning) return;
+                // Use a dark fill with slight transparency to create a motion blur effect
+                ctx.fillStyle = 'rgba(10, 10, 12, 0.4)';
+                ctx.fillRect(0, 0, width, height);
+
+                drops.forEach(drop => {
+                    drop.update();
+                    drop.draw();
+                });
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+
+            // Run for 3.5 seconds, then reveal the site
             setTimeout(() => {
                 document.body.classList.remove('loading');
                 document.body.classList.add('loaded');
-            }, 500);
-
-            // Clean up DOM once curtains are fully compressed and off screen
-            setTimeout(() => { 
-                screen.style.display = 'none'; 
-            }, 2500);
-        });
+                
+                // Stop the physics engine after fade out to save CPU
+                setTimeout(() => {
+                    isRunning = false;
+                    loaderScreen.style.display = 'none';
+                }, 1500);
+            }, 3500);
+        })();
 
         // Track global mouse for Parallax
         let globalMouseX = 0;
