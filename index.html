@@ -566,8 +566,16 @@
         const starGeo = new THREE.BufferGeometry();
         const starCount = 2000;
         const starPos = new Float32Array(starCount * 3);
-        for(let i = 0; i < starCount * 3; i++) {
-            starPos[i] = (Math.random() - 0.5) * 400; 
+        for(let i = 0; i < starCount * 3; i+=3) {
+            let x, y, z;
+            do {
+                x = (Math.random() - 0.5) * 400; 
+                y = (Math.random() - 0.5) * 400; 
+                z = (Math.random() - 0.5) * 400; 
+            } while(x*x + y*y + z*z < 10000); // Prevent stars from spawning too close to the camera (creates grey square artifacts)
+            starPos[i] = x;
+            starPos[i+1] = y;
+            starPos[i+2] = z;
         }
         starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
         const starMat = new THREE.PointsMaterial({color: 0x86868b, size: 0.5, transparent: true, opacity: 0.8});
