@@ -7,17 +7,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <style>
-        /* CSS Variables for Apple-style Premium Dark Mode */
         :root {
             --bg-color: #000000;
             --text-main: #f5f5f7;
             --text-muted: #86868b;
             --accent-blue: #2997ff;
-            --glass-bg: rgba(28, 28, 30, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(28, 28, 30, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
-        /* Base Reset & Typography */
         * {
             margin: 0;
             padding: 0;
@@ -31,6 +29,8 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             overflow-x: hidden;
             line-height: 1.5;
+            /* Smooth scrolling for anchor links */
+            scroll-behavior: smooth; 
         }
 
         h1, h2, h3, h4, .logo {
@@ -38,7 +38,50 @@
             letter-spacing: -0.03em;
         }
 
-        /* Background Grid Canvas Container */
+        /* --- CINEMATIC LOADER --- */
+        #loader-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1), opacity 1.2s ease;
+        }
+
+        #loader-line-container {
+            width: 200px;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        #loader-line {
+            width: 0%;
+            height: 100%;
+            background: #fff;
+            transition: width 0.3s ease-out;
+        }
+
+        .loader-text {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        /* Hide body scroll until loaded */
+        body.loading {
+            overflow: hidden;
+        }
+
+        /* Background Grid Canvas */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -47,7 +90,10 @@
             height: 100%;
             z-index: -2; 
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s ease;
         }
+        body.loaded #canvas-container { opacity: 1; }
 
         /* Navigation */
         nav {
@@ -59,22 +105,21 @@
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            background: rgba(0, 0, 0, 0.5);
             border-bottom: 1px solid var(--glass-border);
+            transform: translateY(-100%);
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;
         }
+        body.loaded nav { transform: translateY(0); }
 
-        .logo {
-            font-size: 1.25rem;
-            color: #fff;
-            letter-spacing: -0.05em;
-        }
+        .logo { font-size: 1.25rem; color: #fff; letter-spacing: -0.05em; }
 
         .nav-links {
             display: flex;
             gap: 2rem;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             padding: 0.5rem 1rem;
             border-radius: 50px;
             border: 1px solid var(--glass-border);
@@ -90,12 +135,8 @@
             cursor: pointer;
             transition: color 0.3s;
         }
+        .nav-btn:hover, .nav-btn.active { color: var(--text-main); }
 
-        .nav-btn:hover, .nav-btn.active {
-            color: var(--text-main);
-        }
-
-        /* Main Content */
         main {
             display: flex;
             justify-content: center;
@@ -112,34 +153,44 @@
 
         .section.active {
             display: block;
-            animation: instantFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: sectionFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        @keyframes instantFadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes sectionFadeIn {
+            from { opacity: 0; filter: blur(10px); transform: translateY(20px); }
+            to { opacity: 1; filter: blur(0); transform: translateY(0); }
         }
 
-        /* ✨ REVERSIBLE SCROLL ANIMATIONS ✨ */
+        /* ✨ NEXT-GEN BLUR REVEAL ANIMATIONS ✨ */
         .reveal {
             opacity: 0;
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); 
+            filter: blur(15px);
+            transform: translateY(60px) scale(0.95);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); 
+            will-change: transform, opacity, filter;
         }
-
-        .reveal.fade-up { transform: translateY(60px); }
-        .reveal.fade-down { transform: translateY(-60px); }
-        .reveal.fade-left { transform: translateX(-60px); }
-        .reveal.fade-right { transform: translateX(60px); }
-        .reveal.scale-up { transform: scale(0.9); }
 
         .reveal.visible {
             opacity: 1;
+            filter: blur(0px);
             transform: translate(0) scale(1);
         }
 
         .delay-100 { transition-delay: 0.1s; }
         .delay-200 { transition-delay: 0.2s; }
         .delay-300 { transition-delay: 0.3s; }
+        .delay-400 { transition-delay: 0.4s; }
+
+        /* Initial Hero Animation (Triggered by body.loaded) */
+        .hero-elem {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        body.loaded .hero-elem {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         /* Typography & Badges */
         .badge {
@@ -147,7 +198,7 @@
             padding: 0.4rem 1rem;
             border-radius: 50px;
             border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             font-size: 0.75rem;
             font-weight: 500;
             text-transform: uppercase;
@@ -165,6 +216,9 @@
 
         .hero-title span {
             color: var(--accent-blue);
+            background: linear-gradient(135deg, #2997ff, #7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero-desc {
@@ -176,23 +230,41 @@
             letter-spacing: -0.01em;
         }
 
-        /* Dashboard Card Styling (Apple Style) */
+        /* ✨ 3D MAGNETIC DASHBOARD CARDS ✨ */
         .dash-card {
             background: var(--glass-bg); 
             border: 1px solid var(--glass-border); 
             padding: 40px; 
             border-radius: 24px; 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+            position: relative;
+            overflow: hidden;
+            /* Remove standard hover scale, handled by JS now */
+            transition: border-color 0.3s, box-shadow 0.3s;
+            will-change: transform;
         }
         
+        .dash-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
         .dash-card:hover {
-            transform: scale(1.02);
-            background: rgba(40, 40, 42, 0.8);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .dash-card:hover::before {
+            opacity: 1;
         }
 
         .dash-value {
@@ -209,15 +281,15 @@
             font-weight: 500;
         }
 
-        /* --- CHAT SYSTEM UI (iMessage Style) --- */
+        /* --- CHAT SYSTEM UI --- */
         .chat-container {
             display: flex;
             height: 600px;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             overflow: hidden;
             margin-top: 2rem;
         }
@@ -258,101 +330,41 @@
             color: #fff;
         }
 
-        .contact-name {
-            font-weight: 600;
-            color: #fff;
-            font-size: 1rem;
-        }
+        .contact-name { font-weight: 600; color: #fff; font-size: 1rem; }
+        .contact-status { font-size: 0.8rem; color: var(--text-muted); }
 
-        .contact-status {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .chat-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
+        .chat-main { flex: 1; display: flex; flex-direction: column; }
         .chat-messages {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+            flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;
         }
 
         .message {
-            max-width: 70%;
-            padding: 0.8rem 1.2rem;
-            border-radius: 20px;
-            line-height: 1.4;
-            font-size: 0.95rem;
+            max-width: 70%; padding: 0.8rem 1.2rem; border-radius: 20px; line-height: 1.4; font-size: 0.95rem;
+            animation: messagePop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0; transform: translateY(10px) scale(0.95);
         }
 
-        .message.received {
-            background: #2c2c2e;
-            color: #fff;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
+        @keyframes messagePop {
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .message.sent {
-            background: var(--accent-blue);
-            color: #fff;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
+        .message.received { background: #2c2c2e; color: #fff; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .message.sent { background: var(--accent-blue); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
 
         .chat-input-area {
-            padding: 1.5rem;
-            border-top: 1px solid var(--glass-border);
-            display: flex;
-            gap: 1rem;
-            background: rgba(0,0,0,0.2);
+            padding: 1.5rem; border-top: 1px solid var(--glass-border); display: flex; gap: 1rem; background: rgba(0,0,0,0.2);
         }
 
         .chat-input-area input {
-            flex: 1;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid transparent;
-            border-radius: 50px;
-            padding: 0.8rem 1.5rem;
-            color: #fff;
-            font-family: inherit;
-            font-size: 1rem;
-            outline: none;
-            transition: background 0.3s, border-color 0.3s;
+            flex: 1; background: rgba(255,255,255,0.05); border: 1px solid transparent; border-radius: 50px; padding: 0.8rem 1.5rem; color: #fff; font-family: inherit; font-size: 1rem; outline: none; transition: background 0.3s, border-color 0.3s;
         }
-
-        .chat-input-area input:focus {
-            background: rgba(255,255,255,0.15);
-            border-color: rgba(255,255,255,0.3);
-        }
+        .chat-input-area input:focus { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
 
         .chat-input-area button {
-            background: var(--accent-blue);
-            color: #fff;
-            border: none;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: var(--accent-blue); color: #fff; border: none; width: 45px; height: 45px; border-radius: 50%; font-weight: 600; cursor: pointer; transition: transform 0.2s, background 0.2s; display: flex; justify-content: center; align-items: center;
         }
+        .chat-input-area button:hover { transform: scale(1.05); background: #147ce6; }
 
-        .chat-input-area button:hover {
-            transform: scale(1.05);
-            background: #147ce6;
-        }
-
-        /* Mobile Adjustments */
         @media (max-width: 768px) {
             nav { padding: 1rem 5%; flex-direction: column; gap: 1rem; }
             .hero-title { font-size: clamp(2.5rem, 12vw, 4rem) !important; }
@@ -362,7 +374,15 @@
         }
     </style>
 </head>
-<body>
+<body class="loading">
+
+    <div id="loader-screen">
+        <div id="loader-line-container">
+            <div id="loader-line"></div>
+        </div>
+        <div class="loader-text" id="loader-text">Initializing Systems</div>
+    </div>
+
     <div id="canvas-container"></div>
 
     <nav>
@@ -377,10 +397,10 @@
     <main>
         <section id="home" class="section active">
             <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                <div class="reveal fade-up visible">
-                    <div class="badge">Domain Owner</div>
-                    <h1 class="hero-title">A new digital<br><span>presence.</span></h1>
-                    <p class="hero-desc">Designed with zero experience, built with pure intuition. Clean aesthetics, native interactions, and seamless animations. Scroll to explore the framework.</p>
+                <div>
+                    <div class="badge hero-elem" style="transition-delay: 0.6s;">Domain Owner</div>
+                    <h1 class="hero-title hero-elem" style="transition-delay: 0.7s;">A new digital<br><span>presence.</span></h1>
+                    <p class="hero-desc hero-elem" style="transition-delay: 0.8s;">Designed with zero experience, built with pure intuition. Clean aesthetics, native interactions, and seamless animations. Scroll to explore the framework.</p>
                 </div>
             </div>
 
@@ -388,33 +408,33 @@
                 <div style="position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; pointer-events: none;">
                     
                     <div class="reveal fade-up" style="position: absolute; top: 15vh; z-index: 10; text-align: center;">
-                        <h2 class="hero-title" style="font-size: clamp(2rem, 5vw, 4rem);">Real-time telemetry.</h2>
+                        <h2 class="hero-title" style="font-size: clamp(2rem, 5vw, 4rem);">Global footprint.</h2>
                     </div>
                     
                     <div id="globe-canvas-container" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; display: flex; justify-content: center; align-items: center;"></div>
                     
-                    <p style="position: absolute; bottom: 10vh; color: var(--text-muted); font-size: 0.9rem; z-index: 10; font-weight: 500;" class="reveal fade-up">Scroll to orbit the system.</p>
+                    <p style="position: absolute; bottom: 10vh; color: var(--text-muted); font-size: 0.9rem; z-index: 10; font-weight: 500;" class="reveal fade-up delay-200">Scroll to orbit the system.</p>
                 </div>
             </div>
 
             <div style="padding: 10vh 0 15vh 0; text-align: center;">
-                <h3 class="reveal fade-left" style="font-size: 2.5rem; margin-bottom: 3rem; letter-spacing: -0.03em;">Live telemetry.</h3>
+                <h3 class="reveal fade-up" style="font-size: 2.5rem; margin-bottom: 3rem; letter-spacing: -0.03em;">Live telemetry.</h3>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; text-align: left;">
                     
-                    <div class="reveal fade-up delay-100 dash-card">
+                    <div class="reveal fade-up delay-100 dash-card tilt-effect">
                         <span class="dash-label">Local Environment</span>
                         <h4 id="weather-temp" class="dash-value">--°C</h4>
                         <p id="weather-desc" class="dash-label">Locating network...</p>
                     </div>
                     
-                    <div class="reveal fade-up delay-200 dash-card">
+                    <div class="reveal fade-up delay-200 dash-card tilt-effect">
                         <span class="dash-label">Solar Cycle</span>
                         <h4 id="sun-time" class="dash-value">--:--</h4>
                         <p class="dash-label">Sunrise & Sunset</p>
                     </div>
 
-                    <div class="reveal fade-up delay-300 dash-card">
+                    <div class="reveal fade-up delay-300 dash-card tilt-effect">
                         <span class="dash-label">System Time</span>
                         <h4 id="clock-time" class="dash-value" style="font-variant-numeric: tabular-nums;">--:--:--</h4>
                         <p id="clock-date" class="dash-label">Synchronizing...</p>
@@ -426,11 +446,11 @@
 
         <section id="messages" class="section">
             <div style="padding-top: 15vh;">
-                <div class="reveal fade-right visible">
+                <div class="reveal fade-up visible">
                     <h2 class="hero-title" style="font-size: 4rem;">Secure <span>comms.</span></h2>
                     <p class="hero-desc" style="margin: 0;">Direct end-to-end database connections.</p>
                 </div>
-                <div class="chat-container reveal scale-up delay-200 visible">
+                <div class="chat-container reveal fade-up delay-200 visible">
                     <div class="chat-sidebar">
                         <div id="sidebar-content">
                             <div class="chat-contact">
@@ -459,12 +479,12 @@
 
         <section id="mystery" class="section">
             <div style="padding-top: 15vh;">
-                <div class="reveal fade-left visible">
+                <div class="reveal fade-up visible">
                     <h2 class="hero-title" style="font-size: 4rem;">Memory <span>matrix.</span></h2>
                     <p class="hero-desc" style="margin: 0;">Test your cognitive retention.</p>
                 </div>
                 
-                <div id="cyber-puzzle-container" class="reveal fade-up delay-200 visible" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 40px; text-align: center; margin-top: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; backdrop-filter: blur(20px);">
+                <div id="cyber-puzzle-container" class="reveal fade-up delay-200 visible dash-card tilt-effect" style="margin-top: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center;">
             
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
                         <span id="matrix-level" style="font-weight: 500; color: var(--text-muted);">Level 1</span>
@@ -476,13 +496,44 @@
                         </div>
             
                     <p id="matrix-status" style="color: var(--text-muted); margin-top: 30px; height: 24px; font-weight: 500;">Ready.</p>
-                    <button id="matrix-start-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; margin-top: 15px; cursor: pointer; transition: transform 0.2s;">Start Game</button>
+                    <button id="matrix-start-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; margin-top: 15px; cursor: pointer; transition: transform 0.2s, background 0.2s;">Start Game</button>
                 </div>
             </div>
         </section>
     </main>
 
     <script>
+        // --- 0. CINEMATIC LOADER ---
+        window.addEventListener('load', () => {
+            const line = document.getElementById('loader-line');
+            const text = document.getElementById('loader-text');
+            const screen = document.getElementById('loader-screen');
+            
+            // Simulate asset loading progress
+            setTimeout(() => { line.style.width = '40%'; text.innerText = "Loading 3D Meshes..."; }, 200);
+            setTimeout(() => { line.style.width = '80%'; text.innerText = "Syncing Telemetry..."; }, 600);
+            setTimeout(() => { 
+                line.style.width = '100%'; 
+                text.innerText = "System Ready"; 
+            }, 1000);
+
+            setTimeout(() => {
+                screen.style.transform = 'translateY(-100%)';
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+            }, 1400);
+
+            setTimeout(() => { screen.style.display = 'none'; }, 2600);
+        });
+
+        // Track global mouse for Parallax
+        let globalMouseX = 0;
+        let globalMouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            globalMouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            globalMouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
         // --- 1. BACKGROUND 3D GRID (Subtle Gray Waves) ---
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x000000, 0.02); 
@@ -535,109 +586,104 @@
         const starCount = 2000;
         const starPos = new Float32Array(starCount * 3);
         for(let i = 0; i < starCount * 3; i++) {
-            starPos[i] = (Math.random() - 0.5) * 400; // Spread stars wide
+            starPos[i] = (Math.random() - 0.5) * 400; 
         }
         starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
         const starMat = new THREE.PointsMaterial({color: 0x86868b, size: 0.5, transparent: true, opacity: 0.8});
         const stars = new THREE.Points(starGeo, starMat);
         globeScene.add(stars);
 
-        // The Scroll Orbit Group (This rotates the entire system when you scroll)
         const systemOrbitGroup = new THREE.Group();
         globeScene.add(systemOrbitGroup);
 
-        // --- EARTH ---
+        // EARTH
         const earthGeo = new THREE.SphereGeometry(12, 64, 64);
         const textureLoader = new THREE.TextureLoader();
-        
-        // Realistic Blue Marble for daytime, Night Map for city lights
         const dayTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
         const nightTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-night.jpg');
         
         const earthMat = new THREE.MeshStandardMaterial({ 
             map: dayTex,
             emissiveMap: nightTex,
-            emissive: 0xffffee, // Warm golden city light glow
-            emissiveIntensity: 0.8, // Bright enough to see in dark, washed out by sun in the day
+            emissive: 0xffffee, 
+            emissiveIntensity: 0.8, 
             roughness: 0.7,
             metalness: 0.1
         });
         const earthMesh = new THREE.Mesh(earthGeo, earthMat);
         systemOrbitGroup.add(earthMesh);
 
-        // --- ASTRONOMICAL TIME MATH ---
+        // TIME MATH
         const now = new Date();
-        
-        // 1. Calculate Sun Declination (Axial Tilt based on Season)
         const startOfYear = new Date(now.getFullYear(), 0, 0);
         const diff = now - startOfYear;
         const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
         const tilt = 23.5 * (Math.PI / 180);
-        // Approximation of the Sun's declination curve
         const sunDeclination = Math.sin((dayOfYear - 80) * (2 * Math.PI / 365)) * tilt;
 
-        // 2. Place the Sun Light Source
+        // SUN
         const sunDistance = 150; 
-        const sunLight = new THREE.DirectionalLight(0xffffff, 4.0); // Very strong sun
+        const sunLight = new THREE.DirectionalLight(0xffffff, 4.0); 
         sunLight.position.set(
             sunDistance * Math.cos(sunDeclination), 
             sunDistance * Math.sin(sunDeclination), 
-            0 // Sun is locked to X/Y axis in this system
+            0 
         );
         systemOrbitGroup.add(sunLight);
 
-        // Soft ambient light just to prevent the dark side from being literally pitch black
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.05);
         systemOrbitGroup.add(ambientLight);
 
-        // Add a glowing visual Sun sphere way out in the distance
         const sunGeo = new THREE.SphereGeometry(4, 32, 32);
         const sunMat = new THREE.MeshBasicMaterial({ color: 0xffffee });
         const sunVisual = new THREE.Mesh(sunGeo, sunMat);
         sunVisual.position.copy(sunLight.position);
         systemOrbitGroup.add(sunVisual);
 
-        // 3. Rotate Earth based on Current UTC Time
+        // Sync Earth rotation
         const utcHours = now.getUTCHours() + (now.getUTCMinutes() / 60);
-        // Map 24 hours to 360 degrees. Math.PI adjusts the texture seam to align with Greenwich.
-        earthMesh.rotation.y = (utcHours / 24) * Math.PI * 2 + Math.PI;
-
-        // --- SCROLL HIJACK LOGIC ---
+        const initialRotation = (utcHours / 24) * Math.PI * 2 + Math.PI; 
+        earthMesh.rotation.y = initialRotation;
+        
         let targetSystemRotation = 0;
 
         window.addEventListener('scroll', () => {
             const wrapper = document.getElementById('globe-scroll-wrapper');
             if(!wrapper) return;
-            
             const rect = wrapper.getBoundingClientRect();
             const windowHeight = window.innerHeight;
-            
             if (rect.top <= 0 && rect.bottom >= windowHeight) {
                 const progress = Math.abs(rect.top) / (rect.height - windowHeight);
-                // Scroll slowly orbits the camera around the Y axis of the entire system
                 targetSystemRotation = progress * Math.PI * 2; 
             }
         });
 
+        // PARALLAX CAMERA TARGETS
+        let targetCameraX = 0;
+        let targetCameraY = 0;
+
         function animateGlobe() {
             requestAnimationFrame(animateGlobe);
-            
-            // Slowly rotate stars for parallax depth
             stars.rotation.y += 0.0002;
-            
-            // Smoothly orbit the system based on scroll position
             systemOrbitGroup.rotation.y += (targetSystemRotation - systemOrbitGroup.rotation.y) * 0.08; 
             
+            // Mouse Parallax Effect
+            targetCameraX = globalMouseX * 5;
+            targetCameraY = globalMouseY * 5;
+            globeCamera.position.x += (targetCameraX - globeCamera.position.x) * 0.05;
+            globeCamera.position.y += (targetCameraY - globeCamera.position.y) * 0.05;
+            globeCamera.lookAt(globeScene.position);
+
             globeRenderer.render(globeScene, globeCamera);
         }
         animateGlobe();
+
 
         // --- 3. LIVE SYSTEM DATA (IP GEO-TRACE & LOCAL APIS) ---
         async function fetchLocalData() {
             try {
                 const geoRes = await fetch('https://get.geojs.io/v1/ip/geo.json');
                 const geoData = await geoRes.json();
-                
                 const lat = geoData.latitude;
                 const lon = geoData.longitude;
                 const city = geoData.city || "Local";
@@ -653,7 +699,6 @@
                 const sunrise = new Date(weatherData.daily.sunrise[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 const sunset = new Date(weatherData.daily.sunset[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 document.getElementById('sun-time').innerText = `${sunrise} - ${sunset}`;
-                
             } catch(e) {
                 console.error("Data Fetch Error:", e);
                 document.getElementById('weather-temp').innerText = '--°C';
@@ -663,12 +708,10 @@
         }
         fetchLocalData();
 
-        // System Clock Module 
         setInterval(() => {
             const now = new Date();
             const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
             const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
-            
             document.getElementById('clock-time').innerText = now.toLocaleTimeString([], timeOptions);
             document.getElementById('clock-date').innerText = now.toLocaleDateString([], dateOptions);
         }, 1000);
@@ -684,12 +727,8 @@
             globeRenderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // --- 5. REVERSIBLE SCROLL OBSERVER ---
-        const observerOptions = {
-            threshold: 0.25, 
-            rootMargin: "0px" 
-        };
-
+        // --- 5. BLUR REVEAL SCROLL OBSERVER ---
+        const observerOptions = { threshold: 0.15, rootMargin: "0px" };
         const scrollObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -700,11 +739,35 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.reveal').forEach(el => {
-            scrollObserver.observe(el);
+        document.querySelectorAll('.reveal').forEach(el => { scrollObserver.observe(el); });
+
+        // --- 6. 3D MAGNETIC TILT CARDS ---
+        document.querySelectorAll('.tilt-effect').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Track mouse for the internal radial gradient glare
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Calculate subtle 3D rotation based on mouse distance from center
+                const rotateX = ((y - centerY) / centerY) * -5; // max 5 deg tilt
+                const rotateY = ((x - centerX) / centerX) * 5;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
+            });
         });
 
-        // --- 6. TAB NAVIGATION LOGIC ---
+        // --- 7. TAB NAVIGATION LOGIC ---
         const navBtns = document.querySelectorAll('.nav-btn');
         const sections = document.querySelectorAll('.section');
 
@@ -727,7 +790,7 @@
             });
         });
 
-        // --- 7. MATRIX GAME LOGIC (Apple Redesign) ---
+        // --- 8. MATRIX GAME LOGIC ---
         (function initCyberPuzzle() {
             const grid = document.getElementById('matrix-grid');
             const startBtn = document.getElementById('matrix-start-btn');
@@ -781,7 +844,7 @@
 
                 sequence.push(Math.floor(Math.random() * 9));
 
-                let delay = 500;
+                let delay = 400;
                 sequence.forEach((nodeIndex, i) => {
                     setTimeout(() => flashNode(nodes[nodeIndex]), delay * (i + 1));
                 });
@@ -794,9 +857,11 @@
 
             function flashNode(node) {
                 node.style.background = "#ffffff";
+                node.style.boxShadow = "0 0 20px rgba(255,255,255,0.5)";
                 setTimeout(() => {
                     node.style.background = "rgba(255,255,255,0.05)";
-                }, 300);
+                    node.style.boxShadow = "none";
+                }, 250);
             }
 
             function handleNodeClick(index, node) {
@@ -841,7 +906,7 @@
                 }
 
                 nodes.forEach(n => {
-                    n.style.background = "rgba(255, 59, 48, 0.5)"; // Apple Red
+                    n.style.background = "rgba(255, 59, 48, 0.5)"; 
                     setTimeout(() => { n.style.background = "rgba(255,255,255,0.05)"; }, 500);
                 });
             }
@@ -903,7 +968,7 @@
                 const q = query(collection(db, "chats", userId, "messages"), orderBy("timestamp", "asc"));
 
                 unsubscribeMessages = onSnapshot(q, (snapshot) => {
-                    chatBox.innerHTML = `<div class="message received"><p>iMessage connection established.</p></div>`;
+                    chatBox.innerHTML = `<div class="message received" style="animation: none; opacity: 1; transform: none;"><p>iMessage connection established.</p></div>`;
                     snapshot.forEach((doc) => {
                         const data = doc.data();
                         if (!data.text) return;
@@ -916,7 +981,8 @@
                         bubble.innerHTML = `<p>${data.text}</p>`;
                         chatBox.appendChild(bubble);
                     });
-                    chatBox.scrollTop = chatBox.scrollHeight;
+                    // Slight delay to allow DOM insertion before scrolling
+                    setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 50);
                 });
             }
 
