@@ -220,113 +220,6 @@
             font-weight: 300;
         }
 
-        /* 3D Tilt Cards */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2.5rem;
-            margin-top: 3rem;
-        }
-
-        .card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 2.5rem;
-            backdrop-filter: blur(12px);
-            transition: transform 0.1s ease, box-shadow 0.3s ease, border-color 0.3s;
-            transform-style: preserve-3d;
-            position: relative;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 12px;
-            background: radial-gradient(circle at top right, rgba(56,189,248,0.2), transparent 50%);
-            z-index: -1;
-        }
-
-        .card:hover {
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 25px rgba(56,189,248,0.4);
-            border-color: rgba(56, 189, 248, 0.8);
-        }
-
-        .card h3 {
-            font-size: 1.6rem;
-            margin-bottom: 1rem;
-            color: var(--accent-1);
-            transform: translateZ(40px);
-        }
-
-        .card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            transform: translateZ(25px);
-        }
-
-        .tech-stack {
-            margin-top: 1.5rem;
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            transform: translateZ(30px);
-        }
-
-        .tech-tag {
-            font-size: 0.75rem;
-            padding: 0.2rem 0.6rem;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 4px;
-        }
-
-        /* Simple Contact Layout */
-        .contact-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .contact-link {
-            display: block;
-            font-size: 2.5rem;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            color: var(--text-main);
-            text-decoration: none;
-            margin-bottom: 1rem;
-            transition: color 0.3s, text-shadow 0.3s;
-        }
-
-        .contact-link:hover {
-            color: var(--accent-1);
-            text-shadow: 0 0 15px var(--accent-1);
-        }
-
-        /* Game Canvas Window Styling */
-        #game-container {
-            width: 100%;
-            height: 550px;
-            background-color: #0b0f19;
-            border-radius: 16px;
-            border: 3px solid #f472b6;
-            box-shadow: 0 0 35px rgba(244, 114, 182, 0.25);
-            position: relative;
-            overflow: hidden;
-        }
-
-        #gameCanvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
         /* --- CHAT SYSTEM UI --- */
         .chat-container {
             display: flex;
@@ -469,13 +362,6 @@
             .nav-btn {
                 font-size: 0.8rem;
             }
-            .contact-layout {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            #game-container {
-                height: 420px;
-            }
             .chat-container {
                 flex-direction: column;
             }
@@ -496,9 +382,6 @@
         <div class="logo">Z. <span>Nafis</span></div>
         <div class="nav-links">
             <button class="nav-btn active" data-target="home">The Domain</button>
-            <button class="nav-btn" data-target="projects">Why Though?</button>
-            <button class="nav-btn" data-target="about">The Idea</button>
-            <button class="nav-btn" data-target="contact">Reach Out</button>
             <button class="nav-btn" data-target="messages">Messages</button>
             <button class="nav-btn mystery-btn" data-target="mystery">MYSTERY?</button>
         </div>
@@ -509,71 +392,6 @@
             <div class="badge">PROUD OWNER OF A DOMAIN</div>
             <h1 class="hero-title">SO I<br><span>BOUGHT A DOMAIN</span></h1>
             <p class="hero-desc">I have literally zero experience in web design or programming, but I saw the domain availability and made a snap decision. Now I'm stuck with this empty site and a strange urge to make it look incredibly cool for no reason. Enjoy the 3D grid.</p>
-        </section>
-
-        <section id="projects" class="section">
-            <div class="badge">The Plan (Or lack thereof)</div>
-            <h2 class="hero-title" style="font-size: 4rem;">What now? <span>Ideas</span></h2>
-            <div class="grid">
-                <div class="card tilt-card">
-                    <h3>Figure Out Web Design</h3>
-                    <p>I need to learn what an HTML tag actually is. Apparently, you can't just wish a website into existence. Who knew? I'm hoping I can copy-paste enough from Stack Overflow to make this work eventually.</p>
-                    <div class="tech-stack">
-                        <span class="tech-tag">HTML5</span>
-                        <span class="tech-tag">CSS3</span>
-                        <span class="tech-tag">Hope</span>
-                    </div>
-                </div>
-                <div class="card tilt-card">
-                    <h3>Add More Animations</h3>
-                    <p>The existing 3D grid is cool, but I want it to be *more* cool. Maybe things can rotate when you hover? Or explode into digital particles? I will find a tutorial.</p>
-                    <div class="tech-stack">
-                        <span class="tech-tag">Three.js</span>
-                        <span class="tech-tag">JavaScript</span>
-                        <span class="tech-tag">Magic</span>
-                    </div>
-                </div>
-                <div class="card tilt-card">
-                    <h3>Actually Add Content</h3>
-                    <p>The final step is figuring out what I actually want this website to *do*. Maybe a portfolio? A blog about coffee? A portal to another dimension? The possibilities are limited by my complete lack of skill.</p>
-                    <div class="tech-stack">
-                        <span class="tech-tag">Content</span>
-                        <span class="tech-tag">Purpose</span>
-                        <span class="tech-tag">Decision Making</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="about" class="section">
-            <div class="contact-layout">
-                <div>
-                    <div class="badge">The Specs</div>
-                    <h2 class="hero-title" style="font-size: 4rem;">This Domain Meets<br><span>Reality</span>.</h2>
-                    <p class="hero-desc">Honestly, I just thought the domain name was available. I didn't think I'd actually have to fill it with content. I am currently wondering if I can just make the whole thing a giant 3D wireframe with random text floating inside.</p>
-                </div>
-                <div class="card tilt-card">
-                    <h3 style="margin-bottom: 1.5rem; color: #fff;">My Tech Skills (Approximated)</h3>
-                    <ul style="color: var(--text-muted); list-style-type: square; list-style-position: inside; line-height: 2.2; font-size: 1.1rem;">
-                        <li><strong>Good at:</strong> Clicking the 'Commit' button on GitHub</li>
-                        <li><strong>Familiar with:</strong> HTML and CSS from tutorials</li>
-                        <li><strong>Learning:</strong> JavaScript and Three.js because it looks cool</li>
-                        <li><strong>Can sort of use:</strong> Python if I Google the syntax</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section id="contact" class="section">
-            <div class="badge">Reach Out?</div>
-            <h2 class="hero-title" style="font-size: 5rem;">Actually<br><span>Contact Me?</span>.</h2>
-            <div style="margin-top: 3rem;">
-                <p class="hero-desc" style="margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">Direct Comms</p>
-                <a href="mailto:email@example.com" class="contact-link interactive">email@idk.com</a>
-                <p class="hero-desc" style="margin-bottom: 0.5rem; margin-top: 3rem; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">Where I pretend to know things</p>
-                <a href="#" class="contact-link interactive" style="font-size: 1.8rem;">Fake LinkedIn</a>
-                <a href="#" class="contact-link interactive" style="font-size: 1.8rem;">Placeholder GitHub</a>
-            </div>
         </section>
 
         <section id="messages" class="section">
@@ -606,11 +424,23 @@
         </section>
 
         <section id="mystery" class="section">
-            <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Sewer Rat Escape v2.0</div>
-            <h2 class="hero-title" style="font-size: 4rem;">Sewer Rat<br><span style="-webkit-text-stroke: 1px #f472b6;">Parkour</span></h2>
-            <p class="hero-desc" style="margin-bottom: 1.5rem;">Controls: Use <strong>Left / Right Arrow</strong> keys to walk, <strong>Up Arrow or Space</strong> to jump. Hover over menu screens to click using your targeting system.</p>
-            <div id="game-container">
-                <canvas id="gameCanvas"></canvas>
+            <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Encryption Override v1.0</div>
+            <h2 class="hero-title" style="font-size: 4rem;">System<br><span style="-webkit-text-stroke: 1px #f472b6;">Decryption</span></h2>
+            
+            <div id="cyber-puzzle-container" style="background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); border-radius: 8px; padding: 30px; text-align: center; margin-bottom: 20px; max-width: 600px; margin: 0 auto; backdrop-filter: blur(12px);">
+                <h3 style="color: #38bdf8; font-family: 'Space Grotesk', sans-serif; margin-bottom: 5px; font-size: 1.5rem; text-transform: uppercase;">Node Memory Matrix</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 25px;">Replicate the sequence to decrypt the nodes. Difficulty increases per level.</p>
+        
+                <div style="display: flex; justify-content: space-between; color: #fff; font-family: 'Space Grotesk', sans-serif; margin-bottom: 20px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                    <span id="matrix-level">Level: 1</span>
+                    <span id="matrix-score" style="color: #f472b6;">Score: 0</span>
+                </div>
+        
+                <div id="matrix-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 300px; margin: 0 auto; pointer-events: none;">
+                    </div>
+        
+                <p id="matrix-status" style="color: #38bdf8; margin-top: 25px; height: 24px; font-size: 1rem; font-family: 'Space Grotesk', sans-serif;">System Ready.</p>
+                <button id="matrix-start-btn" class="interactive" style="background: rgba(56,189,248,0.15); border: 1px solid #38bdf8; color: #38bdf8; padding: 12px 30px; border-radius: 6px; font-family: 'Space Grotesk', sans-serif; margin-top: 15px; font-size: 1rem; transition: all 0.2s;">INITIALIZE</button>
             </div>
         </section>
     </main>
@@ -674,7 +504,6 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            setupCanvasScale();
         });
 
         // --- UI LOGIC (CURSOR & TABS) ---
@@ -720,376 +549,140 @@
                 btn.classList.add('active');
                 const targetId = btn.getAttribute('data-target');
                 document.getElementById(targetId).classList.add('active');
-                if (targetId === 'mystery') {
-                    if (!gameRunning) {
-                        gameRunning = true;
-                        gameState = "MENU";
-                        setupCanvasScale();
-                        requestAnimationFrame(gameUpdate);
-                    }
-                } else {
-                    gameRunning = false;
-                }
             });
         });
 
-        const cards = document.querySelectorAll('.tilt-card');
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -15;
-                const rotateY = ((x - centerX) / centerX) * 15;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-            });
-        });
+        // --- CYBER PUZZLE LOGIC ---
+        (function initCyberPuzzle() {
+            const grid = document.getElementById('matrix-grid');
+            const startBtn = document.getElementById('matrix-start-btn');
+            const statusTxt = document.getElementById('matrix-status');
+            const levelTxt = document.getElementById('matrix-level');
+            const scoreTxt = document.getElementById('matrix-score');
 
-        // --- 2D SEWER RAT PARKOUR ENGINE ---
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        let gameRunning = false;
-        let gameState = "MENU"; 
-        let currentLevel = 0; 
+            let sequence = [];
+            let playerSequence = [];
+            let level = 1;
+            let score = 0;
 
-        const vWidth = 1000;
-        const vHeight = 550;
-
-        function setupCanvasScale() {
-            const rect = canvas.parentNode.getBoundingClientRect();
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
-            ctx.scale(canvas.width / vWidth, canvas.height / vHeight);
-            ctx.imageSmoothingEnabled = false;
-        }
-
-        const player = {x: 80, y: 400, width: 32, height: 18, vx: 0, vy: 0, speed: 5.5, jumpForce: -13.5, grounded: false, facingRight: true };
-        const inputs = { left: false, right: false, up: false };
-        let drops = [];
-        for (let i = 0; i < 25; i++) {
-            drops.push({ x: Math.random() * vWidth, y: Math.random() * vHeight, speed: 4 + Math.random() * 3, len: 6 + Math.random() * 5 });
-        }
-
-        const levelButtons = [
-            { id: 0, x: 180, y: 320, w: 100, h: 50, label: "Lvl 1" },
-            { id: 1, x: 310, y: 320, w: 100, h: 50, label: "Lvl 2" },
-            { id: 2, x: 440, y: 320, w: 100, h: 50, label: "Lvl 3" },
-            { id: 3, x: 570, y: 320, w: 100, h: 50, label: "Lvl 4" },
-            { id: 4, x: 700, y: 320, w: 100, h: 50, label: "Lvl 5" }
-        ];
-
-        const levels = [
-            {
-                startText: "Escape Route: Floor 1",
-                goal: { x: 900, y: 120, w: 50, h: 50 },
-                platforms: [
-                    { x: 0, y: 500, w: 1000, h: 50, color: "#475569" }, 
-                    { x: 220, y: 410, w: 140, h: 25, color: "#a16207" },
-                    { x: 450, y: 330, w: 150, h: 25, color: "#a16207" },
-                    { x: 700, y: 240, w: 140, h: 25, color: "#a16207" },
-                    { x: 880, y: 170, w: 120, h: 25, color: "#16a34a" }
-                ]
-            },
-            {
-                startText: "Floor 2: Deep Drains",
-                goal: { x: 50, y: 110, w: 50, h: 50 },
-                platforms: [
-                    { x: 0, y: 500, w: 1000, h: 50, color: "#475569" },
-                    { x: 750, y: 410, w: 160, h: 25, color: "#a16207" },
-                    { x: 480, y: 330, w: 180, h: 25, color: "#a16207" },
-                    { x: 220, y: 240, w: 150, h: 25, color: "#a16207" },
-                    { x: 30, y: 160, w: 110, h: 25, color: "#16a34a" }
-                ]
-            },
-            {
-                startText: "Floor 3: Core Filtration",
-                goal: { x: 920, y: 100, w: 50, h: 50 },
-                platforms: [
-                    { x: 0, y: 500, w: 300, h: 50, color: "#475569" },
-                    { x: 850, y: 500, w: 150, h: 50, color: "#475569" },
-                    { x: 350, y: 410, w: 120, h: 22, color: "#a16207" },
-                    { x: 550, y: 340, w: 120, h: 22, color: "#a16207" },
-                    { x: 750, y: 260, w: 120, h: 22, color: "#a16207" },
-                    { x: 520, y: 180, w: 130, h: 22, color: "#a16207" },
-                    { x: 880, y: 150, w: 120, h: 25, color: "#16a34a" }
-                ]
-            },
-            {
-                startText: "Floor 4: Main Inflow Valve",
-                goal: { x: 120, y: 90, w: 50, h: 50 },
-                platforms: [
-                    { x: 0, y: 500, w: 1000, h: 50, color: "#475569" },
-                    { x: 440, y: 420, w: 120, h: 24, color: "#a16207" },
-                    { x: 740, y: 360, w: 110, h: 24, color: "#a16207" },
-                    { x: 440, y: 290, w: 120, h: 24, color: "#a16207" },
-                    { x: 150, y: 230, w: 140, h: 24, color: "#a16207" },
-                    { x: 380, y: 150, w: 110, h: 24, color: "#a16207" },
-                    { x: 90, y: 140, w: 110, h: 25, color: "#16a34a" }
-                ]
-            },
-            {
-                startText: "Floor 5: Surface Access Drain",
-                goal: { x: 880, y: 90, w: 60, h: 50 },
-                platforms: [
-                    { x: 0, y: 500, w: 200, h: 50, color: "#475569" },
-                    { x: 260, y: 420, w: 100, h: 22, color: "#a16207" },
-                    { x: 460, y: 350, w: 100, h: 22, color: "#a16207" },
-                    { x: 680, y: 280, w: 100, h: 22, color: "#a16207" },
-                    { x: 460, y: 210, w: 110, h: 22, color: "#a16207" },
-                    { x: 220, y: 150, w: 130, h: 22, color: "#a16207" },
-                    { x: 500, y: 110, w: 100, h: 22, color: "#a16207" },
-                    { x: 820, y: 140, w: 180, h: 25, color: "#16a34a" }
-                ]
-            }
-        ];
-
-        function loadLevel(idx) {
-            currentLevel = idx;
-            player.x = 60;
-            player.y = 380;
-            player.vx = 0;
-            player.vy = 0;
-            player.grounded = false;
-            gameState = "PLAYING";
-        }
-
-        window.addEventListener('keydown', (e) => {
-            if (!gameRunning || gameState !== "PLAYING") return;
-            if (['ArrowUp', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
-            if (e.code === 'ArrowRight') { inputs.right = true; player.facingRight = true; }
-            if (e.code === 'ArrowLeft') { inputs.left = true; player.facingRight = false; }
-            if (e.code === 'ArrowUp' || e.code === 'Space') inputs.up = true;
-        });
-
-        window.addEventListener('keyup', (e) => {
-            if (e.code === 'ArrowRight') inputs.right = false;
-            if (e.code === 'ArrowLeft') inputs.left = false;
-            if (e.code === 'ArrowUp' || e.code === 'Space') inputs.up = false;
-        });
-
-        canvas.addEventListener('click', (e) => {
-            if (!gameRunning) return;
-            const rect = canvas.getBoundingClientRect();
-            const clickX = ((e.clientX - rect.left) / rect.width) * vWidth;
-            const clickY = ((e.clientY - rect.top) / rect.height) * vHeight;
-
-            if (gameState === "MENU") {
-                if (clickX >= 380 && clickX <= 620 && clickY >= 360 && clickY <= 420) {
-                    gameState = "LEVEL_SELECT";
-                }
-            } else if (gameState === "LEVEL_SELECT") {
-                levelButtons.forEach(btn => {
-                    if (clickX >= btn.x && clickX <= btn.x + btn.w && clickY >= btn.y && clickY <= btn.y + btn.h) {
-                        loadLevel(btn.id);
-                    }
+            // Build the 3x3 Grid
+            for (let i = 0; i < 9; i++) {
+                const node = document.createElement('div');
+                node.className = 'matrix-node interactive';
+                node.style.aspectRatio = "1/1";
+                node.style.background = "rgba(255,255,255,0.05)";
+                node.style.border = "1px solid rgba(255,255,255,0.1)";
+                node.style.borderRadius = "4px";
+                node.style.transition = "background 0.2s, box-shadow 0.2s";
+                
+                // Add hover effect programmatically to maintain cursor hook
+                node.addEventListener('mouseenter', () => {
+                    cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                    cursorOutline.style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
+                    cursorOutline.style.borderColor = 'transparent';
+                    cursorDot.style.transform = 'translate(-50%, -50%) scale(0.5)';
                 });
-            } else if (gameState === "WIN" || gameState === "GAME_OVER") {
-                if (clickX >= 400 && clickX <= 600 && clickY >= 340 && clickY <= 390) {
-                    gameState = "LEVEL_SELECT";
+                node.addEventListener('mouseleave', () => {
+                    cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursorOutline.style.backgroundColor = 'transparent';
+                    cursorOutline.style.borderColor = 'var(--accent-1)';
+                    cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                });
+
+                node.addEventListener('click', () => handleNodeClick(i, node));
+                grid.appendChild(node);
+            }
+
+            const nodes = document.querySelectorAll('.matrix-node');
+
+            startBtn.addEventListener('click', startGame);
+
+            function startGame() {
+                sequence = [];
+                level = 1;
+                score = 0;
+                updateUI();
+                startBtn.style.display = "none";
+                nextRound();
+            }
+
+            function nextRound() {
+                playerSequence = [];
+                grid.style.pointerEvents = "none"; 
+                statusTxt.style.color = "#94a3b8";
+                statusTxt.innerText = "Memorize the sequence...";
+
+                sequence.push(Math.floor(Math.random() * 9));
+
+                let delay = 500;
+                sequence.forEach((nodeIndex, i) => {
+                    setTimeout(() => {
+                        flashNode(nodes[nodeIndex]);
+                    }, delay * (i + 1));
+                });
+
+                setTimeout(() => {
+                    grid.style.pointerEvents = "auto";
+                    statusTxt.style.color = "#38bdf8";
+                    statusTxt.innerText = "Your turn. Decrypt.";
+                }, delay * (sequence.length + 1));
+            }
+
+            function flashNode(node) {
+                node.style.background = "#38bdf8";
+                node.style.boxShadow = "0 0 15px #38bdf8";
+                setTimeout(() => {
+                    node.style.background = "rgba(255,255,255,0.05)";
+                    node.style.boxShadow = "none";
+                }, 300);
+            }
+
+            function handleNodeClick(index, node) {
+                if (grid.style.pointerEvents === "none") return;
+
+                node.style.background = "#f472b6"; 
+                setTimeout(() => { node.style.background = "rgba(255,255,255,0.05)"; }, 200);
+
+                playerSequence.push(index);
+                const currentStep = playerSequence.length - 1;
+
+                if (playerSequence[currentStep] !== sequence[currentStep]) {
+                    gameOver();
+                    return;
+                }
+
+                score += 10;
+                updateUI();
+
+                if (playerSequence.length === sequence.length) {
+                    grid.style.pointerEvents = "none";
+                    score += (level * 50); 
+                    level++;
+                    updateUI();
+                    statusTxt.style.color = "#a3e635"; 
+                    statusTxt.innerText = "Sequence Decrypted! Next level...";
+                    setTimeout(nextRound, 1500);
                 }
             }
-        });
 
-        function gameUpdate() {
-            if (!gameRunning) return;
-            if (gameState === "PLAYING") {
-                player.vy += 0.65; 
-                if (inputs.right) player.vx = player.speed;
-                else if (inputs.left) player.vx = -player.speed;
-                else player.vx *= 0.75; 
+            function gameOver() {
+                grid.style.pointerEvents = "none";
+                statusTxt.style.color = "#ef4444"; 
+                statusTxt.innerText = "SYSTEM FAILURE. Sequence lost.";
+                startBtn.style.display = "inline-block";
+                startBtn.innerText = "REBOOT SYSTEM";
 
-                player.x += player.vx;
-                player.y += player.vy;
-                player.grounded = false;
-
-                const lvl = levels[currentLevel];
-                lvl.platforms.forEach(p => {
-                    if (player.x < p.x + p.w && player.x + player.width > p.x && player.y < p.y + p.h && player.y + player.height > p.y) {
-                        if (player.vy > 0 && player.y + player.height - player.vy <= p.y + 8) {
-                            player.y = p.y - player.height;
-                            player.vy = 0;
-                            player.grounded = true;
-                        }
-                    }
+                nodes.forEach(n => {
+                    n.style.background = "rgba(239,68,68,0.5)";
+                    setTimeout(() => { n.style.background = "rgba(255,255,255,0.05)"; }, 500);
                 });
-
-                if (player.x < 0) player.x = 0;
-                if (player.x + player.width > vWidth) player.x = vWidth - player.width;
-
-                if (inputs.up && player.grounded) {
-                    player.vy = player.jumpForce;
-                    player.grounded = false;
-                }
-
-                if (player.y > vHeight - 45) {
-                    gameState = "GAME_OVER";
-                }
-
-                if (player.x < lvl.goal.x + lvl.goal.w && player.x + player.width > lvl.goal.x && player.y < lvl.goal.y + lvl.goal.h && player.y + player.height > lvl.goal.y) {
-                    gameState = "WIN";
-                }
             }
-            renderGameGraphics();
-            requestAnimationFrame(gameUpdate);
-        }
 
-        function renderGameGraphics() {
-            ctx.clearRect(0, 0, vWidth, vHeight);
-            if (gameState === "MENU") {
-                ctx.fillStyle = "#60a5fa"; 
-                ctx.fillRect(0, 0, vWidth, vHeight / 2);
-                ctx.fillStyle = "#fef08a";
-                ctx.beginPath();
-                ctx.arc(850, 80, 45, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = "#22c55e";
-                ctx.fillRect(0, (vHeight / 2) - 40, vWidth, 40);
-                ctx.fillStyle = "#0f172a";
-                ctx.fillRect(0, vHeight / 2, vWidth, vHeight / 2);
-                ctx.fillStyle = "#78350f";
-                ctx.fillRect(0, (vHeight / 2) - 15, vWidth, 15);
-                ctx.fillStyle = "#334155";
-                ctx.fillRect(460, (vHeight / 2) - 40, 80, vHeight / 2);
-                ctx.fillStyle = "#64748b";
-                ctx.fillRect(450, (vHeight / 2) - 44, 100, 6);
-
-                ctx.strokeStyle = "rgba(56, 189, 248, 0.08)";
-                ctx.lineWidth = 2;
-                for (let r = vHeight / 2; r < vHeight; r += 30) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, r);
-                    ctx.lineTo(vWidth, r);
-                    ctx.stroke();
-                }
-
-                ctx.shadowColor = "#f472b6";
-                ctx.shadowBlur = 20;
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 52px 'Space Grotesk', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("SEWER RAT Escape", vWidth / 2, 160);
-                ctx.font = "300 18px 'Inter', sans-serif";
-                ctx.shadowBlur = 0;
-                ctx.fillStyle = "#e2e8f0";
-                ctx.fillText("A High-Quality Parkour Journey", vWidth / 2, 205);
-
-                ctx.fillStyle = "#f472b6";
-                ctx.beginPath();
-                ctx.roundRect(380, 360, 240, 60, 8);
-                ctx.fill();
-                ctx.fillStyle = "#0f172a";
-                ctx.font = "bold 22px 'Space Grotesk', sans-serif";
-                ctx.fillText("ENTER SEWERS", vWidth / 2, 397);
-            } else if (gameState === "LEVEL_SELECT") {
-                ctx.fillStyle = "#0f172a";
-                ctx.fillRect(0, 0, vWidth, vHeight);
-                ctx.fillStyle = "#1e293b";
-                ctx.fillRect(0, 440, vWidth, 40);
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 38px 'Space Grotesk', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("SELECT MISSIONS", vWidth / 2, 160);
-                ctx.font = "16px 'Inter', sans-serif";
-                ctx.fillStyle = "#94a3b8";
-                ctx.fillText("Choose a floor to initiate navigation sequence", vWidth / 2, 200);
-
-                levelButtons.forEach(btn => {
-                    ctx.fillStyle = "rgba(56, 189, 248, 0.15)";
-                    ctx.strokeStyle = "#38bdf8";
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.roundRect(btn.x, btn.y, btn.w, btn.h, 6);
-                    ctx.fill();
-                    ctx.stroke();
-                    ctx.fillStyle = "#ffffff";
-                    ctx.font = "bold 18px 'Space Grotesk', sans-serif";
-                    ctx.fillText(btn.label, btn.x + btn.w/2, btn.y + btn.h/2 + 6);
-                });
-            } else if (gameState === "PLAYING") {
-                ctx.fillStyle = "#111827";
-                ctx.fillRect(0, 0, vWidth, vHeight);
-                ctx.fillStyle = "#1e293b";
-                ctx.fillRect(0, vHeight - 45, vWidth, 45);
-                ctx.fillStyle = "#0284c7";
-                ctx.fillRect(0, vHeight - 20, vWidth, 20);
-
-                const lvl = levels[currentLevel];
-                ctx.fillStyle = "#22c55e";
-                ctx.fillRect(lvl.goal.x, lvl.goal.y, lvl.goal.w, lvl.goal.h);
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 12px 'Space Grotesk', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("SURFACE", lvl.goal.x + lvl.goal.w/2, lvl.goal.y + lvl.goal.h/2 + 4);
-
-                lvl.platforms.forEach(p => {
-                    ctx.fillStyle = p.color;
-                    ctx.fillRect(p.x, p.y, p.w, p.h);
-                    ctx.strokeStyle = "rgba(255,255,255,0.1)";
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(p.x, p.y, p.w, p.h);
-                });
-
-                ctx.fillStyle = "#f472b6";
-                ctx.fillRect(player.x, player.y, player.width, player.height);
-                ctx.fillStyle = "#000000";
-                const eyeX = player.facingRight ? player.x + player.width - 6 : player.x + 4;
-                ctx.fillRect(eyeX, player.y + 3, 3, 3);
-
-                ctx.fillStyle = "rgba(56, 189, 248, 0.4)";
-                drops.forEach(d => {
-                    d.y += d.speed;
-                    if (d.y > vHeight - 45) { d.y = 0; d.x = Math.random() * vWidth; }
-                    ctx.fillRect(d.x, d.y, 1.5, d.len);
-                });
-
-                ctx.fillStyle = "rgba(255,255,255,0.7)";
-                ctx.font = "bold 16px 'Space Grotesk', sans-serif";
-                ctx.textAlign = "left";
-                ctx.fillText(lvl.startText, 40, 40);
-            } else if (gameState === "WIN") {
-                ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-                ctx.fillRect(0, 0, vWidth, vHeight);
-                ctx.fillStyle = "#4ade80";
-                ctx.font = "bold 45px 'Space Grotesk', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("FLOOR ESCAPED!", vWidth / 2, 220);
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "16px 'Inter', sans-serif";
-                ctx.fillText("The sewer rat successfully navigated upwards.", vWidth / 2, 265);
-
-                ctx.fillStyle = "#38bdf8";
-                ctx.beginPath();
-                ctx.roundRect(400, 340, 200, 50, 6);
-                ctx.fill();
-                ctx.fillStyle = "#0f172a";
-                ctx.font = "bold 18px 'Space Grotesk', sans-serif";
-                ctx.fillText("MISSION SELECT", vWidth / 2, 372);
-            } else if (gameState === "GAME_OVER") {
-                ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
-                ctx.fillRect(0, 0, vWidth, vHeight);
-                ctx.fillStyle = "#ef4444";
-                ctx.font = "bold 45px 'Space Grotesk', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("RAT DROWNED", vWidth / 2, 220);
-                ctx.fillStyle = "#94a3b8";
-                ctx.font = "16px 'Inter', sans-serif";
-                ctx.fillText("The toxic sludge consumed your entity.", vWidth / 2, 265);
-
-                ctx.fillStyle = "#f472b6";
-                ctx.beginPath();
-                ctx.roundRect(400, 340, 200, 50, 6);
-                ctx.fill();
-                ctx.fillStyle = "#0f172a";
-                ctx.font = "bold 18px 'Space Grotesk', sans-serif";
-                ctx.fillText("RETRY ENTRANCE", vWidth / 2, 372);
+            function updateUI() {
+                levelTxt.innerText = `Level: ${level}`;
+                scoreTxt.innerText = `Score: ${score}`;
             }
-        }
+        })();
     </script>
 
    <script type="module">
@@ -1294,3 +887,5 @@
             });
         }
     </script>
+</body>
+</html>
