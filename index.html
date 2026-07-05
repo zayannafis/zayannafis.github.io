@@ -44,7 +44,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%; /* Changed from vw to % to fix centering offset */
+            width: 100%; 
             height: 100%;
             z-index: -2; 
             pointer-events: none;
@@ -349,6 +349,10 @@
             transition: border-color 0.3s;
         }
 
+        .chat-input-area input:focus {
+            border-color: var(--accent-1);
+        }
+
         .chat-input-area button {
             background: var(--accent-1);
             color: var(--bg-color);
@@ -451,7 +455,7 @@
                     <div class="reveal fade-up delay-100 dash-card interactive">
                         <span class="dash-label" style="color: #38bdf8; margin-bottom: 10px;">01. Atmosphere Node</span>
                         <h4 id="weather-temp" class="dash-value">--°C</h4>
-                        <p id="weather-desc" class="dash-label" style="color: #cbd5e1;">Auckland Network | Wind: -- km/h</p>
+                        <p id="weather-desc" class="dash-label" style="color: #cbd5e1;">Scanning IP Location...</p>
                     </div>
                     
                     <div class="reveal fade-up delay-200 dash-card interactive">
@@ -463,7 +467,7 @@
                     <div class="reveal fade-up delay-300 dash-card interactive">
                         <span class="dash-label" style="color: #a3e635; margin-bottom: 10px;">03. Local Relay</span>
                         <h4 id="clock-time" class="dash-value" style="font-variant-numeric: tabular-nums;">--:--:--</h4>
-                        <p id="clock-date" class="dash-label" style="color: #cbd5e1;">Retrieving Timestamp...</p>
+                        <p id="clock-date" class="dash-label" style="color: #cbd5e1;">Synchronizing Timestamp...</p>
                     </div>
 
                 </div>
@@ -567,11 +571,10 @@
         }
         animate3D();
 
-        // --- 2. FOREGROUND 3D HOLOGRAM GLOBE LOGIC (NEW!) ---
+        // --- 2. FOREGROUND 3D HOLOGRAM GLOBE LOGIC ---
         const globeContainer = document.getElementById('globe-canvas-container');
         const globeScene = new THREE.Scene();
         const globeCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        // Pulled camera back from 35 to 40 so the whole globe fits on screen
         globeCamera.position.z = 40; 
 
         const globeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); 
@@ -582,7 +585,6 @@
         const globeGroup = new THREE.Group();
         globeScene.add(globeGroup);
 
-        // A: The Wireframe Hologram Shell
         const outerGeo = new THREE.SphereGeometry(12, 48, 48);
         const outerMat = new THREE.MeshBasicMaterial({ 
             color: 0x38bdf8, 
@@ -593,14 +595,13 @@
         const outerEarth = new THREE.Mesh(outerGeo, outerMat);
         globeGroup.add(outerEarth);
 
-        // B: The Inner Glowing Map
         const innerGeo = new THREE.SphereGeometry(11.8, 32, 32);
         const textureLoader = new THREE.TextureLoader();
         const innerTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg');
         const innerMat = new THREE.MeshBasicMaterial({ 
             map: innerTex,
-            color: 0x38bdf8, // Tint it cyan to match the aesthetic
-            blending: THREE.AdditiveBlending, // Makes it look like a glowing hologram
+            color: 0x38bdf8, 
+            blending: THREE.AdditiveBlending, 
             transparent: true,
             opacity: 0.8
         });
@@ -630,41 +631,49 @@
         }
         animateGlobe();
 
-        // --- 3. LIVE SYSTEM DATA (AUCKLAND APIS) ---
-        async function fetchAucklandData() {
+        // --- 3. LIVE SYSTEM DATA (IP GEO-TRACE & LOCAL APIS) ---
+        async function fetchLocalData() {
             try {
-                // Free Open-Meteo API for Weather and Sun cycle (No API key needed!)
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-36.8509&longitude=174.7645&current_weather=true&daily=sunrise,sunset&timezone=Pacific%2FAuckland');
-                const data = await res.json();
+                // Step 1: Silent IP Trace to find out where the user is
+                const geoRes = await fetch('https://get.geojs.io/v1/ip/geo.json');
+                const geoData = await geoRes.json();
                 
-                // Weather Module
-                const temp = data.current_weather.temperature;
-                const wind = data.current_weather.windspeed;
+                const lat = geoData.latitude;
+                const lon = geoData.longitude;
+                const city = geoData.city || "Local";
+                
+                // Step 2: Use those specific coordinates to find weather and timezone
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=sunrise,sunset&timezone=auto`);
+                const weatherData = await weatherRes.json();
+                
+                // Inject the local data into the HTML
+                const temp = weatherData.current_weather.temperature;
+                const wind = weatherData.current_weather.windspeed;
                 document.getElementById('weather-temp').innerText = `${temp}°C`;
-                document.getElementById('weather-desc').innerText = `Auckland Network | Wind: ${wind} km/h`;
+                document.getElementById('weather-desc').innerText = `${city} Network | Wind: ${wind} km/h`;
                 
-                // Solar Cycle Module
-                const sunrise = new Date(data.daily.sunrise[0]).toLocaleTimeString('en-NZ', {hour: '2-digit', minute:'2-digit'});
-                const sunset = new Date(data.daily.sunset[0]).toLocaleTimeString('en-NZ', {hour: '2-digit', minute:'2-digit'});
+                const sunrise = new Date(weatherData.daily.sunrise[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const sunset = new Date(weatherData.daily.sunset[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 document.getElementById('sun-time').innerText = `▲ ${sunrise} | ▼ ${sunset}`;
                 
             } catch(e) {
                 console.error("Data Fetch Error:", e);
                 document.getElementById('weather-temp').innerText = 'SYS.ERR';
+                document.getElementById('weather-desc').innerText = 'Connection Failed';
                 document.getElementById('sun-time').innerText = 'SYS.ERR';
             }
         }
-        fetchAucklandData();
+        fetchLocalData();
 
-        // System Clock Module
+        // System Clock Module (Using native browser timezone)
         setInterval(() => {
             const now = new Date();
-            // Forces the time to be Auckland specifically
-            const timeOptions = { timeZone: 'Pacific/Auckland', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            const dateOptions = { timeZone: 'Pacific/Auckland', weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            // Automatically uses the local time of whatever device is looking at the screen
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
             
-            document.getElementById('clock-time').innerText = now.toLocaleTimeString('en-NZ', timeOptions);
-            document.getElementById('clock-date').innerText = now.toLocaleDateString('en-NZ', dateOptions);
+            document.getElementById('clock-time').innerText = now.toLocaleTimeString([], timeOptions);
+            document.getElementById('clock-date').innerText = now.toLocaleDateString([], dateOptions);
         }, 1000);
 
 
