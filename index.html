@@ -340,12 +340,115 @@
         }
         .chat-input-area button:hover { transform: scale(1.05); background: #147ce6; }
 
+        /* --- ENGSIM (MECHANICS SANDBOX) UI --- */
+        .engsim-layout {
+            display: flex;
+            gap: 20px;
+            height: 600px;
+            width: 100%;
+        }
+        .engsim-canvas-wrap {
+            flex: 1;
+            background: rgba(0,0,0,0.4);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            position: relative;
+        }
+        .engsim-sidebar {
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .engsim-panel {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 15px;
+        }
+        .engsim-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .engsim-tool-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid transparent;
+            color: #fff;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .engsim-tool-btn:hover { background: rgba(255,255,255,0.1); }
+        .engsim-tool-btn.active {
+            background: rgba(41, 151, 255, 0.2);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+        .engsim-prop-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+        .engsim-prop-group input {
+            width: 60px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            outline: none;
+            font-family: inherit;
+        }
+        .engsim-control-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--text-main);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+        .engsim-control-btn.danger { background: rgba(255, 59, 48, 0.8); color: #fff; }
+        
+        .engsim-hud {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+        .engsim-hud span { color: #fff; font-weight: bold; }
+
         @media (max-width: 768px) {
             nav { padding: 1rem 5%; flex-direction: column; gap: 1rem; }
             .hero-title { font-size: clamp(2.5rem, 12vw, 4rem) !important; }
             .chat-container { flex-direction: column; height: 75vh; min-height: 500px; }
             .chat-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 1rem; max-height: 100px; }
             .chat-input-area input { font-size: 16px; }
+            .engsim-layout { flex-direction: column; height: 800px; }
+            .engsim-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
+            .engsim-panel { flex: 1; min-width: 200px; }
         }
     </style>
 </head>
@@ -446,7 +549,7 @@
         </section>
 
         <section id="mystery" class="section">
-            <div style="padding-top: 15vh;">
+            <div style="padding-top: 15vh; width: 100%;">
                 <div class="reveal fade-up visible">
                     <h2 class="hero-title" style="font-size: 4rem;">Terminal <span>arcade.</span></h2>
                     <p class="hero-desc" style="margin: 0;">Select a module to test your abilities.</p>
@@ -461,9 +564,9 @@
                         <h4 class="dash-value" style="font-size: 1.6rem; margin-bottom: 10px;">Chrono</h4>
                         <p class="dash-label">Time Precision</p>
                     </div>
-                    <div class="dash-card tilt-effect game-selector" data-game="balance" style="cursor: pointer; text-align: center; padding: 40px 10px;">
-                        <h4 class="dash-value" style="font-size: 1.6rem; margin-bottom: 10px;">Equilibria</h4>
-                        <p class="dash-label">Physics Stacker</p>
+                    <div class="dash-card tilt-effect game-selector" data-game="engsim" style="cursor: pointer; text-align: center; padding: 40px 10px;">
+                        <h4 class="dash-value" style="font-size: 1.6rem; margin-bottom: 10px;">EngSim</h4>
+                        <p class="dash-label">Mechanics Sandbox</p>
                     </div>
                 </div>
                 
@@ -500,19 +603,52 @@
                     <button id="reaction-action-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: transform 0.2s, background 0.2s; width: 200px; font-size: 1rem;">Start</button>
                 </div>
                 
-                <div id="balance-game-container" class="dash-card tilt-effect" style="display: none; margin-top: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center; padding-left: 20px; padding-right: 20px;">
-                    <button class="back-to-menu" style="background:none; border:none; color:var(--accent-blue); cursor:pointer; font-size:0.9rem; margin-bottom: 15px; text-align: left; width: 100%; font-weight: 500;">← Back to Menu</button>
+                <div id="engsim-container" class="dash-card tilt-effect" style="display: none; margin-top: 3rem; width: 100%; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 20px;">
+                    <button class="back-to-menu" style="background:none; border:none; color:var(--accent-blue); cursor:pointer; font-size:0.9rem; margin-bottom: 15px; text-align: left; font-weight: 500;">← Back to Menu</button>
                     
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">
-                        <span style="font-weight: 500; color: var(--text-muted);">Score: <span id="balance-score" style="font-weight: 600; color: #fff;">0</span></span>
-                        <span style="font-weight: 500; color: var(--accent-blue);">Best: <span id="balance-highscore">0</span></span>
+                    <div class="engsim-layout">
+                        <div class="engsim-canvas-wrap" id="engsim-render-target">
+                            <div class="engsim-hud" id="engsim-hud" style="display: none;">
+                                ID: <span id="hud-id">--</span> | Type: <span id="hud-type">--</span><br>
+                                Accel: <span id="hud-accel">0.00</span> m/s²<br>
+                                Vel: <span id="hud-vel">0.00</span> m/s
+                            </div>
+                        </div>
+
+                        <div class="engsim-sidebar">
+                            
+                            <div class="engsim-panel">
+                                <h4 class="engsim-title">Construction Tools</h4>
+                                <button class="engsim-tool-btn active" data-tool="select">Cursor / Select</button>
+                                <button class="engsim-tool-btn" data-tool="mass">Add Mass (Box)</button>
+                                <button class="engsim-tool-btn" data-tool="beam">Add Beam</button>
+                                <button class="engsim-tool-btn" data-tool="anchor">Add Static Pin</button>
+                                <button class="engsim-tool-btn" data-tool="rope">Link (Rope/Rod)</button>
+                            </div>
+
+                            <div class="engsim-panel" id="engsim-props-panel" style="opacity: 0.3; pointer-events: none;">
+                                <h4 class="engsim-title">Material Properties</h4>
+                                <div class="engsim-prop-group">
+                                    <label>Mass (kg)</label>
+                                    <input type="number" id="prop-mass" step="1" value="10">
+                                </div>
+                                <div class="engsim-prop-group">
+                                    <label>Static Fric (μ_s)</label>
+                                    <input type="number" id="prop-mus" step="0.1" min="0" max="1" value="0.5">
+                                </div>
+                                <div class="engsim-prop-group">
+                                    <label>Kinetic Fric (μ_k)</label>
+                                    <input type="number" id="prop-muk" step="0.1" min="0" max="1" value="0.3">
+                                </div>
+                                <button id="prop-apply-btn" style="width: 100%; padding: 6px; background: rgba(255,255,255,0.1); border:none; border-radius: 4px; color: #fff; margin-top: 10px; cursor: pointer;">Apply</button>
+                            </div>
+
+                            <div class="engsim-panel" style="display: flex; gap: 10px;">
+                                <button class="engsim-control-btn" id="engsim-play-btn">Play</button>
+                                <button class="engsim-control-btn danger" id="engsim-clear-btn">Clear</button>
+                            </div>
+                        </div>
                     </div>
-        
-                    <div id="balance-canvas-container" style="width: 300px; height: 500px; margin: 0 auto; background: rgba(0,0,0,0.3); border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); cursor: pointer; position: relative;">
-                    </div>
-        
-                    <p id="balance-status" style="color: var(--text-muted); height: 24px; font-weight: 500; margin-top: 20px;">Click canvas or press Space to drop.</p>
-                    <button id="balance-action-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: transform 0.2s, background 0.2s; margin-top: 5px; width: 200px; font-size: 1rem;">Start Game</button>
                 </div>
 
             </div>
@@ -796,7 +932,7 @@
             const gamesMenu = document.getElementById('games-menu');
             const matrixGameContainer = document.getElementById('cyber-puzzle-container');
             const reactionGameContainer = document.getElementById('reaction-game-container');
-            const balanceGameContainer = document.getElementById('balance-game-container');
+            const engsimGameContainer = document.getElementById('engsim-container');
             const backBtns = document.querySelectorAll('.back-to-menu');
             
             document.querySelectorAll('.game-selector').forEach(btn => {
@@ -807,9 +943,9 @@
                     } else if (btn.dataset.game === 'reaction') {
                         reactionGameContainer.style.display = 'block';
                         setupReactionRound(true); 
-                    } else if (btn.dataset.game === 'balance') {
-                        balanceGameContainer.style.display = 'block';
-                        if (!balanceEngine) setupMatterJS();
+                    } else if (btn.dataset.game === 'engsim') {
+                        engsimGameContainer.style.display = 'block';
+                        if (!engEngine) initEngSim();
                     }
                 });
             });
@@ -818,7 +954,7 @@
                 btn.addEventListener('click', () => {
                     matrixGameContainer.style.display = 'none';
                     reactionGameContainer.style.display = 'none';
-                    balanceGameContainer.style.display = 'none';
+                    engsimGameContainer.style.display = 'none';
                     gamesMenu.style.display = 'grid'; 
                 });
             });
@@ -826,18 +962,13 @@
 
             // -- Global Spacebar Hook for Active Games --
             window.addEventListener('keydown', (e) => {
-                // Ensure we aren't typing in the chat input
                 if (e.code === 'Space' && document.activeElement.tagName !== 'INPUT') {
                     if (reactionGameContainer.style.display === 'block') {
                         e.preventDefault();
                         document.getElementById('reaction-action-btn').click();
-                    } else if (balanceGameContainer.style.display === 'block') {
+                    } else if (engsimGameContainer.style.display === 'block') {
                         e.preventDefault();
-                        if (balanceGameState === 'idle' || balanceGameState === 'result') {
-                            document.getElementById('balance-action-btn').click();
-                        } else if (balanceGameState === 'moving') {
-                            dropBalanceBlock();
-                        }
+                        document.getElementById('engsim-play-btn').click();
                     }
                 }
             });
@@ -1028,221 +1159,248 @@
             });
 
 
-            // -- 3. Equilibria (Balance) Physics Game Logic --
-            let balanceEngine, balanceRender, balanceRunner;
-            let balanceScore = 0;
-            let balanceHighScore = localStorage.getItem('appleBalanceHighScore') || 0;
-            document.getElementById('balance-highscore').innerText = balanceHighScore;
-            
-            let balanceGameState = 'idle'; 
-            let balanceCurrentBlock;
-            let balanceStack = [];
-            let balanceMoveTime = 0;
-            let balanceSettleTimer = 0;
+            // -- 3. EngSim (Mechanics Sandbox) Engine Logic --
+            let engEngine, engRender, engRunner, mouseConstraint;
+            let engMode = 'select'; // select, mass, beam, anchor, rope
+            let isPlaying = false;
+            let selectedBody = null;
+            let linkNodeA = null; 
 
-            function setupMatterJS() {
-                balanceEngine = Matter.Engine.create();
+            // Physics state tracking for Telemetry
+            let prevVelocities = {};
+
+            function initEngSim() {
+                engEngine = Matter.Engine.create();
+                engEngine.timing.timeScale = 0; // Starts Paused
                 
-                // Set up the modern renderer with dynamic bounds capability
-                balanceRender = Matter.Render.create({
-                    element: document.getElementById('balance-canvas-container'),
-                    engine: balanceEngine,
+                const renderWrap = document.getElementById('engsim-render-target');
+                const w = renderWrap.clientWidth;
+                const h = renderWrap.clientHeight;
+
+                engRender = Matter.Render.create({
+                    element: renderWrap,
+                    engine: engEngine,
                     options: {
-                        width: 300,
-                        height: 500,
-                        wireframes: false, 
+                        width: w,
+                        height: h,
+                        wireframes: false,
                         background: 'transparent',
-                        hasBounds: true
+                        showAngleIndicator: false
                     }
                 });
-                
-                // Add a glowing custom centroid indicator over the exact center of mass
-                Matter.Events.on(balanceRender, 'afterRender', function() {
-                    const ctx = balanceRender.context;
-                    Matter.Composite.allBodies(balanceEngine.world).forEach(body => {
-                        if (body.label === 'ground') return;
+
+                // Add Boundaries
+                Matter.Composite.add(engEngine.world, [
+                    Matter.Bodies.rectangle(w/2, h+25, w, 50, { isStatic: true, friction: 1, render: { fillStyle: '#1c1c1e' } }), // Floor
+                    Matter.Bodies.rectangle(-25, h/2, 50, h, { isStatic: true, friction: 0 }), // Left wall
+                    Matter.Bodies.rectangle(w+25, h/2, 50, h, { isStatic: true, friction: 0 })  // Right wall
+                ]);
+
+                // Mouse setup
+                const mouse = Matter.Mouse.create(engRender.canvas);
+                mouseConstraint = Matter.MouseConstraint.create(engEngine, {
+                    mouse: mouse,
+                    constraint: { stiffness: 0.2, render: { visible: false } }
+                });
+                Matter.Composite.add(engEngine.world, mouseConstraint);
+                engRender.mouse = mouse;
+
+                // Tool selection
+                document.querySelectorAll('.engsim-tool-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.engsim-tool-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        engMode = e.target.dataset.tool;
+                        linkNodeA = null; // Reset linking
                         
-                        ctx.beginPath();
-                        // body.position is exactly the center of mass in Matter.js
-                        ctx.arc(body.position.x, body.position.y, 4, 0, 2 * Math.PI);
-                        ctx.fillStyle = '#ffffff';
-                        ctx.shadowBlur = 10;
-                        ctx.shadowColor = '#2997ff';
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
-                        ctx.closePath();
+                        if (engMode === 'select') mouseConstraint.constraint.stiffness = 0.2;
+                        else mouseConstraint.constraint.stiffness = 0; // Disable dragging while building
                     });
                 });
 
-                Matter.Render.run(balanceRender);
-                balanceRunner = Matter.Runner.create();
-                Matter.Runner.run(balanceRunner, balanceEngine);
+                // Control panel
+                const playBtn = document.getElementById('engsim-play-btn');
+                playBtn.addEventListener('click', () => {
+                    isPlaying = !isPlaying;
+                    engEngine.timing.timeScale = isPlaying ? 1 : 0;
+                    playBtn.innerText = isPlaying ? 'Pause' : 'Play';
+                    playBtn.style.background = isPlaying ? '#ff3b30' : 'var(--text-main)';
+                    playBtn.style.color = isPlaying ? '#fff' : 'var(--bg-color)';
+                });
 
-                Matter.Events.on(balanceEngine, 'beforeUpdate', () => {
-                    // Determine the top of the tower for the dynamic camera pan
-                    let currentTopY = 450; 
-                    if (balanceStack.length > 0) {
-                        currentTopY = Math.min(...balanceStack.map(b => b.bounds.min.y));
-                    }
-            
-                    // Smoothly Lerp Camera Bounds upwards as stack grows
-                    let desiredHeight = Math.max(500, 480 - currentTopY + 200);
-                    let desiredMinY = currentTopY - 150;
-                    let desiredMaxY = desiredMinY + desiredHeight;
-                    let desiredWidth = desiredHeight * 0.6; // Maintain aspect ratio
-                    let desiredMinX = 150 - (desiredWidth / 2);
-                    let desiredMaxX = 150 + (desiredWidth / 2);
-            
-                    if (balanceRender.bounds) {
-                        balanceRender.bounds.min.x += (desiredMinX - balanceRender.bounds.min.x) * 0.1;
-                        balanceRender.bounds.max.x += (desiredMaxX - balanceRender.bounds.max.x) * 0.1;
-                        balanceRender.bounds.min.y += (desiredMinY - balanceRender.bounds.min.y) * 0.1;
-                        balanceRender.bounds.max.y += (desiredMaxY - balanceRender.bounds.max.y) * 0.1;
-                    }
+                document.getElementById('engsim-clear-btn').addEventListener('click', () => {
+                    Matter.Composite.clear(engEngine.world);
+                    Matter.Engine.clear(engEngine);
+                    // Re-add boundaries & mouse
+                    Matter.Composite.add(engEngine.world, [
+                        Matter.Bodies.rectangle(w/2, h+25, w, 50, { isStatic: true, friction: 1, render: { fillStyle: '#1c1c1e' } }), 
+                        Matter.Bodies.rectangle(-25, h/2, 50, h, { isStatic: true, friction: 0 }),
+                        Matter.Bodies.rectangle(w+25, h/2, 50, h, { isStatic: true, friction: 0 }),
+                        mouseConstraint
+                    ]);
+                    selectBody(null);
+                });
 
-                    if (balanceGameState === 'moving' && balanceCurrentBlock) {
-                        balanceMoveTime += 0.05 + (balanceScore * 0.003); 
-                        const x = 150 + Math.sin(balanceMoveTime) * 110; 
-                        // Always spawn safely above the current highest point
-                        Matter.Body.setPosition(balanceCurrentBlock, { x: x, y: currentTopY - 120 });
-                        Matter.Body.setAngle(balanceCurrentBlock, 0); 
-                        Matter.Body.setVelocity(balanceCurrentBlock, {x:0, y:0}); 
-                        
-                    } else if (balanceGameState === 'falling') {
-                        let allQuiet = true;
-                        
-                        // Anything falling past y: 550 is off the table
-                        if (balanceCurrentBlock.position.y > 550) {
-                            endBalanceGame();
-                            return;
-                        }
-                        if (balanceCurrentBlock.speed > 0.15 || Math.abs(balanceCurrentBlock.angularVelocity) > 0.02) allQuiet = false;
+                // Canvas Clicks for Building
+                Matter.Events.on(mouseConstraint, 'mousedown', function(event) {
+                    const mousePos = event.mouse.position;
+                    const clickedBodies = Matter.Query.point(Matter.Composite.allBodies(engEngine.world), mousePos);
+                    const clickedBody = clickedBodies.length > 0 ? clickedBodies[0] : null;
 
-                        for(let b of balanceStack) {
-                            if (b.position.y > 550) {
-                                endBalanceGame();
-                                return;
+                    if (engMode === 'select') {
+                        selectBody(clickedBody);
+                    } else if (engMode === 'mass') {
+                        let mass = Matter.Bodies.rectangle(mousePos.x, mousePos.y, 60, 60, {
+                            friction: 0.3, frictionStatic: 0.5, density: 0.05,
+                            render: { fillStyle: 'rgba(41, 151, 255, 0.2)', strokeStyle: '#2997ff', lineWidth: 2 }
+                        });
+                        Matter.Composite.add(engEngine.world, mass);
+                    } else if (engMode === 'beam') {
+                        let beam = Matter.Bodies.rectangle(mousePos.x, mousePos.y, 180, 20, {
+                            friction: 0.3, frictionStatic: 0.5, density: 0.05,
+                            render: { fillStyle: 'rgba(255, 255, 255, 0.1)', strokeStyle: '#fff', lineWidth: 1 }
+                        });
+                        Matter.Composite.add(engEngine.world, beam);
+                    } else if (engMode === 'anchor') {
+                        let anchor = Matter.Bodies.circle(mousePos.x, mousePos.y, 10, {
+                            isStatic: true, render: { fillStyle: '#ff3b30' }
+                        });
+                        Matter.Composite.add(engEngine.world, anchor);
+                    } else if (engMode === 'rope') {
+                        if (clickedBody) {
+                            if (!linkNodeA) {
+                                linkNodeA = clickedBody;
+                                clickedBody.render.lineWidth = 4;
+                            } else {
+                                if (linkNodeA !== clickedBody) {
+                                    let link = Matter.Constraint.create({
+                                        bodyA: linkNodeA, bodyB: clickedBody,
+                                        stiffness: 0.9, length: 150,
+                                        render: { strokeStyle: '#86868b', lineWidth: 3 }
+                                    });
+                                    Matter.Composite.add(engEngine.world, link);
+                                }
+                                linkNodeA.render.lineWidth = (linkNodeA.label === 'ground') ? 0 : 2;
+                                linkNodeA = null;
                             }
-                            if (b.speed > 0.15 || Math.abs(b.angularVelocity) > 0.02) allQuiet = false;
-                        }
-
-                        if (allQuiet) {
-                            balanceSettleTimer++;
-                            if (balanceSettleTimer > 25) { 
-                                successBalanceDrop();
-                            }
-                        } else {
-                            balanceSettleTimer = 0;
                         }
                     }
                 });
-            }
 
-            document.getElementById('balance-action-btn').addEventListener('click', () => {
-                if (balanceGameState === 'idle' || balanceGameState === 'result') {
-                    startBalanceGame();
-                }
-            });
-
-            document.getElementById('balance-canvas-container').addEventListener('mousedown', () => {
-                if (balanceGameState === 'moving') dropBalanceBlock();
-            });
-
-            function startBalanceGame() {
-                Matter.Composite.clear(balanceEngine.world);
-                Matter.Engine.clear(balanceEngine);
-                
-                balanceStack = [];
-                balanceScore = 0;
-                document.getElementById('balance-score').innerText = balanceScore;
-                document.getElementById('balance-status').innerText = 'Click or Space to drop.';
-                document.getElementById('balance-action-btn').style.display = 'none';
-                
-                // Re-center render bounds on restart
-                balanceRender.bounds.min.x = 0; balanceRender.bounds.max.x = 300;
-                balanceRender.bounds.min.y = 0; balanceRender.bounds.max.y = 500;
-                
-                // Sleek static Ground base
-                let ground = Matter.Bodies.rectangle(150, 480, 400, 60, { 
-                    isStatic: true, 
-                    label: 'ground',
-                    render: { 
-                        fillStyle: '#1c1c1e',
-                        strokeStyle: '#86868b',
-                        lineWidth: 1
-                    } 
-                });
-                Matter.Composite.add(balanceEngine.world, ground);
-                
-                spawnBalanceBlock();
-            }
-
-            function spawnBalanceBlock() {
-                // Procedurally pick random geometry
-                const shapeType = Math.floor(Math.random() * 4);
-                const size = Math.max(25, 60 - (balanceScore * 2)); 
-                
-                // Theme matching glass look
-                const options = {
-                    isStatic: true,
-                    friction: 0.8, 
-                    restitution: 0.05, 
-                    density: 0.05,
-                    render: { 
-                        fillStyle: 'rgba(41, 151, 255, 0.1)', 
-                        strokeStyle: '#2997ff',
-                        lineWidth: 2
+                // Apply Properties
+                document.getElementById('prop-apply-btn').addEventListener('click', () => {
+                    if(selectedBody) {
+                        const newMass = parseFloat(document.getElementById('prop-mass').value);
+                        const newMus = parseFloat(document.getElementById('prop-mus').value);
+                        const newMuk = parseFloat(document.getElementById('prop-muk').value);
+                        Matter.Body.setMass(selectedBody, newMass);
+                        selectedBody.frictionStatic = newMus;
+                        selectedBody.friction = newMuk;
                     }
-                };
+                });
 
-                let currentTopY = 450;
-                if (balanceStack.length > 0) {
-                    currentTopY = Math.min(...balanceStack.map(b => b.bounds.min.y));
-                }
-                const spawnY = currentTopY - 120;
+                // Custom Render Hook for Force Vectors & Center of Mass
+                Matter.Events.on(engRender, 'afterRender', function() {
+                    const ctx = engRender.context;
+                    
+                    Matter.Composite.allBodies(engEngine.world).forEach(body => {
+                        if (body.isStatic) return;
 
-                if (shapeType === 0) {
-                    balanceCurrentBlock = Matter.Bodies.rectangle(150, spawnY, size * 1.5, size, options);
-                } else if (shapeType === 1) {
-                    balanceCurrentBlock = Matter.Bodies.polygon(150, spawnY, 6, size, options); // Hexagon
-                } else if (shapeType === 2) {
-                    balanceCurrentBlock = Matter.Bodies.polygon(150, spawnY, 3, size + 10, options); // Triangle
+                        // Draw Gravity Vector (Red)
+                        const wMag = body.mass * 2; 
+                        drawArrow(ctx, body.position.x, body.position.y, body.position.x, body.position.y + wMag, '#ff3b30');
+
+                        // Draw Velocity Vector (Green) if moving
+                        if (isPlaying && body.speed > 0.5) {
+                            drawArrow(ctx, body.position.x, body.position.y, body.position.x + (body.velocity.x * 5), body.position.y + (body.velocity.y * 5), '#34c759');
+                        }
+
+                        // Highlight selected body centroid
+                        if (body === selectedBody) {
+                            ctx.beginPath();
+                            ctx.arc(body.position.x, body.position.y, 5, 0, 2*Math.PI);
+                            ctx.fillStyle = '#fff';
+                            ctx.shadowBlur = 10;
+                            ctx.shadowColor = '#fff';
+                            ctx.fill();
+                            ctx.closePath();
+                            ctx.shadowBlur = 0;
+                        }
+                    });
+
+                    // Update HUD Telemetry
+                    if (selectedBody && isPlaying) {
+                        const hud = document.getElementById('engsim-hud');
+                        let vx = selectedBody.velocity.x;
+                        let vy = selectedBody.velocity.y;
+                        let velMag = Math.sqrt(vx*vx + vy*vy).toFixed(2);
+                        
+                        let prev = prevVelocities[selectedBody.id] || {x:0, y:0};
+                        let ax = (vx - prev.x) * 60; // Approx 60fps
+                        let ay = (vy - prev.y) * 60;
+                        let accelMag = Math.sqrt(ax*ax + ay*ay).toFixed(2);
+
+                        document.getElementById('hud-vel').innerText = velMag;
+                        document.getElementById('hud-accel').innerText = accelMag;
+                    }
+                    
+                    // Store velocity for accel calc next frame
+                    if(isPlaying) {
+                        Matter.Composite.allBodies(engEngine.world).forEach(b => {
+                            prevVelocities[b.id] = {x: b.velocity.x, y: b.velocity.y};
+                        });
+                    }
+                });
+
+                Matter.Render.run(engRender);
+                engRunner = Matter.Runner.create();
+                Matter.Runner.run(engRunner, engEngine);
+            }
+
+            function selectBody(body) {
+                const panel = document.getElementById('engsim-props-panel');
+                const hud = document.getElementById('engsim-hud');
+                
+                // Deselect previous
+                if (selectedBody) selectedBody.render.strokeStyle = (selectedBody.circleRadius) ? 'transparent' : '#2997ff'; 
+
+                selectedBody = body;
+
+                if (body && !body.isStatic) {
+                    body.render.strokeStyle = '#fff';
+                    panel.style.opacity = 1;
+                    panel.style.pointerEvents = 'auto';
+                    document.getElementById('prop-mass').value = body.mass.toFixed(1);
+                    document.getElementById('prop-mus').value = body.frictionStatic.toFixed(2);
+                    document.getElementById('prop-muk').value = body.friction.toFixed(2);
+                    
+                    hud.style.display = 'block';
+                    document.getElementById('hud-id').innerText = body.id;
+                    document.getElementById('hud-type').innerText = body.circleRadius ? "Sphere" : "Box";
                 } else {
-                    balanceCurrentBlock = Matter.Bodies.trapezoid(150, spawnY, size * 1.5, size, 0.5, options); // Trapezoid
-                }
-                
-                Matter.Composite.add(balanceEngine.world, balanceCurrentBlock);
-                balanceGameState = 'moving';
-                balanceMoveTime = 0;
-                balanceSettleTimer = 0;
-            }
-
-            function dropBalanceBlock() {
-                if (balanceGameState !== 'moving') return;
-                Matter.Body.setStatic(balanceCurrentBlock, false);
-                balanceGameState = 'falling';
-            }
-
-            function successBalanceDrop() {
-                balanceStack.push(balanceCurrentBlock);
-                balanceScore++;
-                document.getElementById('balance-score').innerText = balanceScore;
-                spawnBalanceBlock();
-            }
-
-            function endBalanceGame() {
-                balanceGameState = 'result';
-                document.getElementById('balance-status').innerText = 'Structure toppled!';
-                document.getElementById('balance-action-btn').style.display = 'inline-block';
-                document.getElementById('balance-action-btn').innerText = 'Try Again';
-                
-                if (balanceScore > balanceHighScore) {
-                    balanceHighScore = balanceScore;
-                    localStorage.setItem('appleBalanceHighScore', balanceHighScore);
-                    document.getElementById('balance-highscore').innerText = balanceHighScore;
-                    document.getElementById('balance-status').innerText = 'New High Score!';
+                    panel.style.opacity = 0.3;
+                    panel.style.pointerEvents = 'none';
+                    hud.style.display = 'none';
                 }
             }
+
+            // Helper to draw vector arrows
+            function drawArrow(ctx, fromx, fromy, tox, toy, color) {
+                const headlen = 8; // length of head in pixels
+                const dx = tox - fromx;
+                const dy = toy - fromy;
+                const angle = Math.atan2(dy, dx);
+                ctx.beginPath();
+                ctx.moveTo(fromx, fromy);
+                ctx.lineTo(tox, toy);
+                ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+                ctx.moveTo(tox, toy);
+                ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
         })();
     </script>
 
