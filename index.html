@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -388,12 +388,12 @@
                 <div style="position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; pointer-events: none;">
                     
                     <div class="reveal fade-up" style="position: absolute; top: 15vh; z-index: 10; text-align: center;">
-                        <h2 class="hero-title" style="font-size: clamp(2rem, 5vw, 4rem);">Global footprint.</h2>
+                        <h2 class="hero-title" style="font-size: clamp(2rem, 5vw, 4rem);">Real-time telemetry.</h2>
                     </div>
                     
                     <div id="globe-canvas-container" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; display: flex; justify-content: center; align-items: center;"></div>
                     
-                    <p style="position: absolute; bottom: 10vh; color: var(--text-muted); font-size: 0.9rem; z-index: 10; font-weight: 500;" class="reveal fade-up">Scroll to manipulate orbital time.</p>
+                    <p style="position: absolute; bottom: 10vh; color: var(--text-muted); font-size: 0.9rem; z-index: 10; font-weight: 500;" class="reveal fade-up">Scroll to orbit the system.</p>
                 </div>
             </div>
 
@@ -519,90 +519,92 @@
         }
         animate3D();
 
-        // --- 2. FOREGROUND REAL-TIME SOLAR SYSTEM & GLOBE ---
+        // --- 2. FOREGROUND REAL-TIME ASTRONOMICAL SOLAR SYSTEM ---
         const globeContainer = document.getElementById('globe-canvas-container');
         const globeScene = new THREE.Scene();
         const globeCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        globeCamera.position.z = 40; 
+        globeCamera.position.z = 45; 
 
         const globeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); 
         globeRenderer.setSize(window.innerWidth, window.innerHeight);
         globeRenderer.setPixelRatio(window.devicePixelRatio);
         globeContainer.appendChild(globeRenderer.domElement);
 
-        // A. Generate realistic Starfield background
+        // Deep Space Starfield
         const starGeo = new THREE.BufferGeometry();
         const starCount = 2000;
         const starPos = new Float32Array(starCount * 3);
         for(let i = 0; i < starCount * 3; i++) {
-            starPos[i] = (Math.random() - 0.5) * 500;
+            starPos[i] = (Math.random() - 0.5) * 400; // Spread stars wide
         }
         starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({color: 0x86868b, size: 0.6, transparent: true, opacity: 0.8});
+        const starMat = new THREE.PointsMaterial({color: 0x86868b, size: 0.5, transparent: true, opacity: 0.8});
         const stars = new THREE.Points(starGeo, starMat);
         globeScene.add(stars);
 
-        const globeGroup = new THREE.Group();
-        globeScene.add(globeGroup);
+        // The Scroll Orbit Group (This rotates the entire system when you scroll)
+        const systemOrbitGroup = new THREE.Group();
+        globeScene.add(systemOrbitGroup);
 
-        // B. Inverted Earth Texture (Oceans White, Land Black)
-        const innerGeo = new THREE.SphereGeometry(12, 64, 64);
+        // --- EARTH ---
+        const earthGeo = new THREE.SphereGeometry(12, 64, 64);
         const textureLoader = new THREE.TextureLoader();
-        // Using earth-water map as standard color map to get bright oceans, dark land
-        const innerTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-water.png');
         
-        const innerMat = new THREE.MeshStandardMaterial({ 
-            map: innerTex,
-            color: 0xffffff,
-            roughness: 0.8, 
-            metalness: 0.1,
+        // Realistic Blue Marble for daytime, Night Map for city lights
+        const dayTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
+        const nightTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-night.jpg');
+        
+        const earthMat = new THREE.MeshStandardMaterial({ 
+            map: dayTex,
+            emissiveMap: nightTex,
+            emissive: 0xffffee, // Warm golden city light glow
+            emissiveIntensity: 0.8, // Bright enough to see in dark, washed out by sun in the day
+            roughness: 0.7,
+            metalness: 0.1
         });
-        const innerEarth = new THREE.Mesh(innerGeo, innerMat);
-        globeGroup.add(innerEarth);
+        const earthMesh = new THREE.Mesh(earthGeo, earthMat);
+        systemOrbitGroup.add(earthMesh);
 
-        // C. Calculate Real-time Sun Position (Shadows)
+        // --- ASTRONOMICAL TIME MATH ---
         const now = new Date();
-        // Calculate Day of Year to determine Earth's axial tilt/sun declination
-        const start = new Date(now.getFullYear(), 0, 0);
-        const diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
-        const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
         
-        // Tilt is 23.5 degrees. Calculate declination based on day of year.
+        // 1. Calculate Sun Declination (Axial Tilt based on Season)
+        const startOfYear = new Date(now.getFullYear(), 0, 0);
+        const diff = now - startOfYear;
+        const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
         const tilt = 23.5 * (Math.PI / 180);
+        // Approximation of the Sun's declination curve
         const sunDeclination = Math.sin((dayOfYear - 80) * (2 * Math.PI / 365)) * tilt;
 
-        // D. Create the Sun and its Light Source
+        // 2. Place the Sun Light Source
         const sunDistance = 150; 
-        const sunGeo = new THREE.SphereGeometry(3, 32, 32);
-        const sunMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-        const sunMesh = new THREE.Mesh(sunGeo, sunMat);
-        
-        // Position Sun far in the background, angled based on current real-world season
-        sunMesh.position.set(
+        const sunLight = new THREE.DirectionalLight(0xffffff, 4.0); // Very strong sun
+        sunLight.position.set(
             sunDistance * Math.cos(sunDeclination), 
             sunDistance * Math.sin(sunDeclination), 
-            -sunDistance
+            0 // Sun is locked to X/Y axis in this system
         );
-        globeScene.add(sunMesh);
+        systemOrbitGroup.add(sunLight);
 
-        // The Light casting the real-world shadow
-        const sunLight = new THREE.DirectionalLight(0xffffff, 3.5);
-        sunLight.position.copy(sunMesh.position);
-        globeScene.add(sunLight);
+        // Soft ambient light just to prevent the dark side from being literally pitch black
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.05);
+        systemOrbitGroup.add(ambientLight);
 
-        // Soft ambient to slightly illuminate the dark side of the globe
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
-        globeScene.add(ambientLight);
+        // Add a glowing visual Sun sphere way out in the distance
+        const sunGeo = new THREE.SphereGeometry(4, 32, 32);
+        const sunMat = new THREE.MeshBasicMaterial({ color: 0xffffee });
+        const sunVisual = new THREE.Mesh(sunGeo, sunMat);
+        sunVisual.position.copy(sunLight.position);
+        systemOrbitGroup.add(sunVisual);
 
-        // E. Sync Earth's initial rotation to CURRENT UTC time
+        // 3. Rotate Earth based on Current UTC Time
         const utcHours = now.getUTCHours() + (now.getUTCMinutes() / 60);
-        // Map 24 hours to 360 degrees (Math.PI * 2)
-        const initialRotation = (utcHours / 24) * Math.PI * 2 + Math.PI; // +PI offset to align texture Greenwich
-        globeGroup.rotation.y = initialRotation;
-        
-        let targetGlobeRotation = initialRotation;
+        // Map 24 hours to 360 degrees. Math.PI adjusts the texture seam to align with Greenwich.
+        earthMesh.rotation.y = (utcHours / 24) * Math.PI * 2 + Math.PI;
 
-        // SCROLL HIJACK LOGIC
+        // --- SCROLL HIJACK LOGIC ---
+        let targetSystemRotation = 0;
+
         window.addEventListener('scroll', () => {
             const wrapper = document.getElementById('globe-scroll-wrapper');
             if(!wrapper) return;
@@ -612,21 +614,23 @@
             
             if (rect.top <= 0 && rect.bottom >= windowHeight) {
                 const progress = Math.abs(rect.top) / (rect.height - windowHeight);
-                // Scroll advances time/rotation by 2 full days
-                targetGlobeRotation = initialRotation + (progress * Math.PI * 4); 
+                // Scroll slowly orbits the camera around the Y axis of the entire system
+                targetSystemRotation = progress * Math.PI * 2; 
             }
         });
 
         function animateGlobe() {
             requestAnimationFrame(animateGlobe);
-            // Slowly rotate stars in background
-            stars.rotation.y -= 0.0005;
-            // Smoothly rotate earth based on scroll
-            globeGroup.rotation.y += (targetGlobeRotation - globeGroup.rotation.y) * 0.08; 
+            
+            // Slowly rotate stars for parallax depth
+            stars.rotation.y += 0.0002;
+            
+            // Smoothly orbit the system based on scroll position
+            systemOrbitGroup.rotation.y += (targetSystemRotation - systemOrbitGroup.rotation.y) * 0.08; 
+            
             globeRenderer.render(globeScene, globeCamera);
         }
         animateGlobe();
-
 
         // --- 3. LIVE SYSTEM DATA (IP GEO-TRACE & LOCAL APIS) ---
         async function fetchLocalData() {
