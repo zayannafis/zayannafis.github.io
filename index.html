@@ -875,6 +875,16 @@
                 });
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // FIX: Auto-scroll chat to bottom when opening the Messages tab
+                if (targetId === 'messages') {
+                    const chatBox = document.getElementById('chat-box');
+                    if (chatBox) {
+                        setTimeout(() => {
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                        }, 100); 
+                    }
+                }
             });
         });
 
