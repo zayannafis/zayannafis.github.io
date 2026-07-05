@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <style>
-        /* CSS Variables for a Cyber/Engineering Theme - BRIGHTER & LIGHTER */
+        /* CSS Variables for a Cyber/Engineering Theme */
         :root {
             --bg-color: #1e293b;
             --text-main: #ffffff;
@@ -39,14 +39,14 @@
             font-weight: 700;
         }
 
-        /* 3D Background Canvas Container */
+        /* Background Grid Canvas Container */
         #canvas-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: -1;
+            z-index: -2; /* Kept far back */
             pointer-events: none;
         }
 
@@ -154,9 +154,8 @@
             box-shadow: 0 0 8px #f472b6 !important;
         }
 
-        /* Main Content & Section Transitions */
+        /* Main Content */
         main {
-            /* Changed to allow full scrolling */
             display: flex;
             justify-content: center;
             align-items: flex-start; 
@@ -181,7 +180,7 @@
         }
 
         /* ========================================= */
-        /* ✨ PREMIUM AGENCY SCROLL ANIMATIONS ✨ */
+        /* ✨ REVERSIBLE SCROLL ANIMATIONS ✨ */
         /* ========================================= */
         
         .reveal {
@@ -203,9 +202,6 @@
         .delay-100 { transition-delay: 0.1s; }
         .delay-200 { transition-delay: 0.2s; }
         .delay-300 { transition-delay: 0.3s; }
-        .delay-400 { transition-delay: 0.4s; }
-
-        /* ========================================= */
 
         /* Typography & Badges */
         .badge {
@@ -356,10 +352,6 @@
             transition: border-color 0.3s;
         }
 
-        .chat-input-area input:focus {
-            border-color: var(--accent-1);
-        }
-
         .chat-input-area button {
             background: var(--accent-1);
             color: var(--bg-color);
@@ -371,46 +363,15 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .chat-input-area button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
-        }
-
         @media (max-width: 768px) {
-            nav {
-                padding: 1rem 5%;
-                flex-direction: column;
-                gap: 1rem;
-            }
-            .nav-links {
-                gap: 1rem;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            .nav-btn {
-                font-size: 0.85rem;
-            }
-            .hero-title {
-                font-size: clamp(2.5rem, 12vw, 4rem) !important;
-            }
-            .chat-container {
-                flex-direction: column;
-                height: 65vh; 
-                min-height: 450px;
-            }
-            .chat-sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid var(--glass-border);
-                padding: 0.5rem;
-                max-height: 85px; 
-            }
-            .chat-input-area input {
-                font-size: 16px; 
-            }
-            .chat-input-area button {
-                padding: 0 1rem;
-            }
+            nav { padding: 1rem 5%; flex-direction: column; gap: 1rem; }
+            .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+            .nav-btn { font-size: 0.85rem; }
+            .hero-title { font-size: clamp(2.5rem, 12vw, 4rem) !important; }
+            .chat-container { flex-direction: column; height: 65vh; min-height: 450px; }
+            .chat-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 0.5rem; max-height: 85px; }
+            .chat-input-area input { font-size: 16px; }
+            .chat-input-area button { padding: 0 1rem; }
         }
 
         @media (hover: none) and (pointer: coarse) {
@@ -443,18 +404,21 @@
                 </div>
             </div>
 
-            <div style="padding: 10vh 0; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                <div class="reveal fade-up">
-                    <div class="badge" style="border-color: var(--accent-2); color: var(--text-main);">Visual Architecture</div>
-                    <h2 class="hero-title" style="font-size: clamp(2rem, 5vw, 4rem);">SYSTEM <span>OVERVIEW</span></h2>
-                </div>
+            <div id="globe-scroll-wrapper" style="height: 300vh; position: relative;">
                 
-                <div class="reveal scale-up delay-200" style="margin-top: 3rem; border: 1px solid var(--glass-border); padding: 15px; border-radius: 16px; background: var(--glass-bg); display: inline-block; width: 100%; max-width: 900px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
-                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Cyber Architecture" style="width: 100%; height: auto; border-radius: 8px; filter: grayscale(70%) sepia(20%) hue-rotate(180deg) brightness(1.2); opacity: 0.9; display: block;">
+                <div style="position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; pointer-events: none;">
+                    
+                    <div class="reveal fade-up" style="position: absolute; top: 18vh; z-index: 10; text-align: center;">
+                        <div class="badge" style="border-color: var(--accent-2); color: var(--text-main);">Visual Architecture</div>
+                        <h2 class="hero-title" style="font-size: clamp(2rem, 5vw, 4rem);">GLOBAL <span>NETWORK</span></h2>
+                    </div>
+                    
+                    <div id="globe-canvas-container" style="width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1;"></div>
+                    
+                    <p style="position: absolute; bottom: 12vh; color: #38bdf8; font-family: 'Space Grotesk', sans-serif; letter-spacing: 2px; font-size: 0.95rem; z-index: 10; font-weight: 700; opacity: 0.8;" class="reveal fade-up">KEEP SCROLLING TO ROTATE THE NETWORK</p>
                 </div>
             </div>
-
-            <div style="padding: 15vh 0 10vh 0; text-align: center;">
+            <div style="padding: 10vh 0 10vh 0; text-align: center;">
                 <h3 class="reveal fade-left" style="color: #38bdf8; font-size: 2rem; margin-bottom: 3rem; font-family: 'Space Grotesk', sans-serif;">SYSTEM MODULES</h3>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; text-align: left;">
@@ -537,7 +501,7 @@
     </main>
 
     <script>
-        // --- THREE.JS BACKGROUND LOGIC ---
+        // --- 1. BACKGROUND 3D GRID LOGIC ---
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x1e293b, 0.015);
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -554,50 +518,123 @@
         scene.add(plane);
 
         camera.position.z = 25;
-
-        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
-        const windowHalfX = window.innerWidth / 2;
-        const windowHalfY = window.innerHeight / 2;
-
-        const count = geometry.attributes.position.count;
-        const startZ = new Float32Array(count);
-        for(let i = 0; i < count; i++) {
-            startZ[i] = geometry.attributes.position.getZ(i);
-        }
-
         let clock = new THREE.Clock();
 
         function animate3D() {
             requestAnimationFrame(animate3D);
             const elapsedTime = clock.getElapsedTime();
             const positions = geometry.attributes.position;
-            for(let i = 0; i < count; i++) {
+            for(let i = 0; i < positions.count; i++) {
                 const x = positions.getX(i);
                 const y = positions.getY(i);
                 const wave1 = Math.sin(x * 0.1 + elapsedTime * 0.5) * 2;
                 const wave2 = Math.cos(y * 0.1 + elapsedTime * 0.5) * 2;
-                positions.setZ(i, startZ[i] + wave1 + wave2);
+                positions.setZ(i, (geometry.attributes.position.getZ(i) || 0) + wave1 * 0.01 + wave2 * 0.01);
             }
             positions.needsUpdate = true;
             plane.position.z = (elapsedTime * 2) % 10;
-
-            targetX = mouseX * 0.05;
-            targetY = mouseY * 0.05;
-            camera.position.x += (targetX - camera.position.x) * 0.02;
-            camera.position.y += (-targetY - camera.position.y) * 0.02;
-            camera.lookAt(scene.position);
-
             renderer.render(scene, camera);
         }
         animate3D();
 
+        // --- 2. FOREGROUND 3D GLOBE LOGIC (NEW!) ---
+        const globeContainer = document.getElementById('globe-canvas-container');
+        const globeScene = new THREE.Scene();
+        const globeCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        globeCamera.position.z = 35; // How far back the camera sits
+
+        const globeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // Alpha true makes background transparent so grid shows through
+        globeRenderer.setSize(window.innerWidth, window.innerHeight);
+        globeRenderer.setPixelRatio(window.devicePixelRatio);
+        globeContainer.appendChild(globeRenderer.domElement);
+
+        // Build the Earth Mesh
+        const earthGeo = new THREE.SphereGeometry(12, 64, 64);
+        const textureLoader = new THREE.TextureLoader();
+        // Grabbing a high-res earth texture map
+        const earthTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
+        const earthMat = new THREE.MeshStandardMaterial({ 
+            map: earthTex,
+            metalness: 0.2,
+            roughness: 0.8
+        });
+        const earth = new THREE.Mesh(earthGeo, earthMat);
+        globeScene.add(earth);
+
+        // Add Cyberpunk Lighting to tint the earth Cyan and Pink
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        globeScene.add(ambientLight);
+        
+        const cyanLight = new THREE.DirectionalLight(0x38bdf8, 2);
+        cyanLight.position.set(20, 10, 20);
+        globeScene.add(cyanLight);
+        
+        const pinkLight = new THREE.DirectionalLight(0xf472b6, 1.5);
+        pinkLight.position.set(-20, 10, -20);
+        globeScene.add(pinkLight);
+
+        let targetGlobeRotation = 0;
+
+        // SCROLL HIJACK LOGIC
+        window.addEventListener('scroll', () => {
+            const wrapper = document.getElementById('globe-scroll-wrapper');
+            if(!wrapper) return;
+            
+            const rect = wrapper.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            
+            // Check if we are currently scrolling through the 300vh sticky section
+            if (rect.top <= 0 && rect.bottom >= windowHeight) {
+                // Calculate exactly what percentage of the section we have scrolled through
+                const progress = Math.abs(rect.top) / (rect.height - windowHeight);
+                // Map that percentage to rotation (Math.PI * 4 means 2 full 360-degree spins)
+                targetGlobeRotation = progress * Math.PI * 4; 
+            }
+        });
+
+        function animateGlobe() {
+            requestAnimationFrame(animateGlobe);
+            // Smoothly ease the rotation toward the target based on scroll position
+            earth.rotation.y += (targetGlobeRotation - earth.rotation.y) * 0.08; 
+            globeRenderer.render(globeScene, globeCamera);
+        }
+        animateGlobe();
+
+        // --- 3. RESIZE HANDLER ---
         window.addEventListener('resize', () => {
+            // Update Grid Scene
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // Update Globe Scene
+            globeCamera.aspect = window.innerWidth / window.innerHeight;
+            globeCamera.updateProjectionMatrix();
+            globeRenderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // --- UI LOGIC (CURSOR & TABS) ---
+        // --- 4. REVERSIBLE SCROLL OBSERVER (UPDATED!) ---
+        const observerOptions = {
+            threshold: 0.25, 
+            rootMargin: "0px" 
+        };
+
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible'); // Play animation
+                } else {
+                    entry.target.classList.remove('visible'); // Reverse/Reset animation when scrolled away!
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            scrollObserver.observe(el);
+        });
+
+
+        // --- 5. UI LOGIC (CURSOR & TABS) ---
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
 
@@ -605,8 +642,6 @@
             if (window.getComputedStyle(cursorDot).display !== 'none') {
                 const posX = e.clientX;
                 const posY = e.clientY;
-                mouseX = (e.clientX - windowHalfX);
-                mouseY = (e.clientY - windowHalfY);
                 cursorDot.style.left = `${posX}px`;
                 cursorDot.style.top = `${posY}px`;
                 cursorOutline.animate({left: `${posX}px`, top: `${posY}px` }, { duration: 200, fill: "forwards" });
@@ -636,24 +671,6 @@
         }
         setupInteractives();
 
-        // --- SCROLL INTERSECTION OBSERVER (THE MAGIC TRICK - UPDATED) ---
-        const observerOptions = {
-            threshold: 0.25, // Element must be 25% visible on screen before animating
-            rootMargin: "0px" 
-        };
-
-        const scrollObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => {
-            scrollObserver.observe(el);
-        });
-
         const navBtns = document.querySelectorAll('.nav-btn');
         const sections = document.querySelectorAll('.section');
 
@@ -678,7 +695,7 @@
             });
         });
 
-        // --- CYBER PUZZLE LOGIC ---
+        // --- 6. CYBER PUZZLE LOGIC ---
         (function initCyberPuzzle() {
             const grid = document.getElementById('matrix-grid');
             const startBtn = document.getElementById('matrix-start-btn');
