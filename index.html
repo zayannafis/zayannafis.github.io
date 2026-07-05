@@ -156,8 +156,7 @@
 
         /* Main Content & Section Transitions */
         main {
-            padding-top: 120px;
-            min-height: 100vh;
+            /* Changed to allow full scrolling */
             display: flex;
             justify-content: center;
             align-items: flex-start; 
@@ -169,7 +168,6 @@
             width: 90%;
             max-width: 1200px;
             padding-bottom: 100px;
-            margin-top: 50px;
         }
 
         .section.active {
@@ -188,24 +186,20 @@
         
         .reveal {
             opacity: 0;
-            /* Premium easing curve identical to top-tier agency sites */
             transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); 
         }
 
-        /* Directional Starting Positions */
-        .reveal.fade-up { transform: translateY(60px); }
-        .reveal.fade-down { transform: translateY(-60px); }
-        .reveal.fade-left { transform: translateX(-60px); }
-        .reveal.fade-right { transform: translateX(60px); }
+        .reveal.fade-up { transform: translateY(80px); }
+        .reveal.fade-down { transform: translateY(-80px); }
+        .reveal.fade-left { transform: translateX(-80px); }
+        .reveal.fade-right { transform: translateX(80px); }
         .reveal.scale-up { transform: scale(0.85); }
 
-        /* The 'Visible' State (When it enters the screen) */
         .reveal.visible {
             opacity: 1;
             transform: translate(0) scale(1);
         }
 
-        /* Stagger Delays for that "waterfall" effect */
         .delay-100 { transition-delay: 0.1s; }
         .delay-200 { transition-delay: 0.2s; }
         .delay-300 { transition-delay: 0.3s; }
@@ -247,6 +241,7 @@
             color: var(--text-muted);
             max-width: 650px;
             font-weight: 300;
+            margin: 0 auto;
         }
 
         /* --- CHAT SYSTEM UI --- */
@@ -381,7 +376,6 @@
             box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
         }
 
-        /* --- MOBILE RESPONSIVE RULES --- */
         @media (max-width: 768px) {
             nav {
                 padding: 1rem 5%;
@@ -395,9 +389,6 @@
             }
             .nav-btn {
                 font-size: 0.85rem;
-            }
-            main {
-                padding-top: 140px; 
             }
             .hero-title {
                 font-size: clamp(2.5rem, 12vw, 4rem) !important;
@@ -422,14 +413,9 @@
             }
         }
 
-        /* --- TOUCH DEVICE OPTIMIZATION --- */
         @media (hover: none) and (pointer: coarse) {
-            * {
-                cursor: auto !important; 
-            }
-            .cursor-dot, .cursor-outline {
-                display: none !important; 
-            }
+            * { cursor: auto !important; }
+            .cursor-dot, .cursor-outline { display: none !important; }
         }
     </style>
 </head>
@@ -449,16 +435,29 @@
 
     <main>
         <section id="home" class="section active">
-            <div class="reveal fade-up visible">
-                <div class="badge">PROUD OWNER OF A DOMAIN</div>
-                <h1 class="hero-title">SO I<br><span>BOUGHT A DOMAIN</span></h1>
-                <p class="hero-desc">I have literally zero experience in web design or programming, but I saw the domain availability and made a snap decision. Now I'm stuck with this empty site and a strange urge to make it look incredibly cool for no reason. Enjoy the 3D grid.</p>
+            <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                <div class="reveal fade-up visible">
+                    <div class="badge">PROUD OWNER OF A DOMAIN</div>
+                    <h1 class="hero-title">SO I<br><span>BOUGHT A DOMAIN</span></h1>
+                    <p class="hero-desc">I have literally zero experience in web design or programming, but I saw the domain availability and made a snap decision. Now I'm stuck with this empty site and a strange urge to make it look incredibly cool for no reason. Scroll down to initiate.</p>
+                </div>
             </div>
 
-            <div style="margin-top: 15vh; padding-bottom: 10vh;">
-                <h3 class="reveal fade-left" style="color: #38bdf8; font-size: 2rem; margin-bottom: 2rem; font-family: 'Space Grotesk', sans-serif;">SYSTEM MODULES</h3>
+            <div style="padding: 10vh 0; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <div class="reveal fade-up">
+                    <div class="badge" style="border-color: var(--accent-2); color: var(--text-main);">Visual Architecture</div>
+                    <h2 class="hero-title" style="font-size: clamp(2rem, 5vw, 4rem);">SYSTEM <span>OVERVIEW</span></h2>
+                </div>
                 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div class="reveal scale-up delay-200" style="margin-top: 3rem; border: 1px solid var(--glass-border); padding: 15px; border-radius: 16px; background: var(--glass-bg); display: inline-block; width: 100%; max-width: 900px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Cyber Architecture" style="width: 100%; height: auto; border-radius: 8px; filter: grayscale(70%) sepia(20%) hue-rotate(180deg) brightness(1.2); opacity: 0.9; display: block;">
+                </div>
+            </div>
+
+            <div style="padding: 15vh 0 10vh 0; text-align: center;">
+                <h3 class="reveal fade-left" style="color: #38bdf8; font-size: 2rem; margin-bottom: 3rem; font-family: 'Space Grotesk', sans-serif;">SYSTEM MODULES</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; text-align: left;">
                     <div class="reveal fade-up delay-100 interactive" style="background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); padding: 30px; border-radius: 12px; backdrop-filter: blur(10px);">
                         <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif;">01. Secure Link</h4>
                         <p style="color: #94a3b8; font-size: 0.95rem;">Direct end-to-end database connections established. Real-time Firebase routing protocols actively running in the background.</p>
@@ -478,57 +477,61 @@
         </section>
 
         <section id="messages" class="section">
-            <div class="reveal fade-right visible">
-                <div class="badge">Secure Comm Link</div>
-                <h2 class="hero-title">Direct <span>Comms</span></h2>
-            </div>
-            <div class="chat-container reveal scale-up delay-200 visible">
-                <div class="chat-sidebar">
-                    <div id="sidebar-content">
-                        <div class="chat-contact">
-                            <div class="contact-avatar interactive">Z</div>
-                            <div class="contact-info">
-                                <div class="contact-name">Z. Nafis (Admin)</div>
-                                <div class="contact-status">Online</div>
+            <div style="padding-top: 15vh;">
+                <div class="reveal fade-right visible">
+                    <div class="badge">Secure Comm Link</div>
+                    <h2 class="hero-title">Direct <span>Comms</span></h2>
+                </div>
+                <div class="chat-container reveal scale-up delay-200 visible">
+                    <div class="chat-sidebar">
+                        <div id="sidebar-content">
+                            <div class="chat-contact">
+                                <div class="contact-avatar interactive">Z</div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Z. Nafis (Admin)</div>
+                                    <div class="contact-status">Online</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="chat-main">
-                    <div class="chat-messages" id="chat-box">
-                        <div class="message received">
-                            <p>System Online. Secure connection established. Send a message to begin.</p>
+                    <div class="chat-main">
+                        <div class="chat-messages" id="chat-box">
+                            <div class="message received">
+                                <p>System Online. Secure connection established. Send a message to begin.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="chat-input-area">
-                        <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
-                        <button id="send-btn" class="interactive">SEND</button>
+                        <div class="chat-input-area">
+                            <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+                            <button id="send-btn" class="interactive">SEND</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="mystery" class="section">
-            <div class="reveal fade-left visible">
-                <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Encryption Override v1.0</div>
-                <h2 class="hero-title">System<br><span style="-webkit-text-stroke: 1px #f472b6;">Decryption</span></h2>
-            </div>
-            
-            <div id="cyber-puzzle-container" class="reveal fade-up delay-200 visible" style="background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px; max-width: 600px; margin: 0 auto; backdrop-filter: blur(12px);">
-                <h3 style="color: #38bdf8; font-family: 'Space Grotesk', sans-serif; margin-bottom: 5px; font-size: 1.2rem; text-transform: uppercase;">Node Memory Matrix</h3>
-                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">Replicate the sequence to decrypt the nodes.</p>
-        
-                <div style="display: flex; justify-content: space-between; align-items: center; color: #fff; font-family: 'Space Grotesk', sans-serif; margin-bottom: 20px; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-                    <span id="matrix-level">Level: 1</span>
-                    <span id="matrix-score" style="color: #f472b6;">Score: 0</span>
-                    <span id="matrix-highscore" style="color: #10b981;">Best: 0</span>
+            <div style="padding-top: 15vh;">
+                <div class="reveal fade-left visible">
+                    <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Encryption Override v1.0</div>
+                    <h2 class="hero-title">System<br><span style="-webkit-text-stroke: 1px #f472b6;">Decryption</span></h2>
                 </div>
-        
-                <div id="matrix-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 250px; margin: 0 auto; pointer-events: none;">
+                
+                <div id="cyber-puzzle-container" class="reveal fade-up delay-200 visible" style="background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px; max-width: 600px; margin: 0 auto; backdrop-filter: blur(12px);">
+                    <h3 style="color: #38bdf8; font-family: 'Space Grotesk', sans-serif; margin-bottom: 5px; font-size: 1.2rem; text-transform: uppercase;">Node Memory Matrix</h3>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">Replicate the sequence to decrypt the nodes.</p>
+            
+                    <div style="display: flex; justify-content: space-between; align-items: center; color: #fff; font-family: 'Space Grotesk', sans-serif; margin-bottom: 20px; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                        <span id="matrix-level">Level: 1</span>
+                        <span id="matrix-score" style="color: #f472b6;">Score: 0</span>
+                        <span id="matrix-highscore" style="color: #10b981;">Best: 0</span>
                     </div>
-        
-                <p id="matrix-status" style="color: #38bdf8; margin-top: 20px; height: 24px; font-size: 0.9rem; font-family: 'Space Grotesk', sans-serif;">System Ready.</p>
-                <button id="matrix-start-btn" class="interactive" style="background: rgba(56,189,248,0.15); border: 1px solid #38bdf8; color: #38bdf8; padding: 10px 20px; border-radius: 6px; font-family: 'Space Grotesk', sans-serif; margin-top: 15px; font-size: 0.9rem; transition: all 0.2s;">INITIALIZE</button>
+            
+                    <div id="matrix-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 250px; margin: 0 auto; pointer-events: none;">
+                        </div>
+            
+                    <p id="matrix-status" style="color: #38bdf8; margin-top: 20px; height: 24px; font-size: 0.9rem; font-family: 'Space Grotesk', sans-serif;">System Ready.</p>
+                    <button id="matrix-start-btn" class="interactive" style="background: rgba(56,189,248,0.15); border: 1px solid #38bdf8; color: #38bdf8; padding: 10px 20px; border-radius: 6px; font-family: 'Space Grotesk', sans-serif; margin-top: 15px; font-size: 0.9rem; transition: all 0.2s;">INITIALIZE</button>
+                </div>
             </div>
         </section>
     </main>
@@ -633,10 +636,10 @@
         }
         setupInteractives();
 
-        // --- SCROLL INTERSECTION OBSERVER (THE MAGIC TRICK) ---
+        // --- SCROLL INTERSECTION OBSERVER (THE MAGIC TRICK - UPDATED) ---
         const observerOptions = {
-            threshold: 0.1, // Trigger when 10% of the element is visible
-            rootMargin: "0px 0px -50px 0px" // Trigger slightly before it hits the bottom
+            threshold: 0.25, // Element must be 25% visible on screen before animating
+            rootMargin: "0px" 
         };
 
         const scrollObserver = new IntersectionObserver((entries) => {
@@ -647,7 +650,6 @@
             });
         }, observerOptions);
 
-        // Tell the observer to watch all elements with the 'reveal' class
         document.querySelectorAll('.reveal').forEach(el => {
             scrollObserver.observe(el);
         });
@@ -665,7 +667,6 @@
                 const targetSection = document.getElementById(targetId);
                 targetSection.classList.add('active');
                 
-                // Re-trigger animations when switching tabs
                 targetSection.querySelectorAll('.reveal').forEach(el => {
                     el.classList.remove('visible');
                     setTimeout(() => {
