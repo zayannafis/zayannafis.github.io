@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Z. Nafis | Domain Owner</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>Z. Nafis | Domain</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <style>
-        /* CSS Variables for a Cyber/Engineering Theme */
+        /* CSS Variables for Apple-style Premium Dark Mode */
         :root {
-            --bg-color: #1e293b;
-            --text-main: #ffffff;
-            --text-muted: #cbd5e1;
-            --accent-1: #38bdf8;
-            --accent-2: #7dd3fc;
-            --glass-bg: rgba(30, 41, 59, 0.7);
-            --glass-border: rgba(56, 189, 248, 0.5);
+            --bg-color: #000000;
+            --text-main: #f5f5f7;
+            --text-muted: #86868b;
+            --accent-blue: #2997ff;
+            --glass-bg: rgba(28, 28, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         /* Base Reset & Typography */
@@ -23,20 +22,20 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             overflow-x: hidden;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
-        h1, h2, h3, .logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
+        h1, h2, h3, h4, .logo {
+            font-weight: 600;
+            letter-spacing: -0.03em;
         }
 
         /* Background Grid Canvas Container */
@@ -50,108 +49,50 @@
             pointer-events: none;
         }
 
-        /* Custom High-Tech Cursor */
-        .cursor-dot {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 6px;
-            height: 6px;
-            background-color: var(--accent-2);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px var(--accent-2);
-            transition: width 0.2s, height 0.2s;
-        }
-
-        .cursor-outline {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 40px;
-            height: 40px;
-            border: 1px solid var(--accent-1);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9998;
-            transform: translate(-50%, -50%);
-            transition: transform 0.1s ease-out, width 0.2s, height 0.2s, border-color 0.2s;
-        }
-
         /* Navigation */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 2rem 5%;
+            padding: 1.5rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            backdrop-filter: blur(8px);
-            background: linear-gradient(to bottom, rgba(30,41,59,0.9), transparent);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.7);
+            border-bottom: 1px solid var(--glass-border);
         }
 
         .logo {
-            font-size: 1.5rem;
-            letter-spacing: -1px;
+            font-size: 1.25rem;
             color: #fff;
-            text-transform: uppercase;
-        }
-
-        .logo span {
-            color: var(--accent-1);
+            letter-spacing: -0.05em;
         }
 
         .nav-links {
             display: flex;
-            gap: 2.5rem;
+            gap: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
         }
 
         .nav-btn {
             background: none;
             border: none;
             color: var(--text-muted);
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
-            padding-bottom: 5px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
             transition: color 0.3s;
-        }
-
-        .nav-btn::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background-color: var(--accent-1);
-            transition: width 0.3s ease;
-            box-shadow: 0 0 8px var(--accent-1);
         }
 
         .nav-btn:hover, .nav-btn.active {
             color: var(--text-main);
-        }
-
-        .nav-btn.active::after {
-            width: 100%;
-        }
-
-        .mystery-btn {
-            color: #f472b6 !important;
-        }
-
-        .mystery-btn::after {
-            background-color: #f472b6 !important;
-            box-shadow: 0 0 8px #f472b6 !important;
         }
 
         /* Main Content */
@@ -165,18 +106,18 @@
             display: none;
             opacity: 0;
             width: 90%;
-            max-width: 1200px;
+            max-width: 1000px;
             padding-bottom: 100px;
         }
 
         .section.active {
             display: block;
-            animation: instantFadeIn 0.5s ease forwards;
+            animation: instantFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @keyframes instantFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ✨ REVERSIBLE SCROLL ANIMATIONS ✨ */
@@ -185,11 +126,11 @@
             transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); 
         }
 
-        .reveal.fade-up { transform: translateY(80px); }
-        .reveal.fade-down { transform: translateY(-80px); }
-        .reveal.fade-left { transform: translateX(-80px); }
-        .reveal.fade-right { transform: translateX(80px); }
-        .reveal.scale-up { transform: scale(0.85); }
+        .reveal.fade-up { transform: translateY(60px); }
+        .reveal.fade-down { transform: translateY(-60px); }
+        .reveal.fade-left { transform: translateX(-60px); }
+        .reveal.fade-right { transform: translateX(60px); }
+        .reveal.scale-up { transform: scale(0.9); }
 
         .reveal.visible {
             opacity: 1;
@@ -203,57 +144,89 @@
         /* Typography & Badges */
         .badge {
             display: inline-block;
-            padding: 0.5rem 1.2rem;
-            border-radius: 4px;
-            border: 1px solid var(--accent-1);
-            background: rgba(56, 189, 248, 0.15);
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.85rem;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 0.75rem;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 0.05em;
             margin-bottom: 1.5rem;
-            color: var(--accent-2);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+            color: var(--text-muted);
         }
 
         .hero-title {
-            font-size: clamp(3.5rem, 7vw, 6rem);
+            font-size: clamp(3rem, 8vw, 6.5rem);
             line-height: 1.05;
             margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: -2px;
+            letter-spacing: -0.04em;
         }
 
         .hero-title span {
-            color: transparent;
-            -webkit-text-stroke: 1px var(--text-main);
+            color: var(--accent-blue);
         }
 
         .hero-desc {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             color: var(--text-muted);
-            max-width: 650px;
-            font-weight: 300;
+            max-width: 600px;
+            font-weight: 400;
             margin: 0 auto;
+            letter-spacing: -0.01em;
         }
 
-        /* --- CHAT SYSTEM UI --- */
+        /* Dashboard Card Styling (Apple Style) */
+        .dash-card {
+            background: var(--glass-bg); 
+            border: 1px solid var(--glass-border); 
+            padding: 40px; 
+            border-radius: 24px; 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+        }
+        
+        .dash-card:hover {
+            transform: scale(1.02);
+            background: rgba(40, 40, 42, 0.8);
+        }
+
+        .dash-value {
+            color: #fff; 
+            font-size: 2.5rem; 
+            margin-bottom: 5px; 
+            font-weight: 600;
+            letter-spacing: -0.03em;
+        }
+
+        .dash-label {
+            color: var(--text-muted); 
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* --- CHAT SYSTEM UI (iMessage Style) --- */
         .chat-container {
             display: flex;
-            height: 550px;
+            height: 600px;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             overflow: hidden;
-            margin-top: 1rem;
+            margin-top: 2rem;
         }
 
         .chat-sidebar {
-            width: 280px;
+            width: 300px;
             border-right: 1px solid var(--glass-border);
             background: rgba(0,0,0,0.2);
-            padding: 1rem;
+            padding: 1.5rem;
             overflow-y: auto;
         }
 
@@ -262,33 +235,38 @@
             align-items: center;
             gap: 1rem;
             padding: 1rem;
-            border-radius: 8px;
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid var(--accent-1);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-contact:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .contact-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--accent-1);
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #2997ff, #147ce6);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            color: var(--bg-color);
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #fff;
         }
 
         .contact-name {
-            font-family: 'Space Grotesk', sans-serif;
             font-weight: 600;
             color: #fff;
+            font-size: 1rem;
         }
 
         .contact-status {
             font-size: 0.8rem;
-            color: #10b981;
+            color: var(--text-muted);
         }
 
         .chat-main {
@@ -299,7 +277,7 @@
 
         .chat-messages {
             flex: 1;
-            padding: 1.5rem;
+            padding: 2rem;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -309,28 +287,27 @@
         .message {
             max-width: 70%;
             padding: 0.8rem 1.2rem;
-            border-radius: 12px;
+            border-radius: 20px;
             line-height: 1.4;
             font-size: 0.95rem;
         }
 
         .message.received {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: #2c2c2e;
+            color: #fff;
             align-self: flex-start;
-            border-bottom-left-radius: 2px;
+            border-bottom-left-radius: 4px;
         }
 
         .message.sent {
-            background: rgba(56, 189, 248, 0.15);
-            border: 1px solid var(--accent-1);
+            background: var(--accent-blue);
             color: #fff;
             align-self: flex-end;
-            border-bottom-right-radius: 2px;
+            border-bottom-right-radius: 4px;
         }
 
         .chat-input-area {
-            padding: 1rem;
+            padding: 1.5rem;
             border-top: 1px solid var(--glass-border);
             display: flex;
             gap: 1rem;
@@ -339,87 +316,61 @@
 
         .chat-input-area input {
             flex: 1;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 0.8rem 1.2rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid transparent;
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
             color: #fff;
-            font-family: 'Inter', sans-serif;
+            font-family: inherit;
+            font-size: 1rem;
             outline: none;
-            transition: border-color 0.3s;
+            transition: background 0.3s, border-color 0.3s;
         }
 
         .chat-input-area input:focus {
-            border-color: var(--accent-1);
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
         }
 
         .chat-input-area button {
-            background: var(--accent-1);
-            color: var(--bg-color);
+            background: var(--accent-blue);
+            color: #fff;
             border: none;
-            padding: 0 1.5rem;
-            border-radius: 8px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            transition: transform 0.2s, box-shadow 0.2s;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
+        .chat-input-area button:hover {
+            transform: scale(1.05);
+            background: #147ce6;
+        }
+
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
             nav { padding: 1rem 5%; flex-direction: column; gap: 1rem; }
-            .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
-            .nav-btn { font-size: 0.85rem; }
             .hero-title { font-size: clamp(2.5rem, 12vw, 4rem) !important; }
-            .chat-container { flex-direction: column; height: 65vh; min-height: 450px; }
-            .chat-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 0.5rem; max-height: 85px; }
+            .chat-container { flex-direction: column; height: 75vh; min-height: 500px; }
+            .chat-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 1rem; max-height: 100px; }
             .chat-input-area input { font-size: 16px; }
-            .chat-input-area button { padding: 0 1rem; }
-        }
-
-        @media (hover: none) and (pointer: coarse) {
-            * { cursor: auto !important; }
-            .cursor-dot, .cursor-outline { display: none !important; }
-        }
-        
-        /* Dashboard Card Styling */
-        .dash-card {
-            background: rgba(30,41,59,0.7); 
-            border: 1px solid rgba(56,189,248,0.3); 
-            padding: 30px; 
-            border-radius: 12px; 
-            backdrop-filter: blur(10px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            transition: border-color 0.3s;
-        }
-        .dash-card:hover {
-            border-color: #38bdf8;
-        }
-        .dash-value {
-            color: #fff; 
-            font-size: 1.8rem; 
-            margin-bottom: 5px; 
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        .dash-label {
-            color: #94a3b8; 
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
     <div id="canvas-container"></div>
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
 
     <nav>
-        <div class="logo">Z. <span>Nafis</span></div>
+        <div class="logo">Z. Nafis</div>
         <div class="nav-links">
-            <button class="nav-btn active" data-target="home">The Domain</button>
+            <button class="nav-btn active" data-target="home">Overview</button>
             <button class="nav-btn" data-target="messages">Messages</button>
-            <button class="nav-btn mystery-btn" data-target="mystery">MYSTERY?</button>
+            <button class="nav-btn" data-target="mystery">Terminal</button>
         </div>
     </nav>
 
@@ -427,47 +378,46 @@
         <section id="home" class="section active">
             <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                 <div class="reveal fade-up visible">
-                    <div class="badge">PROUD OWNER OF A DOMAIN</div>
-                    <h1 class="hero-title">SO I<br><span>BOUGHT A DOMAIN</span></h1>
-                    <p class="hero-desc">I have literally zero experience in web design or programming, but I saw the domain availability and made a snap decision. Now I'm stuck with this empty site and a strange urge to make it look incredibly cool for no reason. Scroll down to initiate.</p>
+                    <div class="badge">Domain Owner</div>
+                    <h1 class="hero-title">A new digital<br><span>presence.</span></h1>
+                    <p class="hero-desc">Designed with zero experience, built with pure intuition. Clean aesthetics, native interactions, and seamless animations. Scroll to explore the framework.</p>
                 </div>
             </div>
 
             <div id="globe-scroll-wrapper" style="height: 300vh; position: relative;">
-                
                 <div style="position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; pointer-events: none;">
                     
-                    <div class="reveal fade-up" style="position: absolute; top: 18vh; z-index: 10; text-align: center;">
-                        <div class="badge" style="border-color: var(--accent-2); color: var(--text-main);">Visual Architecture</div>
-                        <h2 class="hero-title" style="font-size: clamp(2rem, 5vw, 4rem);">GLOBAL <span>NETWORK</span></h2>
+                    <div class="reveal fade-up" style="position: absolute; top: 15vh; z-index: 10; text-align: center;">
+                        <h2 class="hero-title" style="font-size: clamp(2rem, 5vw, 4rem);">Global footprint.</h2>
                     </div>
                     
                     <div id="globe-canvas-container" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; display: flex; justify-content: center; align-items: center;"></div>
                     
-                    <p style="position: absolute; bottom: 12vh; color: #38bdf8; font-family: 'Space Grotesk', sans-serif; letter-spacing: 2px; font-size: 0.95rem; z-index: 10; font-weight: 700; opacity: 0.8;" class="reveal fade-up">KEEP SCROLLING TO ROTATE THE NETWORK</p>
+                    <p style="position: absolute; bottom: 10vh; color: var(--text-muted); font-size: 0.9rem; z-index: 10; font-weight: 500;" class="reveal fade-up">Scroll to rotate.</p>
                 </div>
             </div>
-            <div style="padding: 10vh 0 10vh 0; text-align: center;">
-                <h3 class="reveal fade-left" style="color: #38bdf8; font-size: 2rem; margin-bottom: 3rem; font-family: 'Space Grotesk', sans-serif;">LIVE SYSTEM DATA</h3>
+
+            <div style="padding: 10vh 0 15vh 0; text-align: center;">
+                <h3 class="reveal fade-left" style="font-size: 2.5rem; margin-bottom: 3rem; letter-spacing: -0.03em;">Live telemetry.</h3>
                 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; text-align: left;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; text-align: left;">
                     
-                    <div class="reveal fade-up delay-100 dash-card interactive">
-                        <span class="dash-label" style="color: #38bdf8; margin-bottom: 10px;">01. Atmosphere Node</span>
+                    <div class="reveal fade-up delay-100 dash-card">
+                        <span class="dash-label">Local Environment</span>
                         <h4 id="weather-temp" class="dash-value">--°C</h4>
-                        <p id="weather-desc" class="dash-label" style="color: #cbd5e1;">Scanning IP Location...</p>
+                        <p id="weather-desc" class="dash-label">Locating network...</p>
                     </div>
                     
-                    <div class="reveal fade-up delay-200 dash-card interactive">
-                        <span class="dash-label" style="color: #f472b6; margin-bottom: 10px;">02. Solar Cycle</span>
+                    <div class="reveal fade-up delay-200 dash-card">
+                        <span class="dash-label">Solar Cycle</span>
                         <h4 id="sun-time" class="dash-value">--:--</h4>
-                        <p class="dash-label" style="color: #cbd5e1;">Sunrise / Sunset Timeline</p>
+                        <p class="dash-label">Sunrise & Sunset</p>
                     </div>
 
-                    <div class="reveal fade-up delay-300 dash-card interactive">
-                        <span class="dash-label" style="color: #a3e635; margin-bottom: 10px;">03. Local Relay</span>
+                    <div class="reveal fade-up delay-300 dash-card">
+                        <span class="dash-label">System Time</span>
                         <h4 id="clock-time" class="dash-value" style="font-variant-numeric: tabular-nums;">--:--:--</h4>
-                        <p id="clock-date" class="dash-label" style="color: #cbd5e1;">Synchronizing Timestamp...</p>
+                        <p id="clock-date" class="dash-label">Synchronizing...</p>
                     </div>
 
                 </div>
@@ -477,17 +427,17 @@
         <section id="messages" class="section">
             <div style="padding-top: 15vh;">
                 <div class="reveal fade-right visible">
-                    <div class="badge">Secure Comm Link</div>
-                    <h2 class="hero-title">Direct <span>Comms</span></h2>
+                    <h2 class="hero-title" style="font-size: 4rem;">Secure <span>comms.</span></h2>
+                    <p class="hero-desc" style="margin: 0;">Direct end-to-end database connections.</p>
                 </div>
                 <div class="chat-container reveal scale-up delay-200 visible">
                     <div class="chat-sidebar">
                         <div id="sidebar-content">
                             <div class="chat-contact">
-                                <div class="contact-avatar interactive">Z</div>
+                                <div class="contact-avatar">Z</div>
                                 <div class="contact-info">
-                                    <div class="contact-name">Z. Nafis (Admin)</div>
-                                    <div class="contact-status">Online</div>
+                                    <div class="contact-name">Z. Nafis</div>
+                                    <div class="contact-status">Admin</div>
                                 </div>
                             </div>
                         </div>
@@ -495,12 +445,12 @@
                     <div class="chat-main">
                         <div class="chat-messages" id="chat-box">
                             <div class="message received">
-                                <p>System Online. Secure connection established. Send a message to begin.</p>
+                                <p>iMessage connection established. Send a message to begin.</p>
                             </div>
                         </div>
                         <div class="chat-input-area">
-                            <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
-                            <button id="send-btn" class="interactive">SEND</button>
+                            <input type="text" id="message-input" placeholder="iMessage" autocomplete="off">
+                            <button id="send-btn">↑</button>
                         </div>
                     </div>
                 </div>
@@ -510,34 +460,32 @@
         <section id="mystery" class="section">
             <div style="padding-top: 15vh;">
                 <div class="reveal fade-left visible">
-                    <div class="badge" style="border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1);">Encryption Override v1.0</div>
-                    <h2 class="hero-title">System<br><span style="-webkit-text-stroke: 1px #f472b6;">Decryption</span></h2>
+                    <h2 class="hero-title" style="font-size: 4rem;">Memory <span>matrix.</span></h2>
+                    <p class="hero-desc" style="margin: 0;">Test your cognitive retention.</p>
                 </div>
                 
-                <div id="cyber-puzzle-container" class="reveal fade-up delay-200 visible" style="background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px; max-width: 600px; margin: 0 auto; backdrop-filter: blur(12px);">
-                    <h3 style="color: #38bdf8; font-family: 'Space Grotesk', sans-serif; margin-bottom: 5px; font-size: 1.2rem; text-transform: uppercase;">Node Memory Matrix</h3>
-                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">Replicate the sequence to decrypt the nodes.</p>
+                <div id="cyber-puzzle-container" class="reveal fade-up delay-200 visible" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 40px; text-align: center; margin-top: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; backdrop-filter: blur(20px);">
             
-                    <div style="display: flex; justify-content: space-between; align-items: center; color: #fff; font-family: 'Space Grotesk', sans-serif; margin-bottom: 20px; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-                        <span id="matrix-level">Level: 1</span>
-                        <span id="matrix-score" style="color: #f472b6;">Score: 0</span>
-                        <span id="matrix-highscore" style="color: #10b981;">Best: 0</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
+                        <span id="matrix-level" style="font-weight: 500; color: var(--text-muted);">Level 1</span>
+                        <span id="matrix-score" style="font-weight: 600; font-size: 1.2rem;">0</span>
+                        <span id="matrix-highscore" style="font-weight: 500; color: var(--accent-blue);">Best: 0</span>
                     </div>
             
-                    <div id="matrix-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 250px; margin: 0 auto; pointer-events: none;">
+                    <div id="matrix-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 300px; margin: 0 auto; pointer-events: none;">
                         </div>
             
-                    <p id="matrix-status" style="color: #38bdf8; margin-top: 20px; height: 24px; font-size: 0.9rem; font-family: 'Space Grotesk', sans-serif;">System Ready.</p>
-                    <button id="matrix-start-btn" class="interactive" style="background: rgba(56,189,248,0.15); border: 1px solid #38bdf8; color: #38bdf8; padding: 10px 20px; border-radius: 6px; font-family: 'Space Grotesk', sans-serif; margin-top: 15px; font-size: 0.9rem; transition: all 0.2s;">INITIALIZE</button>
+                    <p id="matrix-status" style="color: var(--text-muted); margin-top: 30px; height: 24px; font-weight: 500;">Ready.</p>
+                    <button id="matrix-start-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; margin-top: 15px; cursor: pointer; transition: transform 0.2s;">Start Game</button>
                 </div>
             </div>
         </section>
     </main>
 
     <script>
-        // --- 1. BACKGROUND 3D GRID LOGIC ---
+        // --- 1. BACKGROUND 3D GRID (Clean, Subtle Gray Waves) ---
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x1e293b, 0.015);
+        scene.fog = new THREE.FogExp2(0x000000, 0.02); // Deep black fog
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -545,7 +493,8 @@
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
         const geometry = new THREE.PlaneGeometry(200, 100, 60, 30);
-        const material = new THREE.MeshBasicMaterial({color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.25 });
+        // Changed to subtle gray, very low opacity
+        const material = new THREE.MeshBasicMaterial({color: 0x444444, wireframe: true, transparent: true, opacity: 0.15 });
         const plane = new THREE.Mesh(geometry, material);
         plane.rotation.x = -Math.PI / 2 + 0.1;
         plane.position.y = -15;
@@ -561,17 +510,17 @@
             for(let i = 0; i < positions.count; i++) {
                 const x = positions.getX(i);
                 const y = positions.getY(i);
-                const wave1 = Math.sin(x * 0.1 + elapsedTime * 0.5) * 2;
-                const wave2 = Math.cos(y * 0.1 + elapsedTime * 0.5) * 2;
-                positions.setZ(i, (geometry.attributes.position.getZ(i) || 0) + wave1 * 0.01 + wave2 * 0.01);
+                const wave1 = Math.sin(x * 0.1 + elapsedTime * 0.3) * 2;
+                const wave2 = Math.cos(y * 0.1 + elapsedTime * 0.3) * 2;
+                positions.setZ(i, (geometry.attributes.position.getZ(i) || 0) + wave1 * 0.005 + wave2 * 0.005);
             }
             positions.needsUpdate = true;
-            plane.position.z = (elapsedTime * 2) % 10;
+            plane.position.z = (elapsedTime * 1) % 10;
             renderer.render(scene, camera);
         }
         animate3D();
 
-        // --- 2. FOREGROUND 3D HOLOGRAM GLOBE LOGIC ---
+        // --- 2. FOREGROUND 3D GLOBE (Clean Titanium/Dark Aesthetic) ---
         const globeContainer = document.getElementById('globe-canvas-container');
         const globeScene = new THREE.Scene();
         const globeCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -585,28 +534,32 @@
         const globeGroup = new THREE.Group();
         globeScene.add(globeGroup);
 
-        const outerGeo = new THREE.SphereGeometry(12, 48, 48);
-        const outerMat = new THREE.MeshBasicMaterial({ 
-            color: 0x38bdf8, 
-            wireframe: true, 
-            transparent: true, 
-            opacity: 0.15 
-        });
-        const outerEarth = new THREE.Mesh(outerGeo, outerMat);
-        globeGroup.add(outerEarth);
-
-        const innerGeo = new THREE.SphereGeometry(11.8, 32, 32);
+        // Single clean dark sphere with additive blending map
+        const innerGeo = new THREE.SphereGeometry(12, 64, 64);
         const textureLoader = new THREE.TextureLoader();
         const innerTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg');
-        const innerMat = new THREE.MeshBasicMaterial({ 
+        const innerMat = new THREE.MeshStandardMaterial({ 
             map: innerTex,
-            color: 0x38bdf8, 
-            blending: THREE.AdditiveBlending, 
+            color: 0xaaaaaa, // Silver tint
+            roughness: 0.4,
+            metalness: 0.8,
             transparent: true,
-            opacity: 0.8
+            opacity: 0.9
         });
         const innerEarth = new THREE.Mesh(innerGeo, innerMat);
         globeGroup.add(innerEarth);
+
+        // Studio lighting for a premium look
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        globeScene.add(ambientLight);
+        
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        mainLight.position.set(20, 20, 20);
+        globeScene.add(mainLight);
+        
+        const rimLight = new THREE.DirectionalLight(0x2997ff, 2); // Subtle blue rim light
+        rimLight.position.set(-20, 10, -20);
+        globeScene.add(rimLight);
 
         let targetGlobeRotation = 0;
 
@@ -634,7 +587,6 @@
         // --- 3. LIVE SYSTEM DATA (IP GEO-TRACE & LOCAL APIS) ---
         async function fetchLocalData() {
             try {
-                // Step 1: Silent IP Trace to find out where the user is
                 const geoRes = await fetch('https://get.geojs.io/v1/ip/geo.json');
                 const geoData = await geoRes.json();
                 
@@ -642,40 +594,36 @@
                 const lon = geoData.longitude;
                 const city = geoData.city || "Local";
                 
-                // Step 2: Use those specific coordinates to find weather and timezone
                 const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=sunrise,sunset&timezone=auto`);
                 const weatherData = await weatherRes.json();
                 
-                // Inject the local data into the HTML
                 const temp = weatherData.current_weather.temperature;
                 const wind = weatherData.current_weather.windspeed;
                 document.getElementById('weather-temp').innerText = `${temp}°C`;
-                document.getElementById('weather-desc').innerText = `${city} Network | Wind: ${wind} km/h`;
+                document.getElementById('weather-desc').innerText = `${city} | Wind: ${wind} km/h`;
                 
                 const sunrise = new Date(weatherData.daily.sunrise[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 const sunset = new Date(weatherData.daily.sunset[0]).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                document.getElementById('sun-time').innerText = `▲ ${sunrise} | ▼ ${sunset}`;
+                document.getElementById('sun-time').innerText = `${sunrise} - ${sunset}`;
                 
             } catch(e) {
                 console.error("Data Fetch Error:", e);
-                document.getElementById('weather-temp').innerText = 'SYS.ERR';
-                document.getElementById('weather-desc').innerText = 'Connection Failed';
-                document.getElementById('sun-time').innerText = 'SYS.ERR';
+                document.getElementById('weather-temp').innerText = '--°C';
+                document.getElementById('weather-desc').innerText = 'Offline';
+                document.getElementById('sun-time').innerText = '--:--';
             }
         }
         fetchLocalData();
 
-        // System Clock Module (Using native browser timezone)
+        // System Clock Module 
         setInterval(() => {
             const now = new Date();
-            // Automatically uses the local time of whatever device is looking at the screen
             const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
             
             document.getElementById('clock-time').innerText = now.toLocaleTimeString([], timeOptions);
             document.getElementById('clock-date').innerText = now.toLocaleDateString([], dateOptions);
         }, 1000);
-
 
         // --- 4. RESIZE HANDLER ---
         window.addEventListener('resize', () => {
@@ -708,44 +656,7 @@
             scrollObserver.observe(el);
         });
 
-
-        // --- 6. UI LOGIC (CURSOR & TABS) ---
-        const cursorDot = document.querySelector('.cursor-dot');
-        const cursorOutline = document.querySelector('.cursor-outline');
-
-        window.addEventListener('mousemove', (e) => {
-            if (window.getComputedStyle(cursorDot).display !== 'none') {
-                const posX = e.clientX;
-                const posY = e.clientY;
-                cursorDot.style.left = `${posX}px`;
-                cursorDot.style.top = `${posY}px`;
-                cursorOutline.animate({left: `${posX}px`, top: `${posY}px` }, { duration: 200, fill: "forwards" });
-            }
-        });
-
-        function setupInteractives() {
-            const interactives = document.querySelectorAll('button, a, .tilt-card, .interactive');
-            interactives.forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    if (window.getComputedStyle(cursorOutline).display !== 'none') {
-                        cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
-                        cursorOutline.style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
-                        cursorOutline.style.borderColor = 'transparent';
-                        cursorDot.style.transform = 'translate(-50%, -50%) scale(0.5)';
-                    }
-                });
-                el.addEventListener('mouseleave', () => {
-                    if (window.getComputedStyle(cursorOutline).display !== 'none') {
-                        cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
-                        cursorOutline.style.backgroundColor = 'transparent';
-                        cursorOutline.style.borderColor = 'var(--accent-1)';
-                        cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
-                    }
-                });
-            });
-        }
-        setupInteractives();
-
+        // --- 6. TAB NAVIGATION LOGIC ---
         const navBtns = document.querySelectorAll('.nav-btn');
         const sections = document.querySelectorAll('.section');
 
@@ -761,16 +672,14 @@
                 
                 targetSection.querySelectorAll('.reveal').forEach(el => {
                     el.classList.remove('visible');
-                    setTimeout(() => {
-                        el.classList.add('visible');
-                    }, 50);
+                    setTimeout(() => { el.classList.add('visible'); }, 50);
                 });
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
 
-        // --- 7. CYBER PUZZLE LOGIC ---
+        // --- 7. MATRIX GAME LOGIC (Apple Redesign) ---
         (function initCyberPuzzle() {
             const grid = document.getElementById('matrix-grid');
             const startBtn = document.getElementById('matrix-start-btn');
@@ -784,34 +693,22 @@
             let level = 1;
             let score = 0;
             
-            let highScore = localStorage.getItem('cyberMatrixHighScore') || 0;
+            let highScore = localStorage.getItem('appleMatrixHighScore') || 0;
             highScoreTxt.innerText = `Best: ${highScore}`;
 
             for (let i = 0; i < 9; i++) {
                 const node = document.createElement('div');
-                node.className = 'matrix-node interactive';
+                node.className = 'matrix-node';
                 node.style.aspectRatio = "1/1";
                 node.style.background = "rgba(255,255,255,0.05)";
                 node.style.border = "1px solid rgba(255,255,255,0.1)";
-                node.style.borderRadius = "4px";
-                node.style.transition = "background 0.2s, box-shadow 0.2s";
+                node.style.borderRadius = "12px";
+                node.style.cursor = "pointer";
+                node.style.transition = "background 0.2s, transform 0.1s";
                 
-                node.addEventListener('mouseenter', () => {
-                    if (window.getComputedStyle(cursorOutline).display !== 'none') {
-                        cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
-                        cursorOutline.style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
-                        cursorOutline.style.borderColor = 'transparent';
-                        cursorDot.style.transform = 'translate(-50%, -50%) scale(0.5)';
-                    }
-                });
-                node.addEventListener('mouseleave', () => {
-                    if (window.getComputedStyle(cursorOutline).display !== 'none') {
-                        cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
-                        cursorOutline.style.backgroundColor = 'transparent';
-                        cursorOutline.style.borderColor = 'var(--accent-1)';
-                        cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
-                    }
-                });
+                node.addEventListener('mousedown', () => { node.style.transform = "scale(0.95)"; });
+                node.addEventListener('mouseup', () => { node.style.transform = "scale(1)"; });
+                node.addEventListener('mouseleave', () => { node.style.transform = "scale(1)"; });
 
                 node.addEventListener('click', () => handleNodeClick(i, node));
                 grid.appendChild(node);
@@ -832,8 +729,7 @@
             function nextRound() {
                 playerSequence = [];
                 grid.style.pointerEvents = "none"; 
-                statusTxt.style.color = "#94a3b8";
-                statusTxt.innerText = "Memorize the sequence...";
+                statusTxt.innerText = "Watch the sequence...";
 
                 sequence.push(Math.floor(Math.random() * 9));
 
@@ -844,24 +740,21 @@
 
                 setTimeout(() => {
                     grid.style.pointerEvents = "auto";
-                    statusTxt.style.color = "#38bdf8";
-                    statusTxt.innerText = "Your turn. Decrypt.";
+                    statusTxt.innerText = "Your turn.";
                 }, delay * (sequence.length + 1));
             }
 
             function flashNode(node) {
-                node.style.background = "#38bdf8";
-                node.style.boxShadow = "0 0 15px #38bdf8";
+                node.style.background = "#ffffff";
                 setTimeout(() => {
                     node.style.background = "rgba(255,255,255,0.05)";
-                    node.style.boxShadow = "none";
                 }, 300);
             }
 
             function handleNodeClick(index, node) {
                 if (grid.style.pointerEvents === "none") return;
 
-                node.style.background = "#f472b6"; 
+                node.style.background = "#2997ff"; 
                 setTimeout(() => { node.style.background = "rgba(255,255,255,0.05)"; }, 200);
 
                 playerSequence.push(index);
@@ -880,37 +773,34 @@
                     score += (level * 50); 
                     level++;
                     updateUI();
-                    statusTxt.style.color = "#a3e635"; 
-                    statusTxt.innerText = "Sequence Decrypted! Next level...";
-                    setTimeout(nextRound, 1500);
+                    statusTxt.innerText = "Correct. Next level...";
+                    setTimeout(nextRound, 1000);
                 }
             }
 
             function gameOver() {
                 grid.style.pointerEvents = "none";
                 startBtn.style.display = "inline-block";
-                startBtn.innerText = "REBOOT SYSTEM";
+                startBtn.innerText = "Try Again";
 
                 if (score > highScore) {
                     highScore = score;
-                    localStorage.setItem('cyberMatrixHighScore', highScore); 
+                    localStorage.setItem('appleMatrixHighScore', highScore); 
                     highScoreTxt.innerText = `Best: ${highScore}`;
-                    statusTxt.style.color = "#10b981"; 
-                    statusTxt.innerText = `NEW HIGH SCORE: ${score}! System Rebooting...`;
+                    statusTxt.innerText = `New High Score!`;
                 } else {
-                    statusTxt.style.color = "#ef4444"; 
-                    statusTxt.innerText = "SYSTEM FAILURE. Sequence lost.";
+                    statusTxt.innerText = "Incorrect sequence.";
                 }
 
                 nodes.forEach(n => {
-                    n.style.background = "rgba(239,68,68,0.5)";
+                    n.style.background = "rgba(255, 59, 48, 0.5)"; // Apple Red
                     setTimeout(() => { n.style.background = "rgba(255,255,255,0.05)"; }, 500);
                 });
             }
 
             function updateUI() {
-                levelTxt.innerText = `Level: ${level}`;
-                scoreTxt.innerText = `Score: ${score}`;
+                levelTxt.innerText = `Level ${level}`;
+                scoreTxt.innerText = score;
             }
         })();
     </script>
@@ -936,23 +826,14 @@
         const auth = getAuth(app);
         const db = getFirestore(app); 
 
-        signInAnonymously(auth)
-            .then(() => {
-                console.log("SUCCESS: User connected anonymously! 🐀");
-                setupChat(); 
-            })
-            .catch((error) => {
-                console.error("Auth error:", error);
-            });
+        signInAnonymously(auth).then(() => { setupChat(); }).catch(console.error);
 
         function setupChat() {
             const messageInput = document.getElementById('message-input');
             const sendBtn = document.getElementById('send-btn');
             const chatBox = document.getElementById('chat-box');
             const sidebarContent = document.getElementById('sidebar-content');
-            
             const secretTrigger = document.querySelector('.contact-avatar'); 
-            const statusText = document.querySelector('.contact-status');
 
             let isAdmin = false;
             let activeChatUserId = auth.currentUser.uid; 
@@ -960,36 +841,21 @@
 
             secretTrigger.addEventListener('click', () => {
                 if (isAdmin) return;
-                const passcode = prompt("SECURITY OVERRIDE:\nEnter Admin Passcode:");
-                
+                const passcode = prompt("Admin Passcode:");
                 if (passcode === "chittypoo99") {
                     isAdmin = true;
-                    statusText.innerText = "ADMIN ROUTER ACTIVE";
-                    statusText.style.color = "#f472b6"; 
-                    secretTrigger.style.background = "#f472b6"; 
-                    
-                    sidebarContent.innerHTML = `<h4 style="font-family:'Space Grotesk'; font-size:0.8rem; letter-spacing:1px; color:#f472b6; margin-bottom:10px; text-transform:uppercase;">Active Sessions</h4><div id="user-sessions-list" style="display:flex; flex-direction:column; gap:8px;"></div>`;
-                    
+                    document.querySelector('.contact-status').innerText = "Admin Mode";
+                    sidebarContent.innerHTML = `<h4 style="font-size:0.8rem; margin-bottom:10px; color:#86868b; text-transform:uppercase;">Active Sessions</h4><div id="user-sessions-list" style="display:flex; flex-direction:column; gap:8px;"></div>`;
                     loadAdminUserList();
-                    alert("Access Granted. Routing network channels.");
-                } else if (passcode !== null) {
-                    alert("Access Denied.");
                 }
             });
 
             function listenToChat(userId) {
                 if (unsubscribeMessages) unsubscribeMessages();
-
-                const messagesRef = collection(db, "chats", userId, "messages");
-                const q = query(messagesRef, orderBy("timestamp", "asc"));
+                const q = query(collection(db, "chats", userId, "messages"), orderBy("timestamp", "asc"));
 
                 unsubscribeMessages = onSnapshot(q, (snapshot) => {
-                    chatBox.innerHTML = `
-                        <div class="message received">
-                            <p>System Online. Channel established with ID: ${userId.substring(0,6)}...</p>
-                        </div>
-                    `;
-
+                    chatBox.innerHTML = `<div class="message received"><p>iMessage connection established.</p></div>`;
                     snapshot.forEach((doc) => {
                         const data = doc.data();
                         if (!data.text) return;
@@ -997,16 +863,9 @@
                         const isSentByMe = isAdmin ? (data.sender === "admin") : (data.sender === "user");
                         const messageClass = isSentByMe ? "sent" : "received";
                         
-                        let label = "";
-                        if (!isSentByMe) {
-                            label = data.sender === "admin" 
-                                ? `<strong style="color: #38bdf8; font-size: 0.75rem; display: block; margin-bottom: 4px;">Z. Nafis (Admin)</strong>`
-                                : `<strong style="color: #94a3b8; font-size: 0.75rem; display: block; margin-bottom: 4px;">User Asset</strong>`;
-                        }
-
                         const bubble = document.createElement("div");
                         bubble.className = `message ${messageClass}`;
-                        bubble.innerHTML = `${label}<p>${data.text}</p>`;
+                        bubble.innerHTML = `<p>${data.text}</p>`;
                         chatBox.appendChild(bubble);
                     });
                     chatBox.scrollTop = chatBox.scrollHeight;
@@ -1018,56 +877,26 @@
                     const listContainer = document.getElementById('user-sessions-list');
                     if(!listContainer) return;
                     listContainer.innerHTML = "";
-
-                    const now = new Date();
-                    const cutoffTime = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+                    const cutoffTime = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
 
                     snapshot.forEach((userDoc) => {
                         const uId = userDoc.id;
-                        const userData = userDoc.data();
-                        
-                        let lastActive = new Date(); 
-                        if (userData.lastActive) {
-                            lastActive = userData.lastActive.toDate();
-                        }
+                        let lastActive = userDoc.data().lastActive ? userDoc.data().lastActive.toDate() : new Date();
 
                         if (lastActive > cutoffTime) {
                             const sessionBtn = document.createElement('div');
-                            sessionBtn.className = "interactive"; 
                             sessionBtn.style.padding = "10px";
-                            sessionBtn.style.background = activeChatUserId === uId ? "rgba(244,114,182,0.15)" : "rgba(255,255,255,0.03)";
-                            sessionBtn.style.border = activeChatUserId === uId ? "1px solid #f472b6" : "1px solid rgba(255,255,255,0.1)";
-                            sessionBtn.style.borderRadius = "6px";
+                            sessionBtn.style.background = activeChatUserId === uId ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)";
+                            sessionBtn.style.borderRadius = "12px";
                             sessionBtn.style.fontSize = "0.85rem";
-                            sessionBtn.style.color = "#fff";
-                            sessionBtn.style.fontFamily = "'Space Grotesk', sans-serif";
-                            
-                            const timeString = lastActive.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                            sessionBtn.innerHTML = `📦 Session: ${uId.substring(0, 8)}<br><span style="font-size:0.7rem; color:#94a3b8;">Last active: ${timeString}</span>`;
+                            sessionBtn.style.cursor = "pointer";
+                            sessionBtn.innerHTML = `Session: ${uId.substring(0, 6)}...`;
 
                             sessionBtn.addEventListener('click', () => {
                                 activeChatUserId = uId;
                                 loadAdminUserList(); 
                                 listenToChat(uId); 
                             });
-                            
-                            sessionBtn.addEventListener('mouseenter', () => {
-                                if (window.getComputedStyle(document.querySelector('.cursor-outline')).display !== 'none') {
-                                    document.querySelector('.cursor-outline').style.transform = 'translate(-50%, -50%) scale(1.5)';
-                                    document.querySelector('.cursor-outline').style.backgroundColor = 'rgba(56, 189, 248, 0.15)';
-                                    document.querySelector('.cursor-outline').style.borderColor = 'transparent';
-                                    document.querySelector('.cursor-dot').style.transform = 'translate(-50%, -50%) scale(0.5)';
-                                }
-                            });
-                            sessionBtn.addEventListener('mouseleave', () => {
-                                if (window.getComputedStyle(document.querySelector('.cursor-outline')).display !== 'none') {
-                                    document.querySelector('.cursor-outline').style.transform = 'translate(-50%, -50%) scale(1)';
-                                    document.querySelector('.cursor-outline').style.backgroundColor = 'transparent';
-                                    document.querySelector('.cursor-outline').style.borderColor = 'var(--accent-1)';
-                                    document.querySelector('.cursor-dot').style.transform = 'translate(-50%, -50%) scale(1)';
-                                }
-                            });
-
                             listContainer.appendChild(sessionBtn);
                         }
                     });
@@ -1077,32 +906,16 @@
             async function sendMessage() {
                 const text = messageInput.value.trim();
                 if (text === "" || !activeChatUserId) return;
-
                 messageInput.value = "";
-
                 try {
-                    await addDoc(collection(db, "chats", activeChatUserId, "messages"), {
-                        text: text,
-                        sender: isAdmin ? "admin" : "user",
-                        timestamp: serverTimestamp()
-                    });
-
-                    if (!isAdmin) {
-                        await setDoc(doc(db, "active_chats", activeChatUserId), {
-                            lastActive: serverTimestamp()
-                        });
-                    }
-                } catch (error) {
-                    console.error("Transmission error:", error);
-                }
+                    await addDoc(collection(db, "chats", activeChatUserId, "messages"), { text: text, sender: isAdmin ? "admin" : "user", timestamp: serverTimestamp() });
+                    if (!isAdmin) { await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }); }
+                } catch (error) { console.error("Transmission error:", error); }
             }
 
             listenToChat(activeChatUserId);
-
             sendBtn.addEventListener('click', sendMessage);
-            messageInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessage();
-            });
+            messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
         }
     </script>
 </body>
