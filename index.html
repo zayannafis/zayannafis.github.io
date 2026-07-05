@@ -44,9 +44,9 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -2; /* Kept far back */
+            width: 100%; /* Changed from vw to % to fix centering offset */
+            height: 100%;
+            z-index: -2; 
             pointer-events: none;
         }
 
@@ -179,10 +179,7 @@
             to { opacity: 1; }
         }
 
-        /* ========================================= */
         /* ✨ REVERSIBLE SCROLL ANIMATIONS ✨ */
-        /* ========================================= */
-        
         .reveal {
             opacity: 0;
             transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); 
@@ -378,6 +375,34 @@
             * { cursor: auto !important; }
             .cursor-dot, .cursor-outline { display: none !important; }
         }
+        
+        /* Dashboard Card Styling */
+        .dash-card {
+            background: rgba(30,41,59,0.7); 
+            border: 1px solid rgba(56,189,248,0.3); 
+            padding: 30px; 
+            border-radius: 12px; 
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: border-color 0.3s;
+        }
+        .dash-card:hover {
+            border-color: #38bdf8;
+        }
+        .dash-value {
+            color: #fff; 
+            font-size: 1.8rem; 
+            margin-bottom: 5px; 
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .dash-label {
+            color: #94a3b8; 
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
@@ -413,29 +438,34 @@
                         <h2 class="hero-title" style="font-size: clamp(2rem, 5vw, 4rem);">GLOBAL <span>NETWORK</span></h2>
                     </div>
                     
-                    <div id="globe-canvas-container" style="width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1;"></div>
+                    <div id="globe-canvas-container" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; display: flex; justify-content: center; align-items: center;"></div>
                     
                     <p style="position: absolute; bottom: 12vh; color: #38bdf8; font-family: 'Space Grotesk', sans-serif; letter-spacing: 2px; font-size: 0.95rem; z-index: 10; font-weight: 700; opacity: 0.8;" class="reveal fade-up">KEEP SCROLLING TO ROTATE THE NETWORK</p>
                 </div>
             </div>
             <div style="padding: 10vh 0 10vh 0; text-align: center;">
-                <h3 class="reveal fade-left" style="color: #38bdf8; font-size: 2rem; margin-bottom: 3rem; font-family: 'Space Grotesk', sans-serif;">SYSTEM MODULES</h3>
+                <h3 class="reveal fade-left" style="color: #38bdf8; font-size: 2rem; margin-bottom: 3rem; font-family: 'Space Grotesk', sans-serif;">LIVE SYSTEM DATA</h3>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; text-align: left;">
-                    <div class="reveal fade-up delay-100 interactive" style="background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); padding: 30px; border-radius: 12px; backdrop-filter: blur(10px);">
-                        <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif;">01. Secure Link</h4>
-                        <p style="color: #94a3b8; font-size: 0.95rem;">Direct end-to-end database connections established. Real-time Firebase routing protocols actively running in the background.</p>
+                    
+                    <div class="reveal fade-up delay-100 dash-card interactive">
+                        <span class="dash-label" style="color: #38bdf8; margin-bottom: 10px;">01. Atmosphere Node</span>
+                        <h4 id="weather-temp" class="dash-value">--°C</h4>
+                        <p id="weather-desc" class="dash-label" style="color: #cbd5e1;">Auckland Network | Wind: -- km/h</p>
                     </div>
                     
-                    <div class="reveal fade-up delay-200 interactive" style="background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); padding: 30px; border-radius: 12px; backdrop-filter: blur(10px);">
-                        <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif;">02. Matrix Decryption</h4>
-                        <p style="color: #94a3b8; font-size: 0.95rem;">High-level cognitive override challenge initialized. Unauthorized access attempts automatically logged and filtered.</p>
+                    <div class="reveal fade-up delay-200 dash-card interactive">
+                        <span class="dash-label" style="color: #f472b6; margin-bottom: 10px;">02. Solar Cycle</span>
+                        <h4 id="sun-time" class="dash-value">--:--</h4>
+                        <p class="dash-label" style="color: #cbd5e1;">Sunrise / Sunset Timeline</p>
                     </div>
 
-                    <div class="reveal fade-up delay-300 interactive" style="background: rgba(30,41,59,0.7); border: 1px solid rgba(56,189,248,0.3); padding: 30px; border-radius: 12px; backdrop-filter: blur(10px);">
-                        <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif;">03. Ghost Protocol</h4>
-                        <p style="color: #94a3b8; font-size: 0.95rem;">Anonymous session authentication verified. Zero-trace digital footprint confirmed across the domain network.</p>
+                    <div class="reveal fade-up delay-300 dash-card interactive">
+                        <span class="dash-label" style="color: #a3e635; margin-bottom: 10px;">03. Local Relay</span>
+                        <h4 id="clock-time" class="dash-value" style="font-variant-numeric: tabular-nums;">--:--:--</h4>
+                        <p id="clock-date" class="dash-label" style="color: #cbd5e1;">Retrieving Timestamp...</p>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -537,41 +567,45 @@
         }
         animate3D();
 
-        // --- 2. FOREGROUND 3D GLOBE LOGIC (NEW!) ---
+        // --- 2. FOREGROUND 3D HOLOGRAM GLOBE LOGIC (NEW!) ---
         const globeContainer = document.getElementById('globe-canvas-container');
         const globeScene = new THREE.Scene();
         const globeCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        globeCamera.position.z = 35; // How far back the camera sits
+        // Pulled camera back from 35 to 40 so the whole globe fits on screen
+        globeCamera.position.z = 40; 
 
-        const globeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // Alpha true makes background transparent so grid shows through
+        const globeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); 
         globeRenderer.setSize(window.innerWidth, window.innerHeight);
         globeRenderer.setPixelRatio(window.devicePixelRatio);
         globeContainer.appendChild(globeRenderer.domElement);
 
-        // Build the Earth Mesh
-        const earthGeo = new THREE.SphereGeometry(12, 64, 64);
-        const textureLoader = new THREE.TextureLoader();
-        // Grabbing a high-res earth texture map
-        const earthTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
-        const earthMat = new THREE.MeshStandardMaterial({ 
-            map: earthTex,
-            metalness: 0.2,
-            roughness: 0.8
-        });
-        const earth = new THREE.Mesh(earthGeo, earthMat);
-        globeScene.add(earth);
+        const globeGroup = new THREE.Group();
+        globeScene.add(globeGroup);
 
-        // Add Cyberpunk Lighting to tint the earth Cyan and Pink
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-        globeScene.add(ambientLight);
-        
-        const cyanLight = new THREE.DirectionalLight(0x38bdf8, 2);
-        cyanLight.position.set(20, 10, 20);
-        globeScene.add(cyanLight);
-        
-        const pinkLight = new THREE.DirectionalLight(0xf472b6, 1.5);
-        pinkLight.position.set(-20, 10, -20);
-        globeScene.add(pinkLight);
+        // A: The Wireframe Hologram Shell
+        const outerGeo = new THREE.SphereGeometry(12, 48, 48);
+        const outerMat = new THREE.MeshBasicMaterial({ 
+            color: 0x38bdf8, 
+            wireframe: true, 
+            transparent: true, 
+            opacity: 0.15 
+        });
+        const outerEarth = new THREE.Mesh(outerGeo, outerMat);
+        globeGroup.add(outerEarth);
+
+        // B: The Inner Glowing Map
+        const innerGeo = new THREE.SphereGeometry(11.8, 32, 32);
+        const textureLoader = new THREE.TextureLoader();
+        const innerTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg');
+        const innerMat = new THREE.MeshBasicMaterial({ 
+            map: innerTex,
+            color: 0x38bdf8, // Tint it cyan to match the aesthetic
+            blending: THREE.AdditiveBlending, // Makes it look like a glowing hologram
+            transparent: true,
+            opacity: 0.8
+        });
+        const innerEarth = new THREE.Mesh(innerGeo, innerMat);
+        globeGroup.add(innerEarth);
 
         let targetGlobeRotation = 0;
 
@@ -583,37 +617,69 @@
             const rect = wrapper.getBoundingClientRect();
             const windowHeight = window.innerHeight;
             
-            // Check if we are currently scrolling through the 300vh sticky section
             if (rect.top <= 0 && rect.bottom >= windowHeight) {
-                // Calculate exactly what percentage of the section we have scrolled through
                 const progress = Math.abs(rect.top) / (rect.height - windowHeight);
-                // Map that percentage to rotation (Math.PI * 4 means 2 full 360-degree spins)
                 targetGlobeRotation = progress * Math.PI * 4; 
             }
         });
 
         function animateGlobe() {
             requestAnimationFrame(animateGlobe);
-            // Smoothly ease the rotation toward the target based on scroll position
-            earth.rotation.y += (targetGlobeRotation - earth.rotation.y) * 0.08; 
+            globeGroup.rotation.y += (targetGlobeRotation - globeGroup.rotation.y) * 0.08; 
             globeRenderer.render(globeScene, globeCamera);
         }
         animateGlobe();
 
-        // --- 3. RESIZE HANDLER ---
+        // --- 3. LIVE SYSTEM DATA (AUCKLAND APIS) ---
+        async function fetchAucklandData() {
+            try {
+                // Free Open-Meteo API for Weather and Sun cycle (No API key needed!)
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-36.8509&longitude=174.7645&current_weather=true&daily=sunrise,sunset&timezone=Pacific%2FAuckland');
+                const data = await res.json();
+                
+                // Weather Module
+                const temp = data.current_weather.temperature;
+                const wind = data.current_weather.windspeed;
+                document.getElementById('weather-temp').innerText = `${temp}°C`;
+                document.getElementById('weather-desc').innerText = `Auckland Network | Wind: ${wind} km/h`;
+                
+                // Solar Cycle Module
+                const sunrise = new Date(data.daily.sunrise[0]).toLocaleTimeString('en-NZ', {hour: '2-digit', minute:'2-digit'});
+                const sunset = new Date(data.daily.sunset[0]).toLocaleTimeString('en-NZ', {hour: '2-digit', minute:'2-digit'});
+                document.getElementById('sun-time').innerText = `▲ ${sunrise} | ▼ ${sunset}`;
+                
+            } catch(e) {
+                console.error("Data Fetch Error:", e);
+                document.getElementById('weather-temp').innerText = 'SYS.ERR';
+                document.getElementById('sun-time').innerText = 'SYS.ERR';
+            }
+        }
+        fetchAucklandData();
+
+        // System Clock Module
+        setInterval(() => {
+            const now = new Date();
+            // Forces the time to be Auckland specifically
+            const timeOptions = { timeZone: 'Pacific/Auckland', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const dateOptions = { timeZone: 'Pacific/Auckland', weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            
+            document.getElementById('clock-time').innerText = now.toLocaleTimeString('en-NZ', timeOptions);
+            document.getElementById('clock-date').innerText = now.toLocaleDateString('en-NZ', dateOptions);
+        }, 1000);
+
+
+        // --- 4. RESIZE HANDLER ---
         window.addEventListener('resize', () => {
-            // Update Grid Scene
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
 
-            // Update Globe Scene
             globeCamera.aspect = window.innerWidth / window.innerHeight;
             globeCamera.updateProjectionMatrix();
             globeRenderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // --- 4. REVERSIBLE SCROLL OBSERVER (UPDATED!) ---
+        // --- 5. REVERSIBLE SCROLL OBSERVER ---
         const observerOptions = {
             threshold: 0.25, 
             rootMargin: "0px" 
@@ -622,9 +688,9 @@
         const scrollObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible'); // Play animation
+                    entry.target.classList.add('visible'); 
                 } else {
-                    entry.target.classList.remove('visible'); // Reverse/Reset animation when scrolled away!
+                    entry.target.classList.remove('visible'); 
                 }
             });
         }, observerOptions);
@@ -634,7 +700,7 @@
         });
 
 
-        // --- 5. UI LOGIC (CURSOR & TABS) ---
+        // --- 6. UI LOGIC (CURSOR & TABS) ---
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
 
@@ -695,7 +761,7 @@
             });
         });
 
-        // --- 6. CYBER PUZZLE LOGIC ---
+        // --- 7. CYBER PUZZLE LOGIC ---
         (function initCyberPuzzle() {
             const grid = document.getElementById('matrix-grid');
             const startBtn = document.getElementById('matrix-start-btn');
