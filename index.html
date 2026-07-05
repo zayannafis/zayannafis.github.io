@@ -431,9 +431,10 @@
                 <h3 style="color: #38bdf8; font-family: 'Space Grotesk', sans-serif; margin-bottom: 5px; font-size: 1.5rem; text-transform: uppercase;">Node Memory Matrix</h3>
                 <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 25px;">Replicate the sequence to decrypt the nodes. Difficulty increases per level.</p>
         
-                <div style="display: flex; justify-content: space-between; color: #fff; font-family: 'Space Grotesk', sans-serif; margin-bottom: 20px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; color: #fff; font-family: 'Space Grotesk', sans-serif; margin-bottom: 20px; font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
                     <span id="matrix-level">Level: 1</span>
                     <span id="matrix-score" style="color: #f472b6;">Score: 0</span>
+                    <span id="matrix-highscore" style="color: #10b981;">Best: 0</span>
                 </div>
         
                 <div id="matrix-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 300px; margin: 0 auto; pointer-events: none;">
@@ -539,6 +540,7 @@
         }
         setupInteractives();
 
+        // --- CYBER PUZZLE LOGIC (NOW WITH LOCAL STORAGE HIGHSCORE) ---
         const navBtns = document.querySelectorAll('.nav-btn');
         const sections = document.querySelectorAll('.section');
 
@@ -552,18 +554,22 @@
             });
         });
 
-        // --- CYBER PUZZLE LOGIC ---
         (function initCyberPuzzle() {
             const grid = document.getElementById('matrix-grid');
             const startBtn = document.getElementById('matrix-start-btn');
             const statusTxt = document.getElementById('matrix-status');
             const levelTxt = document.getElementById('matrix-level');
             const scoreTxt = document.getElementById('matrix-score');
+            const highScoreTxt = document.getElementById('matrix-highscore');
 
             let sequence = [];
             let playerSequence = [];
             let level = 1;
             let score = 0;
+            
+            // PULL SAVED HIGHSCORE FROM BROWSER MEMORY
+            let highScore = localStorage.getItem('cyberMatrixHighScore') || 0;
+            highScoreTxt.innerText = `Best: ${highScore}`;
 
             // Build the 3x3 Grid
             for (let i = 0; i < 9; i++) {
@@ -667,10 +673,20 @@
 
             function gameOver() {
                 grid.style.pointerEvents = "none";
-                statusTxt.style.color = "#ef4444"; 
-                statusTxt.innerText = "SYSTEM FAILURE. Sequence lost.";
                 startBtn.style.display = "inline-block";
                 startBtn.innerText = "REBOOT SYSTEM";
+
+                // CHECK IF WE BEAT THE HIGHSCORE
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('cyberMatrixHighScore', highScore); // Save to browser
+                    highScoreTxt.innerText = `Best: ${highScore}`;
+                    statusTxt.style.color = "#10b981"; 
+                    statusTxt.innerText = `NEW HIGH SCORE: ${score}! System Rebooting...`;
+                } else {
+                    statusTxt.style.color = "#ef4444"; 
+                    statusTxt.innerText = "SYSTEM FAILURE. Sequence lost.";
+                }
 
                 nodes.forEach(n => {
                     n.style.background = "rgba(239,68,68,0.5)";
