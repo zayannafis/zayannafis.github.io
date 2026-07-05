@@ -485,7 +485,7 @@
     <script>
         // --- 1. BACKGROUND 3D GRID (Clean, Subtle Gray Waves) ---
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x000000, 0.02); // Deep black fog
+        scene.fog = new THREE.FogExp2(0x000000, 0.02); 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -493,7 +493,6 @@
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
         const geometry = new THREE.PlaneGeometry(200, 100, 60, 30);
-        // Changed to subtle gray, very low opacity
         const material = new THREE.MeshBasicMaterial({color: 0x444444, wireframe: true, transparent: true, opacity: 0.15 });
         const plane = new THREE.Mesh(geometry, material);
         plane.rotation.x = -Math.PI / 2 + 0.1;
@@ -520,7 +519,7 @@
         }
         animate3D();
 
-        // --- 2. FOREGROUND 3D GLOBE (Clean Titanium/Dark Aesthetic) ---
+        // --- 2. FOREGROUND 3D GLOBE (BRIGHTENED & IMPROVED) ---
         const globeContainer = document.getElementById('globe-canvas-container');
         const globeScene = new THREE.Scene();
         const globeCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -534,30 +533,31 @@
         const globeGroup = new THREE.Group();
         globeScene.add(globeGroup);
 
-        // Single clean dark sphere with additive blending map
         const innerGeo = new THREE.SphereGeometry(12, 64, 64);
         const textureLoader = new THREE.TextureLoader();
         const innerTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg');
+        
+        // Changed material properties to brighten the globe and reduce shadows
         const innerMat = new THREE.MeshStandardMaterial({ 
             map: innerTex,
-            color: 0xaaaaaa, // Silver tint
-            roughness: 0.4,
-            metalness: 0.8,
+            color: 0xffffff, // Pure white base so it doesn't darken the texture
+            roughness: 0.6,
+            metalness: 0.1, // Lower metalness so it catches more light
             transparent: true,
-            opacity: 0.9
+            opacity: 1.0
         });
         const innerEarth = new THREE.Mesh(innerGeo, innerMat);
         globeGroup.add(innerEarth);
 
-        // Studio lighting for a premium look
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        // Powerfully boosted studio lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); // 3x brighter ambient light
         globeScene.add(ambientLight);
         
-        const mainLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        const mainLight = new THREE.DirectionalLight(0xffffff, 3.0); // 2x brighter main light
         mainLight.position.set(20, 20, 20);
         globeScene.add(mainLight);
         
-        const rimLight = new THREE.DirectionalLight(0x2997ff, 2); // Subtle blue rim light
+        const rimLight = new THREE.DirectionalLight(0x2997ff, 2.5); // Enhanced blue rim light
         rimLight.position.set(-20, 10, -20);
         globeScene.add(rimLight);
 
