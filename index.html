@@ -508,7 +508,7 @@
                         <span style="font-weight: 500; color: var(--accent-blue);">Best: <span id="balance-highscore">0</span></span>
                     </div>
         
-                    <div id="balance-canvas-container" style="width: 300px; height: 400px; margin: 0 auto; background: rgba(0,0,0,0.3); border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); cursor: pointer; position: relative;">
+                    <div id="balance-canvas-container" style="width: 300px; height: 500px; margin: 0 auto; background: rgba(0,0,0,0.3); border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); cursor: pointer; position: relative;">
                     </div>
         
                     <p id="balance-status" style="color: var(--text-muted); height: 24px; font-weight: 500; margin-top: 20px;">Click canvas or press Space to drop.</p>
@@ -1034,7 +1034,7 @@
             let balanceHighScore = localStorage.getItem('appleBalanceHighScore') || 0;
             document.getElementById('balance-highscore').innerText = balanceHighScore;
             
-            let balanceGameState = 'idle'; // idle, moving, falling, result
+            let balanceGameState = 'idle'; 
             let balanceCurrentBlock;
             let balanceStack = [];
             let balanceMoveTime = 0;
@@ -1042,39 +1042,84 @@
 
             function setupMatterJS() {
                 balanceEngine = Matter.Engine.create();
+                
+                // Set up the modern renderer with dynamic bounds capability
                 balanceRender = Matter.Render.create({
                     element: document.getElementById('balance-canvas-container'),
                     engine: balanceEngine,
                     options: {
                         width: 300,
-                        height: 400,
-                        wireframes: false,
-                        showPositions: true, // Crucial: draws the centroid (center of mass) dots
-                        background: 'transparent'
+                        height: 500,
+                        wireframes: false, 
+                        background: 'transparent',
+                        hasBounds: true
                     }
                 });
+                
+                // Add a glowing custom centroid indicator over the exact center of mass
+                Matter.Events.on(balanceRender, 'afterRender', function() {
+                    const ctx = balanceRender.context;
+                    Matter.Composite.allBodies(balanceEngine.world).forEach(body => {
+                        if (body.label === 'ground') return;
+                        
+                        ctx.beginPath();
+                        // body.position is exactly the center of mass in Matter.js
+                        ctx.arc(body.position.x, body.position.y, 4, 0, 2 * Math.PI);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = '#2997ff';
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                        ctx.closePath();
+                    });
+                });
+
                 Matter.Render.run(balanceRender);
                 balanceRunner = Matter.Runner.create();
                 Matter.Runner.run(balanceRunner, balanceEngine);
 
                 Matter.Events.on(balanceEngine, 'beforeUpdate', () => {
+                    // Determine the top of the tower for the dynamic camera pan
+                    let currentTopY = 450; 
+                    if (balanceStack.length > 0) {
+                        currentTopY = Math.min(...balanceStack.map(b => b.bounds.min.y));
+                    }
+            
+                    // Smoothly Lerp Camera Bounds upwards as stack grows
+                    let desiredHeight = Math.max(500, 480 - currentTopY + 200);
+                    let desiredMinY = currentTopY - 150;
+                    let desiredMaxY = desiredMinY + desiredHeight;
+                    let desiredWidth = desiredHeight * 0.6; // Maintain aspect ratio
+                    let desiredMinX = 150 - (desiredWidth / 2);
+                    let desiredMaxX = 150 + (desiredWidth / 2);
+            
+                    if (balanceRender.bounds) {
+                        balanceRender.bounds.min.x += (desiredMinX - balanceRender.bounds.min.x) * 0.1;
+                        balanceRender.bounds.max.x += (desiredMaxX - balanceRender.bounds.max.x) * 0.1;
+                        balanceRender.bounds.min.y += (desiredMinY - balanceRender.bounds.min.y) * 0.1;
+                        balanceRender.bounds.max.y += (desiredMaxY - balanceRender.bounds.max.y) * 0.1;
+                    }
+
                     if (balanceGameState === 'moving' && balanceCurrentBlock) {
-                        balanceMoveTime += 0.05 + (balanceScore * 0.004); // Speed up slightly based on score
-                        const x = 150 + Math.sin(balanceMoveTime) * 110; // swing left-right
-                        Matter.Body.setPosition(balanceCurrentBlock, { x: x, y: 40 });
+                        balanceMoveTime += 0.05 + (balanceScore * 0.003); 
+                        const x = 150 + Math.sin(balanceMoveTime) * 110; 
+                        // Always spawn safely above the current highest point
+                        Matter.Body.setPosition(balanceCurrentBlock, { x: x, y: currentTopY - 120 });
+                        Matter.Body.setAngle(balanceCurrentBlock, 0); 
+                        Matter.Body.setVelocity(balanceCurrentBlock, {x:0, y:0}); 
+                        
                     } else if (balanceGameState === 'falling') {
                         let allQuiet = true;
                         
-                        // Check if current block fell off
-                        if (balanceCurrentBlock.position.y > 420) {
+                        // Anything falling past y: 550 is off the table
+                        if (balanceCurrentBlock.position.y > 550) {
                             endBalanceGame();
                             return;
                         }
                         if (balanceCurrentBlock.speed > 0.15 || Math.abs(balanceCurrentBlock.angularVelocity) > 0.02) allQuiet = false;
 
-                        // Check if any stacked block fell off or toppled
                         for(let b of balanceStack) {
-                            if (b.position.y > 420) {
+                            if (b.position.y > 550) {
                                 endBalanceGame();
                                 return;
                             }
@@ -1113,10 +1158,19 @@
                 document.getElementById('balance-status').innerText = 'Click or Space to drop.';
                 document.getElementById('balance-action-btn').style.display = 'none';
                 
-                // Static Ground base
-                let ground = Matter.Bodies.rectangle(150, 390, 200, 20, { 
+                // Re-center render bounds on restart
+                balanceRender.bounds.min.x = 0; balanceRender.bounds.max.x = 300;
+                balanceRender.bounds.min.y = 0; balanceRender.bounds.max.y = 500;
+                
+                // Sleek static Ground base
+                let ground = Matter.Bodies.rectangle(150, 480, 400, 60, { 
                     isStatic: true, 
-                    render: { fillStyle: '#86868b' } 
+                    label: 'ground',
+                    render: { 
+                        fillStyle: '#1c1c1e',
+                        strokeStyle: '#86868b',
+                        lineWidth: 1
+                    } 
                 });
                 Matter.Composite.add(balanceEngine.world, ground);
                 
@@ -1124,15 +1178,39 @@
             }
 
             function spawnBalanceBlock() {
-                // Width decreases slightly as you get higher to increase difficulty
-                let w = Math.max(30, 100 - (balanceScore * 4));
-                balanceCurrentBlock = Matter.Bodies.rectangle(150, 40, w, 24, { 
-                    isStatic: true, 
-                    friction: 0.8, // High friction so they grip slightly
-                    restitution: 0.05, // Low bounce
+                // Procedurally pick random geometry
+                const shapeType = Math.floor(Math.random() * 4);
+                const size = Math.max(25, 60 - (balanceScore * 2)); 
+                
+                // Theme matching glass look
+                const options = {
+                    isStatic: true,
+                    friction: 0.8, 
+                    restitution: 0.05, 
                     density: 0.05,
-                    render: { fillStyle: '#2997ff' } 
-                });
+                    render: { 
+                        fillStyle: 'rgba(41, 151, 255, 0.1)', 
+                        strokeStyle: '#2997ff',
+                        lineWidth: 2
+                    }
+                };
+
+                let currentTopY = 450;
+                if (balanceStack.length > 0) {
+                    currentTopY = Math.min(...balanceStack.map(b => b.bounds.min.y));
+                }
+                const spawnY = currentTopY - 120;
+
+                if (shapeType === 0) {
+                    balanceCurrentBlock = Matter.Bodies.rectangle(150, spawnY, size * 1.5, size, options);
+                } else if (shapeType === 1) {
+                    balanceCurrentBlock = Matter.Bodies.polygon(150, spawnY, 6, size, options); // Hexagon
+                } else if (shapeType === 2) {
+                    balanceCurrentBlock = Matter.Bodies.polygon(150, spawnY, 3, size + 10, options); // Triangle
+                } else {
+                    balanceCurrentBlock = Matter.Bodies.trapezoid(150, spawnY, size * 1.5, size, 0.5, options); // Trapezoid
+                }
+                
                 Matter.Composite.add(balanceEngine.world, balanceCurrentBlock);
                 balanceGameState = 'moving';
                 balanceMoveTime = 0;
@@ -1149,13 +1227,6 @@
                 balanceStack.push(balanceCurrentBlock);
                 balanceScore++;
                 document.getElementById('balance-score').innerText = balanceScore;
-                
-                // Shift all bodies downwards in the world to make room for stacking high
-                const shiftAmount = 24;
-                Matter.Composite.allBodies(balanceEngine.world).forEach(b => {
-                    Matter.Body.setPosition(b, { x: b.position.x, y: b.position.y + shiftAmount });
-                });
-
                 spawnBalanceBlock();
             }
 
