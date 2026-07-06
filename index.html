@@ -30,12 +30,7 @@
             overflow-x: hidden;
             line-height: 1.5;
             scroll-behavior: smooth; 
-            transition: background-color 1s ease;
-        }
-
-        h1, h2, h3, h4, .logo {
-            font-weight: 600;
-            letter-spacing: -0.03em;
+            transition: background-color 0.5s ease;
         }
 
         /* Hide body scroll until loaded */
@@ -44,10 +39,7 @@
         /* Background Grid Canvas */
         #canvas-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%; 
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -2; 
             pointer-events: none;
             opacity: 0;
@@ -58,11 +50,11 @@
         /* CAT VIDEO BACKGROUND */
         #cat-bg-container {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -3; /* Behind everything */
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -5; 
             opacity: 0;
             visibility: hidden;
-            transition: opacity 1.5s ease;
+            transition: opacity 0.8s ease;
             background: #000;
         }
         #cat-bg-container video {
@@ -70,11 +62,20 @@
             pointer-events: none;
         }
 
-        /* Toggled Cat Mode Classes */
-        body.cat-mode #canvas-container,
-        body.cat-mode #globe-scroll-wrapper { opacity: 0 !important; pointer-events: none; }
-        body.cat-mode #cat-bg-container { opacity: 1; visibility: visible; }
-        body.cat-mode main { background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); transition: background 1s ease; }
+        /* TOGGLED TOM MODE CLASSES */
+        /* This hides the normal UI and brings the video to the very front */
+        body.cat-mode { background-color: transparent; }
+        body.cat-mode #cat-bg-container { 
+            opacity: 1; 
+            visibility: visible; 
+            z-index: 50; /* Puts video above the site, but under the nav bar */
+        }
+        body.cat-mode main { 
+            opacity: 0; 
+            visibility: hidden; 
+            pointer-events: none; 
+        }
+        body.cat-mode #canvas-container { opacity: 0; }
 
         /* Navigation */
         nav {
@@ -130,6 +131,7 @@
             justify-content: center;
             align-items: flex-start; 
             min-height: 100vh;
+            transition: opacity 0.5s ease; /* Smooth crossfade to Tom Mode */
         }
 
         .section {
@@ -452,7 +454,7 @@
 <body class="loading">
 
     <div id="cat-bg-container">
-        <video id="cat-video" src="grok-video-ae4b8de9-c46d-4c04-ad9a-f401d2f43893.mp4" muted playsinline></video>
+        <video id="cat-video" src="grok-video-ae4b8de9-c46d-4c04-ad9a-f401d2f43893.mp4" autoplay loop muted playsinline preload="auto"></video>
     </div>
 
     <div id="canvas-container"></div>
@@ -636,14 +638,6 @@
         const catVideo = document.getElementById('cat-video');
         let isCatMode = false;
 
-        // CALIBRATION VARIABLES
-        // Configured precisely for "grok-video-ae4b8de9-c46d-4c04-ad9a-f401d2f43893.mp4"
-        const sequenceOffset = 0.25; 
-        const reverseMapping = false; 
-
-        // Load the video metadata so we have the duration
-        catVideo.load();
-        
         catToggleBtn.addEventListener('click', () => {
             isCatMode = !isCatMode;
             document.body.classList.toggle('cat-mode', isCatMode);
@@ -651,7 +645,8 @@
             if(isCatMode) {
                 catToggleBtn.innerText = "🔙 Return to Domain";
                 catToggleBtn.style.background = "rgba(41, 151, 255, 0.4)";
-                catVideo.play().then(() => { catVideo.pause(); }).catch(e=>console.log("Autoplay blocked. User interaction required.", e));
+                // We pause the video because we are taking manual control of its timeline!
+                catVideo.pause(); 
             } else {
                 catToggleBtn.innerText = "🐱 Tom";
                 catToggleBtn.style.background = "rgba(255,255,255,0.1)";
@@ -661,7 +656,7 @@
         let targetVideoTime = 0;
 
         window.addEventListener('mousemove', (e) => {
-            if(!isCatMode || !catVideo.duration) return;
+            if(!isCatMode || isNaN(catVideo.duration) || catVideo.duration === 0) return;
             
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
@@ -669,29 +664,31 @@
             const dx = e.clientX - centerX;
             const dy = e.clientY - centerY; 
             
-            // Calculate angle from center
-            let angle = Math.atan2(dy, dx); 
+            // MATH: Perfectly mapped to Top->Right->Down->Left
+            // Math.atan2 naturally returns -PI/2 for the Top. 
+            // We add PI/2 so that Top perfectly equals 0 progress!
+            let angle = Math.atan2(dy, dx) + (Math.PI / 2); 
             if (angle < 0) angle += 2 * Math.PI;
             
             let progress = angle / (2 * Math.PI);
-            
-            if (reverseMapping) progress = 1.0 - progress;
-            
-            progress = (progress + sequenceOffset) % 1.0; 
             
             targetVideoTime = progress * catVideo.duration;
         });
 
         function scrubVideo() {
-            if (isCatMode && catVideo.duration) {
-                // Shortest path interpolation to avoid snapping
+            if (isCatMode && !isNaN(catVideo.duration) && catVideo.duration > 0) {
+                
                 let diff = targetVideoTime - catVideo.currentTime;
                 
+                // Calculates the shortest path so the cat's head doesn't violently snap 
+                // backward when crossing from 360 degrees back to 0.
                 if (diff > catVideo.duration / 2) diff -= catVideo.duration;
                 else if (diff < -catVideo.duration / 2) diff += catVideo.duration;
                 
+                // Lerp (smooth transition) towards the mouse angle
                 let newTime = catVideo.currentTime + (diff * 0.1);
                 
+                // Wrap cleanly around the timeline boundaries
                 if (newTime < 0) newTime += catVideo.duration;
                 if (newTime >= catVideo.duration) newTime -= catVideo.duration;
                 
@@ -700,6 +697,7 @@
             requestAnimationFrame(scrubVideo);
         }
         
+        // Start the engine loop
         scrubVideo();
     </script>
 
