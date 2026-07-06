@@ -1234,9 +1234,10 @@
             const sendBtn = document.getElementById('send-btn');
             const chatBox = document.getElementById('chat-box');
             const sidebarContent = document.getElementById('sidebar-content');
-            const secretTrigger = document.querySelector('.contact-avatar'); 
+            const mainDmContact = document.getElementById('main-dm-contact');
+            const globalChatContact = document.getElementById('global-chat-contact');
+            const secretTrigger = document.querySelector('#main-dm-contact .contact-avatar'); 
 
-            // EMOJI PICKER LOGIC
             const toggleEmojiBtn = document.getElementById('toggle-emoji-btn');
             const emojiPicker = document.getElementById('emoji-picker');
             
@@ -1252,7 +1253,6 @@
                 });
             });
 
-            // IMAGE UPLOAD LOGIC
             const imageUploadBtn = document.getElementById('image-upload-btn');
             const imageUploadInput = document.getElementById('image-upload');
 
@@ -1288,12 +1288,20 @@
                         const dataUrl = canvas.toDataURL('image/jpeg', 0.6); 
                         
                         try {
-                            await addDoc(collection(db, "rooms", activeRoomId, "messages"), { 
+                            let collectionRef = (activeChatUserId === "global") ? collection(db, "global_chat") : collection(db, "chats", activeChatUserId, "messages");
+                            let msgObj = { 
                                 imageUrl: dataUrl, 
-                                senderId: myUid,
-                                senderName: userName, 
+                                sender: isAdmin ? "admin" : "user", 
                                 timestamp: serverTimestamp() 
-                            });
+                            };
+                            if (activeChatUserId === "global") {
+                                msgObj.uid = auth.currentUser.uid;
+                                msgObj.username = isAdmin ? "Z. Nafis (Admin)" : getOrPromptGlobalUsername();
+                            }
+                            await addDoc(collectionRef, msgObj);
+                            if (!isAdmin && activeChatUserId !== "global") { 
+                                await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }, { merge: true }); 
+                            }
                         } catch (error) { console.error("Transmission error:", error); }
                     }
                     img.src = event.target.result;
@@ -1302,36 +1310,47 @@
                 imageUploadInput.value = ""; 
             });
 
-            // STATE INITIALIZATION
             let isAdmin = false;
-            let myUid = auth.currentUser.uid;
-            let activeRoomId = "global_chat"; 
-            let activeRoomName = "Global Chat";
+            let activeChatUserId = auth.currentUser.uid; 
             let unsubscribeMessages = null;
             let replyingToText = null;
+            let globalUsername = localStorage.getItem('global_chat_identity') || "";
 
-            // Generate/retrieve consistent user profiles
-            let userName = localStorage.getItem('chat_user_name');
-            if (!userName) {
-                userName = "User_" + Math.floor(1000 + Math.random() * 9000);
-                localStorage.setItem('chat_user_name', userName);
+            function getOrPromptGlobalUsername() {
+                if (isAdmin) return "Z. Nafis (Admin)";
+                if (!globalUsername) {
+                    let chosenName = prompt("Enter your username for the Global Chat room:");
+                    if (chosenName && chosenName.trim() !== "") {
+                        globalUsername = chosenName.trim();
+                        localStorage.setItem('global_chat_identity', globalUsername);
+                    } else {
+                        globalUsername = "User_" + auth.currentUser.uid.substring(0, 5);
+                    }
+                }
+                return globalUsername;
             }
 
-            // Render current profile details inside the sidebar header
-            const profileNameEl = document.querySelector('.contact-name');
-            const profileStatusEl = document.querySelector('.contact-status');
-            if (profileNameEl) profileNameEl.innerText = userName + " (You)";
-            if (profileStatusEl) profileStatusEl.innerHTML = `<span style="cursor:pointer; text-decoration:underline;">Edit Name</span>`;
-            
-            // Allow users to adjust their personal handle
-            profileStatusEl.addEventListener('click', () => {
-                const updateName = prompt("Choose a new display name:", userName);
-                if (updateName && updateName.trim() !== "") {
-                    userName = updateName.trim();
-                    localStorage.setItem('chat_user_name', userName);
-                    if (profileNameEl) profileNameEl.innerText = userName + " (You)";
-                    updatePresence();
+            mainDmContact.addEventListener('click', () => {
+                if (activeChatUserId === auth.currentUser.uid && !isAdmin) return;
+                activeChatUserId = auth.currentUser.uid;
+                mainDmContact.classList.add('active');
+                globalChatContact.classList.remove('active');
+                if (isAdmin) {
+                    document.querySelectorAll('#user-sessions-list div').forEach(el => el.style.background = "rgba(255,255,255,0.05)");
                 }
+                listenToChat(activeChatUserId);
+            });
+
+            globalChatContact.addEventListener('click', () => {
+                if (activeChatUserId === "global") return;
+                getOrPromptGlobalUsername();
+                activeChatUserId = "global";
+                globalChatContact.classList.add('active');
+                mainDmContact.classList.remove('active');
+                if (isAdmin) {
+                    document.querySelectorAll('#user-sessions-list div').forEach(el => el.style.background = "rgba(255,255,255,0.05)");
+                }
+                listenToChat("global");
             });
 
             document.getElementById('cancel-reply-btn').addEventListener('click', () => {
@@ -1346,165 +1365,40 @@
                 messageInput.focus();
             };
 
-            // Maintain legacy admin back-door trigger validation
-            secretTrigger.addEventListener('click', () => {
+            secretTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
                 if (isAdmin) return;
                 const passcode = prompt("Admin Passcode:");
                 if (passcode === "chittypoo99") {
                     isAdmin = true;
-                    if (profileStatusEl) profileStatusEl.innerHTML = `<span style="color:#34c759">Admin Mode Active</span>`;
-                    updatePresence();
+                    document.querySelector('#main-dm-contact .contact-status').innerHTML = `<span style="color:#34c759">Admin Mode</span>`;
+                    sidebarContent.innerHTML = `<h4 style="font-size:0.8rem; margin-top:20px; margin-bottom:10px; color:#86868b; text-transform:uppercase;">Active Sessions</h4><div id="user-sessions-list" style="display:flex; flex-direction:column; gap:8px;"></div>`;
+                    loadAdminUserList();
                 }
             });
 
-            // Global presence updater execution loop
-            const updatePresence = () => {
-                setDoc(doc(db, "active_chats", myUid), { 
-                    name: userName, 
-                    lastActive: serverTimestamp(),
-                    isAdmin: isAdmin
-                }, { merge: true }).catch(e => console.error("Presence Error:", e));
-            };
-            updatePresence(); 
-            setInterval(updatePresence, 30000); 
-            document.addEventListener("visibilitychange", () => {
-                if (document.visibilityState === 'visible') updatePresence();
-            });
-
-            // BUILD MULTI-ROOM INTERFACE STRUCTURE
-            function initSidebarLayout() {
-                sidebarContent.innerHTML = `
-                    <div style="margin-top: 15px; margin-bottom: 20px;">
-                        <button id="global-room-btn" style="width:100%; text-align:left; background:rgba(255,255,255,0.1); border:1px solid var(--glass-border); color:#fff; padding:12px; border-radius:14px; cursor:pointer; font-weight:600; font-size:0.9rem; transition: background 0.2s;">🌐 Global Room</button>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <h4 style="font-size:0.75rem; color:#86868b; text-transform:uppercase; letter-spacing:0.05em; margin:0;">Groups</h4>
-                            <button id="new-group-btn" style="background:none; border:none; color:var(--accent-blue); cursor:pointer; font-size:0.75rem; font-weight:600;">+ New</button>
-                        </div>
-                        <div id="ui-groups-list" style="display:flex; flex-direction:column; gap:6px;"></div>
-                    </div>
-                    <div>
-                        <h4 style="font-size:0.75rem; color:#86868b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Active Users</h4>
-                        <div id="ui-users-list" style="display:flex; flex-direction:column; gap:6px;"></div>
-                    </div>
-                `;
-
-                // Handle global view transition 
-                document.getElementById('global-room-btn').addEventListener('click', () => {
-                    switchActiveRoom("global_chat", "Global Chat");
-                });
-
-                // Handle group creation triggers
-                document.getElementById('new-group-btn').addEventListener('click', async () => {
-                    const groupNameInput = prompt("Enter a descriptive Group Name:");
-                    if (groupNameInput && groupNameInput.trim() !== "") {
-                        const generatedGroupId = "group_" + Date.now();
-                        await setDoc(doc(db, "rooms", generatedGroupId), {
-                            name: groupNameInput.trim(),
-                            type: "group",
-                            owner: myUid
-                        });
-                        switchActiveRoom(generatedGroupId, "# " + groupNameInput.trim());
+            if (!isAdmin) {
+                const updatePresence = () => {
+                    if (activeChatUserId !== "global") {
+                        setDoc(doc(db, "active_chats", auth.currentUser.uid), { lastActive: serverTimestamp() }, { merge: true }).catch(e => console.error("Presence Error:", e));
                     }
-                });
-
-                bindSidebarLiveFeeds();
-            }
-
-            // SYNC REAL-TIME STREAM LISTENERS TO SIDEBAR
-            function bindSidebarLiveFeeds() {
-                // Keep groups directory sync updated
-                onSnapshot(collection(db, "rooms"), (snapshot) => {
-                    const groupsContainer = document.getElementById('ui-groups-list');
-                    if (!groupsContainer) return;
-                    groupsContainer.innerHTML = "";
-                    
-                    snapshot.forEach((roomDoc) => {
-                        const room = roomDoc.data();
-                        const rId = roomDoc.id;
-                        
-                        const item = document.createElement('div');
-                        item.style.padding = "10px 12px";
-                        item.style.background = activeRoomId === rId ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.03)";
-                        item.style.border = activeRoomId === rId ? "1px solid rgba(255,255,255,0.15)" : "1px solid transparent";
-                        item.style.borderRadius = "12px";
-                        item.style.fontSize = "0.85rem";
-                        item.style.cursor = "pointer";
-                        item.style.color = "#fff";
-                        item.innerText = "# " + room.name;
-
-                        item.addEventListener('click', () => switchActiveRoom(rId, "# " + room.name));
-                        groupsContainer.appendChild(item);
-                    });
-                });
-
-                // Keep real-time user lookup directory context active
-                onSnapshot(collection(db, "active_chats"), (snapshot) => {
-                    const usersContainer = document.getElementById('ui-users-list');
-                    if (!usersContainer) return;
-                    usersContainer.innerHTML = "";
-
-                    const currentTime = new Date().getTime();
-                    snapshot.forEach((userDoc) => {
-                        const uId = userDoc.id;
-                        if (uId === myUid) return; // Hide current profile self-listing
-
-                        const userMeta = userDoc.data();
-                        const lastSeen = userMeta.lastActive ? userMeta.lastActive.toDate().getTime() : currentTime;
-                        const isOnline = (currentTime - lastSeen) < 60000;
-                        const statusColor = isOnline ? '#34c759' : '#86868b';
-
-                        const dmKey = [myUid, uId].sort().join('_');
-
-                        const item = document.createElement('div');
-                        item.style.padding = "10px 12px";
-                        item.style.background = activeRoomId === dmKey ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.03)";
-                        item.style.borderRadius = "12px";
-                        item.style.fontSize = "0.85rem";
-                        item.style.cursor = "pointer";
-                        item.style.display = "flex";
-                        item.style.alignItems = "center";
-                        item.style.color = "#fff";
-
-                        item.innerHTML = `
-                            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${statusColor}; margin-right:10px; box-shadow: 0 0 5px ${statusColor};"></span>
-                            <span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${userMeta.name || 'Anonymous Session'}</span>
-                        `;
-
-                        item.addEventListener('click', () => {
-                            const choice = confirm(`Start a private Direct Message connection with ${userMeta.name || 'User'}?`);
-                            if (choice) {
-                                switchActiveRoom(dmKey, `💬 DM: ${userMeta.name || 'User'}`);
-                            }
-                        });
-                        usersContainer.appendChild(item);
-                    });
+                };
+                updatePresence(); 
+                setInterval(updatePresence, 30000); 
+                document.addEventListener("visibilitychange", () => {
+                    if (document.visibilityState === 'visible') updatePresence();
                 });
             }
 
-            // TRANSITION DISPLAY WORKSPACE TARGETS
-            function switchActiveRoom(roomId, roomName) {
-                activeRoomId = roomId;
-                activeRoomName = roomName;
-                
-                const globalBtn = document.getElementById('global-room-btn');
-                if (globalBtn) {
-                    globalBtn.style.background = activeRoomId === "global_chat" ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.05)";
-                }
-
-                initSidebarLayout(); // Forces highlight re-evaluations
-                listenToChat(activeRoomId);
-            }
-
-            // CORE MESSAGE STREAM RENDER PROCESSING
-            function listenToChat(roomId) {
+            function listenToChat(userId) {
                 if (unsubscribeMessages) unsubscribeMessages();
-                const q = query(collection(db, "rooms", roomId, "messages"), orderBy("timestamp", "asc"));
+                
+                let collectionRef = (userId === "global") ? collection(db, "global_chat") : collection(db, "chats", userId, "messages");
+                const q = query(collectionRef, orderBy("timestamp", "asc"));
 
                 chatBox.innerHTML = `
-                <div style="text-align:center; padding: 12px; font-size:0.8rem; letter-spacing:0.03em; color:var(--text-muted); border-bottom:1px solid var(--glass-border); margin-bottom:15px; font-weight:600; text-transform: uppercase;">
-                    Channel: ${activeRoomName}
+                <div class="msg-wrapper received" style="align-self: flex-start; animation: none; opacity: 1; transform: none; max-width: 100%;">
+                    <div class="message received"><p>${userId === "global" ? 'Global public room active connection.' : 'iMessage connection established.'}</p></div>
                 </div>`;
 
                 unsubscribeMessages = onSnapshot(q, (snapshot) => {
@@ -1516,7 +1410,7 @@
                             const data = change.doc.data();
                             if (!data.text && !data.imageUrl) return; 
 
-                            const isSentByMe = (data.senderId === myUid);
+                            const isSentByMe = (userId === "global") ? (data.uid === auth.currentUser.uid) : (isAdmin ? (data.sender === "admin") : (data.sender === "user"));
                             const messageClass = isSentByMe ? "sent" : "received";
                             
                             let isStandaloneEmoji = false;
@@ -1542,9 +1436,8 @@
                             
                             let contentHtml = "";
 
-                            // Show sender context strings on group arrays and global rooms
-                            if (!isSentByMe && !roomId.startsWith('dm_')) {
-                                contentHtml += `<div style="font-size:0.7rem; color:var(--accent-blue); font-weight:700; margin-bottom:4px; letter-spacing:0.02em;">${data.senderName || 'Anonymous'}</div>`;
+                            if (userId === "global" && !isSentByMe && data.username) {
+                                contentHtml += `<div style="font-size: 0.72rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 3px; opacity: 0.9;">${data.username.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`;
                             }
 
                             if (data.replyTo) {
@@ -1590,20 +1483,97 @@
                 });
             }
 
-            // OUTBOUND PAYLOAD TRANSMISSION HANDLER
+            function loadAdminUserList() {
+                onSnapshot(collection(db, "active_chats"), (snapshot) => {
+                    const listContainer = document.getElementById('user-sessions-list');
+                    if(!listContainer) return;
+                    listContainer.innerHTML = "";
+                    
+                    const nowTime = new Date().getTime();
+                    const cutoffTime = new Date(nowTime - (24 * 60 * 60 * 1000));
+
+                    snapshot.forEach((userDoc) => {
+                        const uId = userDoc.id;
+                        const data = userDoc.data();
+                        let lastActive = data.lastActive ? data.lastActive.toDate() : new Date();
+                        let contactName = data.name || `Session: ${uId.substring(0, 6)}...`;
+
+                        if (lastActive > cutoffTime) {
+                            
+                            const isOnline = (nowTime - lastActive.getTime()) < 60000;
+                            const statusColor = isOnline ? '#34c759' : '#86868b'; 
+
+                            if (uId === activeChatUserId && isAdmin && activeChatUserId !== "global") {
+                                const statusEl = document.querySelector('#main-dm-contact .contact-status');
+                                if (statusEl) {
+                                    statusEl.innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
+                                }
+                            }
+
+                            const sessionBtn = document.createElement('div');
+                            sessionBtn.style.padding = "10px";
+                            sessionBtn.style.background = (activeChatUserId === uId && activeChatUserId !== "global") ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)";
+                            sessionBtn.style.borderRadius = "12px";
+                            sessionBtn.style.fontSize = "0.85rem";
+                            sessionBtn.style.cursor = "pointer";
+                            sessionBtn.style.display = "flex";
+                            sessionBtn.style.justifyContent = "space-between";
+                            sessionBtn.style.alignItems = "center";
+
+                            sessionBtn.innerHTML = `
+                                <div style="display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 75%; pointer-events: none;">
+                                    <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${statusColor}; margin-right:8px; flex-shrink: 0; box-shadow: 0 0 5px ${statusColor};"></span>
+                                    <span>${contactName}</span>
+                                </div>
+                                <button class="rename-btn" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; cursor: pointer; padding: 4px 8px; font-size: 10px; transition: background 0.2s;">Rename</button>
+                            `;
+
+                            sessionBtn.addEventListener('click', (e) => {
+                                if (e.target.classList.contains('rename-btn')) {
+                                    e.stopPropagation();
+                                    const newName = prompt("Enter a new name for this contact:", data.name || "");
+                                    if (newName !== null && newName.trim() !== "") {
+                                        setDoc(doc(db, "active_chats", uId), { name: newName.trim() }, { merge: true }).catch(console.error);
+                                    }
+                                    return;
+                                }
+                                activeChatUserId = uId;
+                                globalChatContact.classList.remove('active');
+                                mainDmContact.classList.remove('active');
+                                
+                                const nameEl = document.querySelector('#main-dm-contact .contact-name');
+                                const statusEl = document.querySelector('#main-dm-contact .contact-status');
+                                if (nameEl) nameEl.innerText = contactName;
+                                if (statusEl) statusEl.innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
+                                
+                                loadAdminUserList(); 
+                                listenToChat(uId); 
+                            });
+                            listContainer.appendChild(sessionBtn);
+                        }
+                    });
+                });
+            }
+
             async function sendMessage() {
                 const text = messageInput.value.trim();
-                if (text === "" || !activeRoomId) return;
+                if (text === "" || !activeChatUserId) return;
                 
                 messageInput.value = "";
                 emojiPicker.classList.remove('active'); 
                 
+                let collectionRef = (activeChatUserId === "global") ? collection(db, "global_chat") : collection(db, "chats", activeChatUserId, "messages");
+                
                 const messageData = { 
                     text: text, 
-                    senderId: myUid, 
-                    senderName: userName,
+                    sender: isAdmin ? "admin" : "user", 
                     timestamp: serverTimestamp() 
                 };
+
+                if (activeChatUserId === "global") {
+                    messageData.uid = auth.currentUser.uid;
+                    messageData.username = isAdmin ? "Z. Nafis (Admin)" : getOrPromptGlobalUsername();
+                }
 
                 if (replyingToText) {
                     messageData.replyTo = replyingToText;
@@ -1612,14 +1582,14 @@
                 }
 
                 try {
-                    await addDoc(collection(db, "rooms", activeRoomId, "messages"), messageData);
+                    await addDoc(collectionRef, messageData);
+                    if (!isAdmin && activeChatUserId !== "global") { 
+                        await setDoc(doc(db, "active_chats", auth.currentUser.uid), { lastActive: serverTimestamp() }, { merge: true }); 
+                    }
                 } catch (error) { console.error("Transmission error:", error); }
             }
 
-            // Execution setup initialization calls
-            initSidebarLayout();
-            listenToChat(activeRoomId);
-            
+            listenToChat(activeChatUserId);
             sendBtn.addEventListener('click', sendMessage);
             messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
         }
