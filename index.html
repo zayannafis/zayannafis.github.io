@@ -651,7 +651,7 @@
         });
 
         // Configured for the exact video (Top -> Right -> Down -> Left)
-        const sequenceOffset = 0.25; 
+        const sequenceOffset = 0; 
         const reverseMapping = false; 
 
         catToggleBtn.addEventListener('click', () => {
@@ -672,6 +672,7 @@
 
         let targetVideoTime = 0.1;
 
+        // The 'true' at the end guarantees we capture mouse movements even if hovering over the Chat/Terminal UI
         window.addEventListener('mousemove', (e) => {
             if(!isCatMode || isNaN(catVideo.duration) || catVideo.duration === 0) return;
             
@@ -690,23 +691,14 @@
             if (reverseMapping) progress = 1.0 - progress;
             progress = (progress + sequenceOffset) % 1.0; 
             
-            targetVideoTime = progress * catVideo.duration;
-        });
+            // Strictly clamp the time between boundaries so the video never loops weirdly
+            targetVideoTime = Math.max(0.01, Math.min(progress * catVideo.duration, catVideo.duration - 0.05));
+        }, true);
 
         function scrubVideo() {
             if (isCatMode && !isNaN(catVideo.duration) && catVideo.duration > 0) {
-                
-                let diff = targetVideoTime - catVideo.currentTime;
-                
-                if (diff > catVideo.duration / 2) diff -= catVideo.duration;
-                else if (diff < -catVideo.duration / 2) diff += catVideo.duration;
-                
-                let newTime = catVideo.currentTime + (diff * 0.1);
-                
-                if (newTime < 0) newTime += catVideo.duration;
-                if (newTime >= catVideo.duration) newTime -= catVideo.duration;
-                
-                catVideo.currentTime = newTime;
+                // Smoothly lerp towards target (0.25 makes it very responsive)
+                catVideo.currentTime += (targetVideoTime - catVideo.currentTime) * 0.25;
             }
             requestAnimationFrame(scrubVideo);
         }
