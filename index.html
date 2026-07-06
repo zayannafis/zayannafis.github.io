@@ -59,6 +59,7 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.8s ease;
+            pointer-events: none; /* Prevents video from blocking any clicks */
         }
         #cat-bg-container video {
             width: 100%; height: 100%; object-fit: cover;
@@ -647,12 +648,8 @@
 
         // Force browser to fetch and draw the first frame so it's not a black screen
         catVideo.addEventListener('loadeddata', () => {
-            catVideo.currentTime = 0.1; 
+            catVideo.currentTime = 0.01; 
         });
-
-        // Configured for the exact video (Top -> Right -> Down -> Left)
-        const sequenceOffset = 0; 
-        const reverseMapping = false; 
 
         catToggleBtn.addEventListener('click', () => {
             isCatMode = !isCatMode;
@@ -661,7 +658,6 @@
             if(isCatMode) {
                 catToggleBtn.innerText = "🔙 Return to Domain";
                 catToggleBtn.style.background = "rgba(41, 151, 255, 0.4)";
-                
                 // Pause so we can scrub it via mouse tracking!
                 catVideo.pause(); 
             } else {
@@ -670,7 +666,8 @@
             }
         });
 
-        let targetVideoTime = 0.1;
+        let targetVideoTime = 0.01;
+        let smoothedVideoTime = 0.01;
 
         // The 'true' at the end guarantees we capture mouse movements even if hovering over the Chat/Terminal UI
         window.addEventListener('mousemove', (e) => {
@@ -682,23 +679,36 @@
             const dx = e.clientX - centerX;
             const dy = e.clientY - centerY; 
             
-            // MAP CURSOR TO VIDEO ANGLE
+            // Map cursor angle to standard 0 to 360 degrees
             let angle = Math.atan2(dy, dx) + (Math.PI / 2); 
             if (angle < 0) angle += 2 * Math.PI;
             
             let progress = angle / (2 * Math.PI);
             
-            if (reverseMapping) progress = 1.0 - progress;
-            progress = (progress + sequenceOffset) % 1.0; 
-            
-            // Strictly clamp the time between boundaries so the video never loops weirdly
-            targetVideoTime = Math.max(0.01, Math.min(progress * catVideo.duration, catVideo.duration - 0.05));
+            targetVideoTime = progress * catVideo.duration;
         }, true);
 
         function scrubVideo() {
             if (isCatMode && !isNaN(catVideo.duration) && catVideo.duration > 0) {
-                // Smoothly lerp towards target (0.25 makes it very responsive)
-                catVideo.currentTime += (targetVideoTime - catVideo.currentTime) * 0.25;
+                
+                let duration = catVideo.duration;
+                let diff = targetVideoTime - smoothedVideoTime;
+                
+                // Shortest path interpolation to completely prevent backwards sweeping / stuck boundaries
+                if (diff > duration / 2) diff -= duration;
+                else if (diff < -duration / 2) diff += duration;
+                
+                // Lerp towards the mouse (0.15 is smooth but very responsive)
+                smoothedVideoTime += diff * 0.15;
+                
+                // Seamless loop wrapping so he never gets stuck
+                if (smoothedVideoTime < 0) smoothedVideoTime += duration;
+                if (smoothedVideoTime >= duration) smoothedVideoTime -= duration;
+                
+                // Update only if change is significant to avoid micro-stuttering
+                if (Math.abs(catVideo.currentTime - smoothedVideoTime) > 0.01) {
+                    catVideo.currentTime = smoothedVideoTime;
+                }
             }
             requestAnimationFrame(scrubVideo);
         }
