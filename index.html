@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -23,7 +23,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Shifted background color to HTML to prevent z-index masking */
         html {
             background-color: var(--bg-color);
         }
@@ -51,41 +50,6 @@
         }
         body.loaded #canvas-container { opacity: 1; }
 
-        /* CAT VIDEO BACKGROUND */
-        #cat-bg-container {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; /* Sits directly behind UI, but above the Grid */
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.8s ease;
-            pointer-events: none; /* Prevents video from blocking any clicks */
-        }
-        #cat-bg-container video {
-            width: 100%; height: 100%; object-fit: cover;
-            pointer-events: none;
-        }
-        /* Soft dark overlay so white text remains readable over the sunlit forest */
-        #cat-bg-container::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            pointer-events: none;
-        }
-
-        /* TOGGLED TOM MODE CLASSES */
-        body.cat-mode #cat-bg-container { 
-            opacity: 1; 
-            visibility: visible; 
-        }
-        /* Fade out the Earth and Grid to reveal the video perfectly */
-        body.cat-mode #canvas-container,
-        body.cat-mode #globe-canvas-container { 
-            opacity: 0 !important; 
-            transition: opacity 0.5s ease;
-        }
-
         /* Navigation */
         nav {
             position: fixed;
@@ -107,12 +71,6 @@
 
         .logo-area { display: flex; align-items: center; gap: 1rem; }
         .logo { font-size: 1.25rem; color: #fff; letter-spacing: -0.05em; }
-        
-        #cat-toggle-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);
-            color: #fff; padding: 4px 10px; border-radius: 50px; font-size: 0.75rem; cursor: pointer; transition: all 0.3s;
-        }
-        #cat-toggle-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
 
         .nav-links {
             display: flex;
@@ -279,7 +237,7 @@
             font-weight: 500;
         }
 
-        /* --- MATRIX GAME FIXED CSS --- */
+        /* --- MATRIX GAME CSS --- */
         .matrix-node {
             width: 100%;
             min-height: 80px; 
@@ -461,16 +419,11 @@
 </head>
 <body class="loading">
 
-    <div id="cat-bg-container">
-        <video id="cat-video" src="grok-video-ae4b8de9-c46d-4c04-ad9a-f401d2f43893.mp4" muted playsinline preload="auto"></video>
-    </div>
-
     <div id="canvas-container"></div>
 
     <nav>
         <div class="logo-area">
             <div class="logo">Z. Nafis</div>
-            <button id="cat-toggle-btn">🐱 Tom</button>
         </div>
         <div class="nav-links">
             <button class="nav-btn active" data-target="home">Overview</button>
@@ -642,83 +595,7 @@
     </main>
 
     <script>
-        const catToggleBtn = document.getElementById('cat-toggle-btn');
-        const catVideo = document.getElementById('cat-video');
-        let isCatMode = false;
-
-        // Force browser to fetch and draw the first frame so it's not a black screen
-        catVideo.addEventListener('loadeddata', () => {
-            catVideo.currentTime = 0.01; 
-        });
-
-        catToggleBtn.addEventListener('click', () => {
-            isCatMode = !isCatMode;
-            document.body.classList.toggle('cat-mode', isCatMode);
-            
-            if(isCatMode) {
-                catToggleBtn.innerText = "🔙 Return to Domain";
-                catToggleBtn.style.background = "rgba(41, 151, 255, 0.4)";
-                // Pause so we can scrub it via mouse tracking!
-                catVideo.pause(); 
-            } else {
-                catToggleBtn.innerText = "🐱 Tom";
-                catToggleBtn.style.background = "rgba(255,255,255,0.1)";
-            }
-        });
-
-        let targetVideoTime = 0.01;
-        let smoothedVideoTime = 0.01;
-
-        // The 'true' at the end guarantees we capture mouse movements even if hovering over the Chat/Terminal UI
-        window.addEventListener('mousemove', (e) => {
-            if(!isCatMode || isNaN(catVideo.duration) || catVideo.duration === 0) return;
-            
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            
-            const dx = e.clientX - centerX;
-            const dy = e.clientY - centerY; 
-            
-            // Map cursor angle to standard 0 to 360 degrees
-            let angle = Math.atan2(dy, dx) + (Math.PI / 2); 
-            if (angle < 0) angle += 2 * Math.PI;
-            
-            let progress = angle / (2 * Math.PI);
-            
-            targetVideoTime = progress * catVideo.duration;
-        }, true);
-
-        function scrubVideo() {
-            if (isCatMode && !isNaN(catVideo.duration) && catVideo.duration > 0) {
-                
-                let duration = catVideo.duration;
-                let diff = targetVideoTime - smoothedVideoTime;
-                
-                // Shortest path interpolation to completely prevent backwards sweeping / stuck boundaries
-                if (diff > duration / 2) diff -= duration;
-                else if (diff < -duration / 2) diff += duration;
-                
-                // Lerp towards the mouse (0.15 is smooth but very responsive)
-                smoothedVideoTime += diff * 0.15;
-                
-                // Seamless loop wrapping so he never gets stuck
-                if (smoothedVideoTime < 0) smoothedVideoTime += duration;
-                if (smoothedVideoTime >= duration) smoothedVideoTime -= duration;
-                
-                // Update only if change is significant to avoid micro-stuttering
-                if (Math.abs(catVideo.currentTime - smoothedVideoTime) > 0.01) {
-                    catVideo.currentTime = smoothedVideoTime;
-                }
-            }
-            requestAnimationFrame(scrubVideo);
-        }
-        
-        // Start tracking loop
-        scrubVideo();
-    </script>
-
-    <script>
-        // --- 0. CLASSIC PAGE REVEAL ---
+        // --- 0. PAGE REVEAL ---
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.body.classList.remove('loading');
@@ -770,7 +647,7 @@
         }
         animate3D();
 
-        // --- 2. FOREGROUND REAL-TIME ASTRONOMICAL SOLAR SYSTEM ---
+        // --- 2. FOREGROUND EARTH SYSTEM ---
         const globeContainer = document.getElementById('globe-canvas-container');
         const globeScene = new THREE.Scene();
         const globeCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -804,7 +681,7 @@
         const systemOrbitGroup = new THREE.Group();
         globeScene.add(systemOrbitGroup);
 
-        // EARTH
+        // EARTH Mesh Setup
         const earthGeo = new THREE.SphereGeometry(12, 64, 64);
         const textureLoader = new THREE.TextureLoader();
         const dayTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
@@ -821,7 +698,7 @@
         const earthMesh = new THREE.Mesh(earthGeo, earthMat);
         systemOrbitGroup.add(earthMesh);
 
-        // TIME MATH
+        // Real-world planetary angles
         const now = new Date();
         const startOfYear = new Date(now.getFullYear(), 0, 0);
         const diff = now - startOfYear;
@@ -829,7 +706,7 @@
         const tilt = 23.5 * (Math.PI / 180);
         const sunDeclination = Math.sin((dayOfYear - 80) * (2 * Math.PI / 365)) * tilt;
 
-        // SUN
+        // SUN Lighting Grid
         const sunDistance = 150; 
         const sunLight = new THREE.DirectionalLight(0xffffff, 4.0); 
         sunLight.position.set(
@@ -848,7 +725,7 @@
         sunVisual.position.copy(sunLight.position);
         systemOrbitGroup.add(sunVisual);
 
-        // Sync Earth rotation
+        // Sync local alignment
         const utcHours = now.getUTCHours() + (now.getUTCMinutes() / 60);
         const initialRotation = (utcHours / 24) * Math.PI * 2 + Math.PI; 
         earthMesh.rotation.y = initialRotation;
@@ -882,7 +759,7 @@
         animateGlobe();
 
 
-        // --- 3. LIVE SYSTEM DATA (IP GEO-TRACE & LOCAL APIS) ---
+        // --- 3. LIVE SYSTEM TELEMETRY ---
         async function fetchLocalData() {
             try {
                 const geoRes = await fetch('https://get.geojs.io/v1/ip/geo.json');
@@ -930,7 +807,7 @@
             globeRenderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // --- 5. BLUR REVEAL SCROLL OBSERVER ---
+        // --- 5. SCROLL REVEAL SCROLL OBSERVER ---
         const observerOptions = { threshold: 0.15, rootMargin: "0px" };
         const scrollObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -944,7 +821,7 @@
 
         document.querySelectorAll('.reveal').forEach(el => { scrollObserver.observe(el); });
 
-        // --- 6. 3D MAGNETIC TILT CARDS ---
+        // --- 6. 3D MAGNETIC CARDS ---
         document.querySelectorAll('.tilt-effect').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
@@ -1027,7 +904,7 @@
                 });
             });
 
-            // -- Matrix Game Logic --
+            // Matrix Logic
             const grid = document.getElementById('matrix-grid');
             const startBtn = document.getElementById('matrix-start-btn');
             const statusTxt = document.getElementById('matrix-status');
@@ -1131,7 +1008,7 @@
                 scoreTxt.innerText = score;
             }
 
-            // -- Chrono (Reaction) Game Logic --
+            // Chrono Precision Arcade Logic
             const reactScoreEl = document.getElementById('reaction-score');
             const reactHighScoreEl = document.getElementById('reaction-highscore');
             const reactTargetEl = document.getElementById('reaction-target');
@@ -1143,7 +1020,7 @@
             let reactHighScore = localStorage.getItem('appleReactionHighScore') || 0;
             reactHighScoreEl.innerText = reactHighScore;
             
-            let reactState = 'idle'; // idle, running, result
+            let reactState = 'idle'; 
             let targetTimeMs = 0;
             let startTime = 0;
             let timerInterval;
