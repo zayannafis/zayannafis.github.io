@@ -313,11 +313,11 @@
             flex-direction: column; 
             position: relative; 
             min-width: 0;
-            min-height: 0; /* Prevents container from stretching on mobile */
+            min-height: 0; 
         }
         .chat-messages {
             flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;
-            -webkit-overflow-scrolling: touch; /* Adds smooth inertial momentum scroll to mobile touches */
+            -webkit-overflow-scrolling: touch; 
         }
 
         .msg-wrapper {
@@ -418,14 +418,13 @@
         }
         .chat-input-area #send-btn:hover { transform: scale(1.05); background: #147ce6; }
 
-        /* --- MOBILE LAYOUT SYSTEM ENHANCEMENTS --- */
         @media (max-width: 768px) {
             nav { padding: 1rem 5%; flex-direction: column; gap: 0.5rem; }
             .hero-title { font-size: clamp(2.5rem, 12vw, 4rem) !important; }
             
             .chat-container { 
                 flex-direction: column; 
-                height: 70vh; /* Locks window layout height dynamically across mobile displays */
+                height: 70vh; 
                 min-height: 460px; 
                 margin-top: 1rem;
             }
@@ -443,12 +442,12 @@
             }
             .chat-main {
                 flex: 1;
-                min-height: 0; /* Enforces height caps to activate individual inner container scrolling */
+                min-height: 0; 
             }
             .chat-contact { padding: 0.5rem 1rem; min-width: max-content; }
             .contact-avatar { width: 32px; height: 32px; font-size: 1rem; }
             .chat-input-area { padding: 0.8rem; }
-            .chat-input-area input[type="text"] { font-size: 16px !important; padding: 0.7rem 1rem; } /* Fixes default mobile display zoom shifts */
+            .chat-input-area input[type="text"] { font-size: 16px !important; padding: 0.7rem 1rem; } 
             .chat-messages { padding: 1rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
             .emoji-picker { width: 100%; left: 0; bottom: 70px; justify-content: space-evenly; }
         }
@@ -1368,13 +1367,14 @@
                         continue;
                     }
                     
-                    if (chosenName.toLowerCase().includes("admin") || chosenName.toLowerCase().includes("nafis")) {
+                    // FIXED: Changed from sub-string '.includes()' to exact matching rule to avoid blocking un-taken individual words
+                    const nameKey = chosenName.toLowerCase();
+                    if (nameKey === "admin" || nameKey === "z. nafis" || nameKey === "nafis" || nameKey === "z.nafis") {
                         alert("That username contains reserved administrator terms.");
                         continue;
                     }
 
                     try {
-                        const nameKey = chosenName.toLowerCase();
                         const usernameDocRef = doc(db, "global_usernames", nameKey);
                         const docSnap = await getDoc(usernameDocRef);
                         
@@ -1599,7 +1599,6 @@
                         }
                     });
 
-                    // --- FORCE VIEWPORT SNAPPING ON MOBILE DEVICES ---
                     if (hasNewMessages) {
                         chatBox.scrollTop = chatBox.scrollHeight;
                         setTimeout(() => { 
