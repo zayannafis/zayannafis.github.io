@@ -524,7 +524,7 @@
             <div id="blackhole-wrapper" style="height: 400vh; position: relative; width: 100vw; margin-left: calc(-50vw + 50%); margin-bottom: -100px;">
                 <div style="position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000;">
                     
-                    <video id="blackhole-video" src="blackhole.mp4" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 40%; will-change: transform, filter; filter: brightness(0.6) contrast(1.3);"></video>
+                    <video id="blackhole-video" src="blackhole.mp4" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 40%; will-change: transform, filter;"></video>
                     
                     <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at 50% 40%, transparent 30%, #000 80%); pointer-events:none;"></div>
                     
@@ -845,7 +845,7 @@
                     const blurValue = Math.pow(progress, 3) * 15; 
                     
                     bhVideo.style.transform = `scale(${scaleValue})`;
-                    bhVideo.style.filter = `brightness(0.6) contrast(1.3) blur(${blurValue}px)`;
+                    bhVideo.style.filter = `blur(${blurValue}px)`;
 
                     if (bhText) { bhText.style.opacity = progress > 0.1 ? '0' : '1'; }
 
@@ -871,7 +871,7 @@
                         
                         setTimeout(() => {
                             bhVideo.style.transform = 'scale(1)';
-                            bhVideo.style.filter = 'brightness(0.6) contrast(1.3) blur(0px)';
+                            bhVideo.style.filter = 'blur(0px)';
                             if(bhOverlay) bhOverlay.style.opacity = '0';
                             hasEnteredBlackHole = false;
                         }, 500);
@@ -1002,7 +1002,7 @@
                     const bhOverlay = document.getElementById('bh-overlay');
                     if(bhVideo) {
                         bhVideo.style.transform = 'scale(1)';
-                        bhVideo.style.filter = 'brightness(0.6) contrast(1.3) blur(0px)';
+                        bhVideo.style.filter = 'blur(0px)';
                     }
                     if(bhOverlay) bhOverlay.style.opacity = '0';
                     hasEnteredBlackHole = false;
@@ -1367,7 +1367,6 @@
                         continue;
                     }
                     
-                    // FIXED: Changed from sub-string '.includes()' to exact matching rule to avoid blocking un-taken individual words
                     const nameKey = chosenName.toLowerCase();
                     if (nameKey === "admin" || nameKey === "z. nafis" || nameKey === "nafis" || nameKey === "z.nafis") {
                         alert("That username contains reserved administrator terms.");
