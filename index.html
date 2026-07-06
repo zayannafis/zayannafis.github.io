@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Z. Nafis | Domain</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0%25' y1='100%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23147ce6'/><stop offset='50%25' stop-color='%232997ff'/><stop offset='100%25' stop-color='%237dd3fc'/></linearGradient></defs><circle cx='256' cy='256' r='230' fill='none' stroke='url(%23g)' stroke-width='8' stroke-dasharray='16 12' opacity='0.3'/><ellipse cx='256' cy='256' rx='245' ry='95' fill='none' stroke='url(%23g)' stroke-width='16' transform='rotate(-25 256 256)'/><circle cx='256' cy='256' r='165' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M165,165 L347,165 L165,347 L347,347' fill='none' stroke='url(%23g)' stroke-width='22' stroke-linecap='round' stroke-linejoin='round'/><path d='M165,347 L165,165 L347,347 L347,165' fill='none' stroke='url(%23g)' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' opacity='0.4'/><circle cx='165' cy='165' r='16' fill='%23fff'/><circle cx='347' cy='165' r='16' fill='%23fff'/><circle cx='165' cy='347' r='16' fill='%23fff'/><circle cx='347' cy='347' r='16' fill='%23fff'/><circle cx='256' cy='256' r='12' fill='%23fff'/></svg>">
+    <link id="dynamic-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0%25' y1='100%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23147ce6'/><stop offset='50%25' stop-color='%232997ff'/><stop offset='100%25' stop-color='%237dd3fc'/></linearGradient></defs><circle cx='256' cy='256' r='230' fill='none' stroke='url(%23g)' stroke-width='8' stroke-dasharray='16 12' opacity='0.3'/><ellipse cx='256' cy='256' rx='245' ry='95' fill='none' stroke='url(%23g)' stroke-width='16' transform='rotate(-25 256 256)'/><circle cx='256' cy='256' r='165' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M165,165 L347,165 L165,347 L347,347' fill='none' stroke='url(%23g)' stroke-width='22' stroke-linecap='round' stroke-linejoin='round'/><path d='M165,347 L165,165 L347,347 L347,165' fill='none' stroke='url(%23g)' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' opacity='0.4'/><circle cx='165' cy='165' r='16' fill='%23fff'/><circle cx='347' cy='165' r='16' fill='%23fff'/><circle cx='165' cy='347' r='16' fill='%23fff'/><circle cx='347' cy='347' r='16' fill='%23fff'/><circle cx='256' cy='256' r='12' fill='%23fff'/></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <style>
@@ -304,6 +304,23 @@
             flex-shrink: 0;
         }
 
+        .contact-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* --- RED DOT NOTIFICATION CSS --- */
+        .unread-dot {
+            width: 10px;
+            height: 10px;
+            background: #ff3b30;
+            border-radius: 50%;
+            display: none; /* Hidden by default */
+            margin-left: auto;
+            box-shadow: 0 0 8px rgba(255, 59, 48, 0.8);
+            flex-shrink: 0;
+        }
+
         .contact-name { font-weight: 600; color: #fff; font-size: 1rem; }
         .contact-status { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; }
 
@@ -575,12 +592,14 @@
                 </div>
                 <div class="chat-container reveal fade-up delay-200 visible">
                     <div class="chat-sidebar">
+                        
                         <div class="chat-contact active" id="main-dm-contact">
                             <div class="contact-avatar">Z</div>
                             <div class="contact-info">
                                 <div class="contact-name">Z. Nafis</div>
                                 <div class="contact-status">Admin</div>
                             </div>
+                            <div class="unread-dot" id="dm-unread"></div>
                         </div>
                         
                         <div class="chat-contact" id="global-chat-contact">
@@ -589,6 +608,7 @@
                                 <div class="contact-name">Global Chat</div>
                                 <div class="contact-status">Public Room</div>
                             </div>
+                            <div class="unread-dot" id="global-unread"></div>
                         </div>
                         
                         <div id="sidebar-content"></div>
@@ -1253,6 +1273,10 @@
         const auth = getAuth(app);
         const db = getFirestore(app); 
 
+        // FAVICON NOTIFICATION DEFINITIONS
+        const normalFavicon = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0%25' y1='100%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23147ce6'/><stop offset='50%25' stop-color='%232997ff'/><stop offset='100%25' stop-color='%237dd3fc'/></linearGradient></defs><circle cx='256' cy='256' r='230' fill='none' stroke='url(%23g)' stroke-width='8' stroke-dasharray='16 12' opacity='0.3'/><ellipse cx='256' cy='256' rx='245' ry='95' fill='none' stroke='url(%23g)' stroke-width='16' transform='rotate(-25 256 256)'/><circle cx='256' cy='256' r='165' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M165,165 L347,165 L165,347 L347,347' fill='none' stroke='url(%23g)' stroke-width='22' stroke-linecap='round' stroke-linejoin='round'/><path d='M165,347 L165,165 L347,347 L347,165' fill='none' stroke='url(%23g)' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' opacity='0.4'/><circle cx='165' cy='165' r='16' fill='%23fff'/><circle cx='347' cy='165' r='16' fill='%23fff'/><circle cx='165' cy='347' r='16' fill='%23fff'/><circle cx='347' cy='347' r='16' fill='%23fff'/><circle cx='256' cy='256' r='12' fill='%23fff'/></svg>`;
+        const alertFavicon = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0%25' y1='100%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23147ce6'/><stop offset='50%25' stop-color='%232997ff'/><stop offset='100%25' stop-color='%237dd3fc'/></linearGradient></defs><circle cx='256' cy='256' r='230' fill='none' stroke='url(%23g)' stroke-width='8' stroke-dasharray='16 12' opacity='0.3'/><ellipse cx='256' cy='256' rx='245' ry='95' fill='none' stroke='url(%23g)' stroke-width='16' transform='rotate(-25 256 256)'/><circle cx='256' cy='256' r='165' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M165,165 L347,165 L165,347 L347,347' fill='none' stroke='url(%23g)' stroke-width='22' stroke-linecap='round' stroke-linejoin='round'/><path d='M165,347 L165,165 L347,347 L347,165' fill='none' stroke='url(%23g)' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' opacity='0.4'/><circle cx='165' cy='165' r='16' fill='%23fff'/><circle cx='347' cy='165' r='16' fill='%23fff'/><circle cx='165' cy='347' r='16' fill='%23fff'/><circle cx='347' cy='347' r='16' fill='%23fff'/><circle cx='256' cy='256' r='12' fill='%23fff'/><circle cx='430' cy='82' r='70' fill='%23ff3b30' stroke='%23000' stroke-width='20'/></svg>`;
+
         signInAnonymously(auth).then(() => { setupChat(); }).catch(console.error);
 
         function setupChat() {
@@ -1264,6 +1288,54 @@
             const globalChatContact = document.getElementById('global-chat-contact');
             const secretTrigger = document.querySelector('#main-dm-contact .contact-avatar'); 
 
+            // GLOBAL UNREAD NOTIFICATION SYSTEM
+            let unreadChannels = new Set();
+            window.adminReadTimes = window.adminReadTimes || {};
+            
+            function notify(channelId) {
+                unreadChannels.add(channelId);
+                updateNotificationUI();
+            }
+
+            function clearNotify(channelId) {
+                unreadChannels.delete(channelId);
+                updateNotificationUI();
+            }
+
+            function updateNotificationUI() {
+                const favicon = document.getElementById('dynamic-favicon');
+                if (unreadChannels.size > 0) {
+                    if(favicon) favicon.href = alertFavicon;
+                    document.title = "(1) Z. Nafis | Domain";
+                } else {
+                    if(favicon) favicon.href = normalFavicon;
+                    document.title = "Z. Nafis | Domain";
+                }
+
+                const globalDot = document.getElementById('global-unread');
+                if(globalDot) globalDot.style.display = unreadChannels.has("global") ? "block" : "none";
+
+                const dmDot = document.getElementById('dm-unread');
+                if(dmDot) dmDot.style.display = unreadChannels.has(auth.currentUser.uid) ? "block" : "none";
+
+                if (isAdmin) {
+                    document.querySelectorAll('.session-unread').forEach(el => {
+                        const uid = el.getAttribute('data-uid');
+                        el.style.display = unreadChannels.has(uid) ? "block" : "none";
+                    });
+                }
+            }
+
+            document.addEventListener("visibilitychange", () => {
+                if (!document.hidden) {
+                    clearNotify(activeChatUserId);
+                    if (isAdmin && activeChatUserId !== "global") {
+                        window.adminReadTimes[activeChatUserId] = Date.now();
+                    }
+                }
+            });
+
+            // EMOJI PICKER LOGIC
             const toggleEmojiBtn = document.getElementById('toggle-emoji-btn');
             const emojiPicker = document.getElementById('emoji-picker');
             
@@ -1326,7 +1398,10 @@
                             }
                             await addDoc(collectionRef, msgObj);
                             if (!isAdmin && activeChatUserId !== "global") { 
-                                await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }, { merge: true }); 
+                                await setDoc(doc(db, "active_chats", auth.currentUser.uid), { 
+                                    lastActive: serverTimestamp(),
+                                    lastMessageTime: serverTimestamp() 
+                                }, { merge: true }); 
                             }
                         } catch (error) { console.error("Transmission error:", error); }
                     }
@@ -1416,6 +1491,7 @@
             }
 
             mainDmContact.addEventListener('click', () => {
+                clearNotify(auth.currentUser.uid);
                 if (activeChatUserId === auth.currentUser.uid && !isAdmin) return;
                 activeChatUserId = auth.currentUser.uid;
                 mainDmContact.classList.add('active');
@@ -1431,6 +1507,7 @@
             });
 
             globalChatContact.addEventListener('click', async () => {
+                clearNotify("global");
                 if (activeChatUserId === "global") {
                     if (!isAdmin) {
                         await ensureUniqueUsername("Change your unique Global Chat username:", globalUsername);
@@ -1509,6 +1586,39 @@
                 setInterval(updatePresence, 30000); 
                 document.addEventListener("visibilitychange", () => {
                     if (document.visibilityState === 'visible') updatePresence();
+                });
+            }
+
+            // BACKGROUND LISTENERS FOR NOTIFICATIONS
+            let isGlobalInit = true;
+            onSnapshot(query(collection(db, "global_chat"), orderBy("timestamp", "asc")), (snapshot) => {
+                if (isGlobalInit) { isGlobalInit = false; return; }
+                let hasNew = false;
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const data = change.doc.data();
+                        if (data.uid !== auth.currentUser.uid) hasNew = true;
+                    }
+                });
+                if (hasNew && (activeChatUserId !== "global" || document.hidden)) {
+                    notify("global");
+                }
+            });
+
+            if (!isAdmin) {
+                let isDmInit = true;
+                onSnapshot(query(collection(db, "chats", auth.currentUser.uid, "messages"), orderBy("timestamp", "asc")), (snapshot) => {
+                    if (isDmInit) { isDmInit = false; return; }
+                    let hasNew = false;
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === "added") {
+                            const data = change.doc.data();
+                            if (data.sender === "admin") hasNew = true;
+                        }
+                    });
+                    if (hasNew && (activeChatUserId !== auth.currentUser.uid || document.hidden)) {
+                        notify(auth.currentUser.uid);
+                    }
                 });
             }
 
@@ -1634,6 +1744,18 @@
                                 }
                             }
 
+                            const lastMsgTime = data.lastMessageTime ? data.lastMessageTime.toDate().getTime() : 0;
+                            
+                            if (window.adminReadTimes[uId] === undefined) {
+                                window.adminReadTimes[uId] = lastMsgTime; 
+                            }
+
+                            const readTime = window.adminReadTimes[uId];
+                            
+                            if (lastMsgTime > readTime && (activeChatUserId !== uId || document.hidden)) {
+                                notify(uId);
+                            }
+
                             const sessionBtn = document.createElement('div');
                             sessionBtn.style.padding = "10px";
                             sessionBtn.style.background = (activeChatUserId === uId && activeChatUserId !== "global") ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)";
@@ -1644,11 +1766,14 @@
                             sessionBtn.style.justifyContent = "space-between";
                             sessionBtn.style.alignItems = "center";
 
+                            const isUnread = unreadChannels.has(uId) ? "block" : "none";
+
                             sessionBtn.innerHTML = `
                                 <div style="display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 75%; pointer-events: none;">
                                     <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${statusColor}; margin-right:8px; flex-shrink: 0; box-shadow: 0 0 5px ${statusColor};"></span>
                                     <span>${contactName}</span>
                                 </div>
+                                <div class="session-unread" data-uid="${uId}" style="width:10px; height:10px; background:#ff3b30; border-radius:50%; display:${isUnread}; margin-left:auto; margin-right: 10px; box-shadow: 0 0 8px #ff3b30; flex-shrink:0;"></div>
                                 <button class="rename-btn" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; cursor: pointer; padding: 4px 8px; font-size: 10px; transition: background 0.2s;">Rename</button>
                             `;
 
@@ -1661,6 +1786,10 @@
                                     }
                                     return;
                                 }
+                                
+                                window.adminReadTimes[uId] = Date.now();
+                                clearNotify(uId);
+
                                 activeChatUserId = uId;
                                 globalChatContact.classList.remove('active');
                                 mainDmContact.classList.remove('active');
@@ -1709,7 +1838,10 @@
                 try {
                     await addDoc(collectionRef, messageData);
                     if (!isAdmin && activeChatUserId !== "global") { 
-                        await setDoc(doc(db, "active_chats", auth.currentUser.uid), { lastActive: serverTimestamp() }, { merge: true }); 
+                        await setDoc(doc(db, "active_chats", auth.currentUser.uid), { 
+                            lastActive: serverTimestamp(),
+                            lastMessageTime: serverTimestamp() 
+                        }, { merge: true }); 
                     }
                 } catch (error) { console.error("Transmission error:", error); }
             }
