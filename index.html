@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Z. Nafis | Domain</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0%25' y1='100%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23147ce6'/><stop offset='50%25' stop-color='%232997ff'/><stop offset='100%25' stop-color='%237dd3fc'/></linearGradient></defs><circle cx='256' cy='256' r='230' fill='none' stroke='url(%23g)' stroke-width='8' stroke-dasharray='16 12' opacity='0.3'/><ellipse cx='256' cy='256' rx='245' ry='95' fill='none' stroke='url(%23g)' stroke-width='16' transform='rotate(-25 256 256)'/><circle cx='256' cy='256' r='165' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M165,165 L347,165 L165,347 L347,347' fill='none' stroke='url(%23g)' stroke-width='22' stroke-linecap='round' stroke-linejoin='round'/><path d='M165,347 L165,165 L347,347 L347,165' fill='none' stroke='url(%23g)' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' opacity='0.4'/><circle cx='165' cy='165' r='16' fill='%23fff'/><circle cx='347' cy='165' r='16' fill='%23fff'/><circle cx='165' cy='347' r='16' fill='%23fff'/><circle cx='347' cy='347' r='16' fill='%23fff'/><circle cx='256' cy='256' r='12' fill='%23fff'/></svg>">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <style>
@@ -39,10 +37,8 @@
             scroll-behavior: smooth; 
         }
 
-        /* Hide body scroll until loaded */
         body.loading { overflow: hidden; }
 
-        /* Background Grid Canvas */
         #canvas-container {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -53,7 +49,6 @@
         }
         body.loaded #canvas-container { opacity: 1; }
 
-        /* Navigation */
         nav {
             position: fixed;
             top: 0;
@@ -121,7 +116,6 @@
             to { opacity: 1; filter: blur(0); transform: translateY(0); }
         }
 
-        /* BLUR REVEAL ANIMATIONS */
         .reveal {
             opacity: 0;
             filter: blur(15px);
@@ -141,7 +135,6 @@
         .delay-300 { transition-delay: 0.3s; }
         .delay-400 { transition-delay: 0.4s; }
 
-        /* Initial Hero Animation */
         .hero-elem {
             opacity: 0;
             transform: translateY(40px);
@@ -152,7 +145,6 @@
             transform: translateY(0);
         }
 
-        /* Typography & Badges */
         .badge {
             display: inline-block;
             padding: 0.4rem 1rem;
@@ -190,7 +182,6 @@
             letter-spacing: -0.01em;
         }
 
-        /* 3D MAGNETIC DASHBOARD CARDS */
         .dash-card {
             background: var(--glass-bg); 
             border: 1px solid var(--glass-border); 
@@ -240,7 +231,6 @@
             font-weight: 500;
         }
 
-        /* --- MATRIX GAME CSS --- */
         .matrix-node {
             width: 100%;
             min-height: 80px; 
@@ -256,7 +246,6 @@
             transform: scale(0.92);
         }
 
-        /* --- CHAT SYSTEM UI --- */
         .chat-container {
             display: flex;
             height: 600px;
@@ -275,6 +264,9 @@
             background: rgba(0,0,0,0.2);
             padding: 1.5rem;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
 
         .chat-contact {
@@ -283,13 +275,19 @@
             gap: 1rem;
             padding: 1rem;
             border-radius: 16px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, border-color 0.2s;
         }
 
         .chat-contact:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .chat-contact.active {
+            background: rgba(255, 255, 255, 0.12) !important;
+            border-color: var(--glass-border);
         }
 
         .contact-avatar {
@@ -303,6 +301,7 @@
             font-weight: 600;
             font-size: 1.2rem;
             color: #fff;
+            flex-shrink: 0;
         }
 
         .contact-name { font-weight: 600; color: #fff; font-size: 1rem; }
@@ -415,7 +414,7 @@
             nav { padding: 1rem 5%; flex-direction: column; gap: 1rem; }
             .hero-title { font-size: clamp(2.5rem, 12vw, 4rem) !important; }
             .chat-container { flex-direction: column; height: 75vh; min-height: 500px; }
-            .chat-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 1rem; max-height: 100px; }
+            .chat-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--glass-border); padding: 1rem; max-height: 130px; flex-direction: row; overflow-x: auto; }
             .chat-input-area input[type="text"] { font-size: 16px; }
         }
     </style>
@@ -493,13 +492,22 @@
                 </div>
                 <div class="chat-container reveal fade-up delay-200 visible">
                     <div class="chat-sidebar">
-                        <div class="chat-contact">
+                        <div class="chat-contact active" id="main-dm-contact">
                             <div class="contact-avatar">Z</div>
                             <div class="contact-info">
                                 <div class="contact-name">Z. Nafis</div>
                                 <div class="contact-status">Admin</div>
                             </div>
                         </div>
+                        
+                        <div class="chat-contact" id="global-chat-contact">
+                            <div class="contact-avatar" style="background: linear-gradient(135deg, #ff9500, #ff5e00);">G</div>
+                            <div class="contact-info">
+                                <div class="contact-name">Global Chat</div>
+                                <div class="contact-status">Public Room</div>
+                            </div>
+                        </div>
+                        
                         <div id="sidebar-content"></div>
                     </div>
                     <div class="chat-main">
@@ -598,7 +606,6 @@
     </main>
 
     <script>
-        // --- 0. PAGE REVEAL ---
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.body.classList.remove('loading');
@@ -606,7 +613,6 @@
             }, 300);
         });
 
-        // Track global mouse for Parallax
         let globalMouseX = 0;
         let globalMouseY = 0;
         window.addEventListener('mousemove', (e) => {
@@ -614,7 +620,6 @@
             globalMouseY = -(e.clientY / window.innerHeight) * 2 + 1;
         });
 
-        // --- 1. BACKGROUND 3D GRID ---
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x000000, 0.02); 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -650,7 +655,6 @@
         }
         animate3D();
 
-        // --- 2. FOREGROUND EARTH SYSTEM ---
         const globeContainer = document.getElementById('globe-canvas-container');
         const globeScene = new THREE.Scene();
         const globeCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -661,7 +665,6 @@
         globeRenderer.setPixelRatio(window.devicePixelRatio);
         globeContainer.appendChild(globeRenderer.domElement);
 
-        // Deep Space Starfield
         const starGeo = new THREE.BufferGeometry();
         const starCount = 2000;
         const starPos = new Float32Array(starCount * 3);
@@ -684,7 +687,6 @@
         const systemOrbitGroup = new THREE.Group();
         globeScene.add(systemOrbitGroup);
 
-        // EARTH Mesh Setup
         const earthGeo = new THREE.SphereGeometry(12, 64, 64);
         const textureLoader = new THREE.TextureLoader();
         const dayTex = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
@@ -701,15 +703,13 @@
         const earthMesh = new THREE.Mesh(earthGeo, earthMat);
         systemOrbitGroup.add(earthMesh);
 
-        // Real-world planetary angles
-        const now = new Date();
-        const startOfYear = new Date(now.getFullYear(), 0, 0);
-        const diff = now - startOfYear;
+        const nowTimeObj = new Date();
+        const startOfYear = new Date(nowTimeObj.getFullYear(), 0, 0);
+        const diff = nowTimeObj - startOfYear;
         const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
         const tilt = 23.5 * (Math.PI / 180);
         const sunDeclination = Math.sin((dayOfYear - 80) * (2 * Math.PI / 365)) * tilt;
 
-        // SUN Lighting Grid
         const sunDistance = 150; 
         const sunLight = new THREE.DirectionalLight(0xffffff, 4.0); 
         sunLight.position.set(
@@ -728,8 +728,7 @@
         sunVisual.position.copy(sunLight.position);
         systemOrbitGroup.add(sunVisual);
 
-        // Sync local alignment
-        const utcHours = now.getUTCHours() + (now.getUTCMinutes() / 60);
+        const utcHours = nowTimeObj.getUTCHours() + (nowTimeObj.getUTCMinutes() / 60);
         const initialRotation = (utcHours / 24) * Math.PI * 2 + Math.PI; 
         earthMesh.rotation.y = initialRotation;
         
@@ -751,8 +750,8 @@
             stars.rotation.y += 0.0002;
             systemOrbitGroup.rotation.y += (targetSystemRotation - systemOrbitGroup.rotation.y) * 0.08; 
             
-            targetCameraX = globalMouseX * 5;
-            targetCameraY = globalMouseY * 5;
+            let targetCameraX = globalMouseX * 5;
+            let targetCameraY = globalMouseY * 5;
             globeCamera.position.x += (targetCameraX - globeCamera.position.x) * 0.05;
             globeCamera.position.y += (targetCameraY - globeCamera.position.y) * 0.05;
             globeCamera.lookAt(globeScene.position);
@@ -761,8 +760,6 @@
         }
         animateGlobe();
 
-
-        // --- 3. LIVE SYSTEM TELEMETRY ---
         async function fetchLocalData() {
             try {
                 const geoRes = await fetch('https://get.geojs.io/v1/ip/geo.json');
@@ -799,7 +796,6 @@
             document.getElementById('clock-date').innerText = now.toLocaleDateString([], dateOptions);
         }, 1000);
 
-        // --- 4. RESIZE HANDLER ---
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -810,7 +806,6 @@
             globeRenderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // --- 5. SCROLL REVEAL SCROLL OBSERVER ---
         const observerOptions = { threshold: 0.15, rootMargin: "0px" };
         const scrollObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -824,7 +819,6 @@
 
         document.querySelectorAll('.reveal').forEach(el => { scrollObserver.observe(el); });
 
-        // --- 6. 3D MAGNETIC CARDS ---
         document.querySelectorAll('.tilt-effect').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
@@ -848,7 +842,6 @@
             });
         });
 
-        // --- 7. TAB NAVIGATION LOGIC ---
         const navBtns = document.querySelectorAll('.nav-btn');
         const sections = document.querySelectorAll('.section');
 
@@ -880,7 +873,6 @@
             });
         });
 
-        // --- 8. TERMINAL ARCADE LOGIC ---
         (function initArcade() {
             const gamesMenu = document.getElementById('games-menu');
             const matrixGameContainer = document.getElementById('cyber-puzzle-container');
@@ -907,7 +899,6 @@
                 });
             });
 
-            // Matrix Logic
             const grid = document.getElementById('matrix-grid');
             const startBtn = document.getElementById('matrix-start-btn');
             const statusTxt = document.getElementById('matrix-status');
@@ -1011,7 +1002,6 @@
                 scoreTxt.innerText = score;
             }
 
-            // Chrono Precision Arcade Logic
             const reactScoreEl = document.getElementById('reaction-score');
             const reactHighScoreEl = document.getElementById('reaction-highscore');
             const reactTargetEl = document.getElementById('reaction-target');
@@ -1124,9 +1114,10 @@
             const sendBtn = document.getElementById('send-btn');
             const chatBox = document.getElementById('chat-box');
             const sidebarContent = document.getElementById('sidebar-content');
-            const secretTrigger = document.querySelector('.contact-avatar'); 
+            const mainDmContact = document.getElementById('main-dm-contact');
+            const globalChatContact = document.getElementById('global-chat-contact');
+            const secretTrigger = document.querySelector('#main-dm-contact .contact-avatar'); 
 
-            // EMOJI PICKER LOGIC
             const toggleEmojiBtn = document.getElementById('toggle-emoji-btn');
             const emojiPicker = document.getElementById('emoji-picker');
             
@@ -1142,7 +1133,6 @@
                 });
             });
 
-            // IMAGE UPLOAD LOGIC
             const imageUploadBtn = document.getElementById('image-upload-btn');
             const imageUploadInput = document.getElementById('image-upload');
 
@@ -1178,12 +1168,20 @@
                         const dataUrl = canvas.toDataURL('image/jpeg', 0.6); 
                         
                         try {
-                            await addDoc(collection(db, "chats", activeChatUserId, "messages"), { 
+                            let collectionRef = (activeChatUserId === "global") ? collection(db, "global_chat") : collection(db, "chats", activeChatUserId, "messages");
+                            let msgObj = { 
                                 imageUrl: dataUrl, 
                                 sender: isAdmin ? "admin" : "user", 
                                 timestamp: serverTimestamp() 
-                            });
-                            if (!isAdmin) { await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }, { merge: true }); }
+                            };
+                            if (activeChatUserId === "global") {
+                                msgObj.uid = auth.currentUser.uid;
+                                msgObj.username = isAdmin ? "Z. Nafis (Admin)" : getOrPromptGlobalUsername();
+                            }
+                            await addDoc(collectionRef, msgObj);
+                            if (!isAdmin && activeChatUserId !== "global") { 
+                                await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }, { merge: true }); 
+                            }
                         } catch (error) { console.error("Transmission error:", error); }
                     }
                     img.src = event.target.result;
@@ -1196,6 +1194,43 @@
             let activeChatUserId = auth.currentUser.uid; 
             let unsubscribeMessages = null;
             let replyingToText = null;
+            let globalUsername = localStorage.getItem('global_chat_identity') || "";
+
+            function getOrPromptGlobalUsername() {
+                if (isAdmin) return "Z. Nafis (Admin)";
+                if (!globalUsername) {
+                    let chosenName = prompt("Enter your username for the Global Chat room:");
+                    if (chosenName && chosenName.trim() !== "") {
+                        globalUsername = chosenName.trim();
+                        localStorage.setItem('global_chat_identity', globalUsername);
+                    } else {
+                        globalUsername = "User_" + auth.currentUser.uid.substring(0, 5);
+                    }
+                }
+                return globalUsername;
+            }
+
+            mainDmContact.addEventListener('click', () => {
+                if (activeChatUserId === auth.currentUser.uid && !isAdmin) return;
+                activeChatUserId = auth.currentUser.uid;
+                mainDmContact.classList.add('active');
+                globalChatContact.classList.remove('active');
+                document.querySelector('.chat-sidebar .chat-contact:not(#global-chat-contact) .contact-name').innerText = "Z. Nafis";
+                document.querySelector('.chat-sidebar .chat-contact:not(#global-chat-contact) .contact-status').innerText = isAdmin ? "Admin Mode" : "Admin";
+                listenToChat(activeChatUserId);
+            });
+
+            globalChatContact.addEventListener('click', () => {
+                if (activeChatUserId === "global") return;
+                getOrPromptGlobalUsername();
+                activeChatUserId = "global";
+                globalChatContact.classList.add('active');
+                mainDmContact.classList.remove('active');
+                document.querySelectorAll('#user-sessions-list div').forEach(el => el.style.background = "rgba(255,255,255,0.05)");
+                document.querySelector('.chat-sidebar .chat-contact:not(#global-chat-contact) .contact-name').innerText = "Global Chat";
+                document.querySelector('.chat-sidebar .chat-contact:not(#global-chat-contact) .contact-status').innerText = "Public Room";
+                listenToChat("global");
+            });
 
             document.getElementById('cancel-reply-btn').addEventListener('click', () => {
                 replyingToText = null;
@@ -1209,22 +1244,23 @@
                 messageInput.focus();
             };
 
-            secretTrigger.addEventListener('click', () => {
+            secretTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
                 if (isAdmin) return;
                 const passcode = prompt("Admin Passcode:");
                 if (passcode === "chittypoo99") {
                     isAdmin = true;
-                    document.querySelector('.contact-status').innerHTML = `<span style="color:#34c759">Admin Mode</span>`;
-                    
+                    document.querySelector('#main-dm-contact .contact-status').innerHTML = `<span style="color:#34c759">Admin Mode</span>`;
                     sidebarContent.innerHTML = `<h4 style="font-size:0.8rem; margin-top:20px; margin-bottom:10px; color:#86868b; text-transform:uppercase;">Active Sessions</h4><div id="user-sessions-list" style="display:flex; flex-direction:column; gap:8px;"></div>`;
-                    
                     loadAdminUserList();
                 }
             });
 
             if (!isAdmin) {
                 const updatePresence = () => {
-                    setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }, { merge: true }).catch(e => console.error("Presence Error:", e));
+                    if (activeChatUserId !== "global") {
+                        setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }, { merge: true }).catch(e => console.error("Presence Error:", e));
+                    }
                 };
                 updatePresence(); 
                 setInterval(updatePresence, 30000); 
@@ -1235,11 +1271,13 @@
 
             function listenToChat(userId) {
                 if (unsubscribeMessages) unsubscribeMessages();
-                const q = query(collection(db, "chats", userId, "messages"), orderBy("timestamp", "asc"));
+                
+                let collectionRef = (userId === "global") ? collection(db, "global_chat") : collection(db, "chats", userId, "messages");
+                const q = query(collectionRef, orderBy("timestamp", "asc"));
 
                 chatBox.innerHTML = `
                 <div class="msg-wrapper received" style="align-self: flex-start; animation: none; opacity: 1; transform: none; max-width: 100%;">
-                    <div class="message received"><p>iMessage connection established.</p></div>
+                    <div class="message received"><p>${userId === "global" ? 'Global public room active connection.' : 'iMessage connection established.'}</p></div>
                 </div>`;
 
                 unsubscribeMessages = onSnapshot(q, (snapshot) => {
@@ -1251,7 +1289,7 @@
                             const data = change.doc.data();
                             if (!data.text && !data.imageUrl) return; 
 
-                            const isSentByMe = isAdmin ? (data.sender === "admin") : (data.sender === "user");
+                            const isSentByMe = (userId === "global") ? (data.uid === auth.currentUser.uid) : (isAdmin ? (data.sender === "admin") : (data.sender === "user"));
                             const messageClass = isSentByMe ? "sent" : "received";
                             
                             let isStandaloneEmoji = false;
@@ -1276,6 +1314,10 @@
                             bubble.className = `message ${messageClass} ${isStandaloneEmoji ? 'standalone-emoji' : ''}`;
                             
                             let contentHtml = "";
+
+                            if (userId === "global" && data.username) {
+                                contentHtml += `<div style="font-size: 0.72rem; font-weight: 700; color: ${isSentByMe ? '#ffffff' : 'var(--accent-blue)'}; margin-bottom: 3px; opacity: 0.9;">${data.username.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`;
+                            }
 
                             if (data.replyTo) {
                                 let safeReply = data.replyTo.replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -1336,12 +1378,11 @@
                         let contactName = data.name || `Session: ${uId.substring(0, 6)}...`;
 
                         if (lastActive > cutoffTime) {
-                            
                             const isOnline = (nowTime - lastActive.getTime()) < 60000;
                             const statusColor = isOnline ? '#34c759' : '#86868b'; 
 
-                            if (uId === activeChatUserId && isAdmin) {
-                                const statusEl = document.querySelector('.contact-status');
+                            if (uId === activeChatUserId && isAdmin && activeChatUserId !== "global") {
+                                const statusEl = document.querySelector('#main-dm-contact .contact-status');
                                 if (statusEl) {
                                     statusEl.innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
                                 }
@@ -1349,7 +1390,7 @@
 
                             const sessionBtn = document.createElement('div');
                             sessionBtn.style.padding = "10px";
-                            sessionBtn.style.background = activeChatUserId === uId ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)";
+                            sessionBtn.style.background = (activeChatUserId === uId && activeChatUserId !== "global") ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)";
                             sessionBtn.style.borderRadius = "12px";
                             sessionBtn.style.fontSize = "0.85rem";
                             sessionBtn.style.cursor = "pointer";
@@ -1375,8 +1416,10 @@
                                     return;
                                 }
                                 activeChatUserId = uId;
-                                const nameEl = document.querySelector('.contact-name');
-                                const statusEl = document.querySelector('.contact-status');
+                                globalChatContact.classList.remove('active');
+                                mainDmContact.classList.remove('active');
+                                const nameEl = document.querySelector('.chat-sidebar .chat-contact:not(#global-chat-contact) .contact-name');
+                                const statusEl = document.querySelector('.chat-sidebar .chat-contact:not(#global-chat-contact) .contact-status');
                                 if (nameEl) nameEl.innerText = contactName;
                                 if (statusEl) statusEl.innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
                                 loadAdminUserList(); 
@@ -1395,11 +1438,18 @@
                 messageInput.value = "";
                 emojiPicker.classList.remove('active'); 
                 
+                let collectionRef = (activeChatUserId === "global") ? collection(db, "global_chat") : collection(db, "chats", activeChatUserId, "messages");
+                
                 const messageData = { 
                     text: text, 
                     sender: isAdmin ? "admin" : "user", 
                     timestamp: serverTimestamp() 
                 };
+
+                if (activeChatUserId === "global") {
+                    messageData.uid = auth.currentUser.uid;
+                    messageData.username = isAdmin ? "Z. Nafis (Admin)" : getOrPromptGlobalUsername();
+                }
 
                 if (replyingToText) {
                     messageData.replyTo = replyingToText;
@@ -1408,8 +1458,10 @@
                 }
 
                 try {
-                    await addDoc(collection(db, "chats", activeChatUserId, "messages"), messageData);
-                    if (!isAdmin) { await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }, { merge: true }); }
+                    await addDoc(collectionRef, messageData);
+                    if (!isAdmin && activeChatUserId !== "global") { 
+                        await setDoc(doc(db, "active_chats", activeChatUserId), { lastActive: serverTimestamp() }, { merge: true }); 
+                    }
                 } catch (error) { console.error("Transmission error:", error); }
             }
 
