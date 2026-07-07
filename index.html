@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Z. Nafis | Domain</title>
-    <link id="dynamic-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:rgb(41,151,255);stop-opacity:1' /><stop offset='100%25' style='stop-color:rgb(125,211,252);stop-opacity:1' /></linearGradient></defs><circle cx='256' cy='256' r='256' fill='url(%23g)'/></svg>">
+    <link id="dynamic-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0%25' y1='100%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23147ce6'/><stop offset='50%25' stop-color='%232997ff'/><stop offset='100%25' stop-color='%237dd3fc'/></linearGradient></defs><circle cx='256' cy='256' r='230' fill='none' stroke='url(%23g)' stroke-width='8' stroke-dasharray='16 12' opacity='0.3'/><ellipse cx='256' cy='256' rx='245' ry='95' fill='none' stroke='url(%23g)' stroke-width='16' transform='rotate(-25 256 256)'/><circle cx='256' cy='256' r='165' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M165,165 L347,165 L165,347 L347,347' fill='none' stroke='url(%23g)' stroke-width='22' stroke-linecap='round' stroke-linejoin='round'/><path d='M165,347 L165,165 L347,347 L347,165' fill='none' stroke='url(%23g)' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' opacity='0.4'/><circle cx='165' cy='165' r='16' fill='%23fff'/><circle cx='347' cy='165' r='16' fill='%23fff'/><circle cx='165' cy='347' r='16' fill='%23fff'/><circle cx='347' cy='347' r='16' fill='%23fff'/><circle cx='256' cy='256' r='12' fill='%23fff'/></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <style>
@@ -414,7 +414,7 @@
         .chat-action-btn:hover { transform: scale(1.1); color: #fff; }
 
         .emoji-picker {
-            display: none; position: absolute; bottom: 85px; left: 20px; background: rgba(28, 28, 30, 0.95); border: 1px solid var(--glass-border); padding: 12px; border-radius: 16px; gap: 8px; backdrop-filter: blur(30px);
+            display: none; position: absolute; bottom: 85px; left: 20px; background: rgba(28, 28, 30, 0.95); border: 1px solid var(--glass-border); padding: 12px; border-radius: 16px; gap: 8px; backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10;
             flex-wrap: wrap; width: 220px; justify-content: center;
         }
         .emoji-picker.active { display: flex; animation: messagePop 0.2s forwards; }
@@ -425,144 +425,15 @@
         .emoji-btn:hover { transform: scale(1.2); }
 
         .chat-input-area input[type="text"] {
-            flex: 1; background: rgba(255,255,255,0.05); border: 1px solid transparent; border-radius: 50px; padding: 0.8rem 1.5rem; color: #fff; font-family: inherit; font-size: 1rem; outline: none; transition: background 0.2s, border-color 0.2s;
+            flex: 1; background: rgba(255,255,255,0.05); border: 1px solid transparent; border-radius: 50px; padding: 0.8rem 1.5rem; color: #fff; font-family: inherit; font-size: 1rem; outline: none; transition: background 0.3s, border-color 0.3s;
             min-width: 0;
         }
         .chat-input-area input[type="text"]:focus { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
 
         .chat-input-area #send-btn {
-            background: var(--accent-blue); color: #fff; border: none; width: 45px; height: 45px; border-radius: 50%; font-weight: 600; cursor: pointer; transition: transform 0.2s, background 0.2s; display: flex; align-items: center; justify-content: center;
+            background: var(--accent-blue); color: #fff; border: none; width: 45px; height: 45px; border-radius: 50%; font-weight: 600; cursor: pointer; transition: transform 0.2s, background 0.2s; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; flex-shrink: 0;
         }
         .chat-input-area #send-btn:hover { transform: scale(1.05); background: #147ce6; }
-
-        /* User Profile Card in Global Chat */
-        .user-profile-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 1rem;
-            margin: 0.5rem 0;
-            cursor: pointer;
-            transition: background 0.2s, border-color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-profile-card:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .user-profile-card.selected {
-            background: rgba(41, 151, 255, 0.2);
-            border-color: var(--accent-blue);
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 1rem;
-            color: #fff;
-            flex-shrink: 0;
-        }
-
-        .user-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: #fff;
-            font-size: 0.95rem;
-        }
-
-        .user-status-text {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .user-action-btn {
-            background: var(--accent-blue);
-            border: none;
-            color: #fff;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-
-        .user-action-btn:hover {
-            background: #147ce6;
-        }
-
-        .user-action-btn.remove {
-            background: rgba(255, 59, 48, 0.3);
-            color: #ff3b30;
-            padding: 0.4rem 0.8rem;
-        }
-
-        .user-action-btn.remove:hover {
-            background: rgba(255, 59, 48, 0.5);
-        }
-
-        .selected-users-container {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            display: none;
-        }
-
-        .selected-users-container.active {
-            display: block;
-        }
-
-        .selected-users-title {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-        }
-
-        .selected-user-chip {
-            display: inline-block;
-            background: rgba(41, 151, 255, 0.2);
-            border: 1px solid var(--accent-blue);
-            border-radius: 50px;
-            padding: 0.4rem 0.8rem;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-            font-size: 0.85rem;
-            color: #fff;
-        }
-
-        .start-group-chat-btn {
-            width: 100%;
-            background: var(--accent-blue);
-            border: none;
-            color: #fff;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 0.5rem;
-        }
-
-        .start-group-chat-btn:hover {
-            background: #147ce6;
-        }
 
         @media (max-width: 768px) {
             nav { padding: 1rem 5%; flex-direction: column; gap: 0.5rem; }
@@ -620,7 +491,7 @@
                 <div>
                     <div class="badge hero-elem" style="transition-delay: 0.1s;">Domain Owner</div>
                     <h1 class="hero-title hero-elem" style="transition-delay: 0.2s;">A new digital<br><span>presence.</span></h1>
-                    <p class="hero-desc hero-elem" style="transition-delay: 0.3s;">Designed with zero experience, built with pure intuition. Clean aesthetics, native interactions, and seamless animations.</p>
+                    <p class="hero-desc hero-elem" style="transition-delay: 0.3s;">Designed with zero experience, built with pure intuition. Clean aesthetics, native interactions, and seamless animations. Scroll to explore the framework.</p>
                 </div>
             </div>
 
@@ -670,12 +541,12 @@
             <div id="blackhole-wrapper" style="height: 400vh; position: relative; width: 100vw; margin-left: calc(-50vw + 50%); margin-bottom: -100px;">
                 <div style="position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000;">
                     
-                    <video id="blackhole-video" src="blackhole.mp4" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 40%; will-change: transform;"></video>
+                    <video id="blackhole-video" src="blackhole.mp4" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 40%; will-change: transform, filter;"></video>
                     
-                    <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, #000 0%, transparent 20%, transparent 80%, #000 100%); pointer-events: none;"></div>
+                    <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, #000 0%, transparent 20%, transparent 80%, #000 100%); pointer-events:none;"></div>
                     
                     <div id="bh-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; background: #000; opacity: 0; pointer-events: none; transition: opacity 0.1s;"></div>
-                    <p id="bh-text" style="position: absolute; bottom: 10vh; color: rgba(255,255,255,0.5); font-size: 0.8rem; letter-spacing: 0.2em; transition: opacity 0.3s; pointer-events: none;">APPROACHING SINGULARITY...</p>
+                    <p id="bh-text" style="position: absolute; bottom: 10vh; color: rgba(255,255,255,0.5); font-size: 0.8rem; letter-spacing: 0.2em; transition: opacity 0.3s; pointer-events: none;">APPROACHING EVENT HORIZON</p>
                 </div>
             </div>
         </section>
@@ -692,21 +563,21 @@
                     <div class="dash-card tilt-effect" style="text-align: left;">
                         <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">Gargantua & Accretion Disks</h3>
                         <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;">
-                            A black hole's gravity is so immense that nothing can escape it. However, the glowing ring you see around it is called an <strong>Accretion Disk</strong>. It is made of superhot gas and matter spiraling into the black hole.
+                            A black hole's gravity is so immense that nothing can escape it. However, the glowing ring you see around it is called an <strong>Accretion Disk</strong>. It is made of superheated gas and dust spinning at nearly the speed of light. The friction causes it to glow incredibly bright, which is what illuminates the silhouette of the black hole itself.
                         </p>
                     </div>
                     
                     <div class="dash-card tilt-effect" style="text-align: left;">
                         <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">Gravitational Lensing</h3>
                         <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;">
-                            Notice how the disk appears to bend over the top and bottom of the black hole? That is a visual illusion caused by <strong>Gravitational Lensing</strong>. The black hole's massive gravity curves spacetime so intensely that light bends around it.
+                            Notice how the disk appears to bend over the top and bottom of the black hole? That is a visual illusion caused by <strong>Gravitational Lensing</strong>. The black hole's gravity literally warps the spacetime around it, bending the light from the back of the disk over the top so you can see it from the front!
                         </p>
                     </div>
 
                     <div class="dash-card tilt-effect" style="text-align: left;">
                         <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">Time Dilation</h3>
                         <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;">
-                            Because extreme gravity curves spacetime, time moves significantly slower near the black hole compared to an observer further away. On Miller's Planet (which orbits Gargantua), 1 hour equals 7 years on Earth.
+                            Because extreme gravity curves spacetime, time moves significantly slower near the black hole compared to an observer further away. On Miller's Planet (which orbits Gargantua in the movie), one hour equals seven years on Earth.
                         </p>
                     </div>
                 </div>
@@ -743,9 +614,10 @@
                         <div id="sidebar-content"></div>
                     </div>
                     <div class="chat-main">
-                        <div class="chat-messages" id="chat-box"></div>
+                        <div class="chat-messages" id="chat-box">
+                            </div>
 
-                        <div id="reply-preview" style="display: none; padding: 10px 1.5rem; background: rgba(0,0,0,0.3); border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: #ccc; display: flex; justify-content: space-between; align-items: center;">
+                        <div id="reply-preview" style="display: none; padding: 10px 1.5rem; background: rgba(0,0,0,0.3); border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: #ccc; align-items: center; justify-content: space-between;">
                             <div style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; max-width: 90%;">
                                 <strong style="color: var(--accent-blue);">Replying to:</strong> <span id="reply-preview-text"></span>
                             </div>
@@ -789,7 +661,7 @@
                     <p class="hero-desc" style="margin: 0;">Select a module to test your abilities.</p>
                 </div>
 
-                <div id="games-menu" class="reveal fade-up delay-200 visible" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; max-width: 600px; margin: 3rem auto;">
+                <div id="games-menu" class="reveal fade-up delay-200 visible" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; max-width: 600px; margin: 3rem auto 0 auto;">
                     <div class="dash-card tilt-effect game-selector" data-game="matrix" style="cursor: pointer; text-align: center; padding: 40px 20px;">
                         <h4 class="dash-value" style="font-size: 1.8rem; margin-bottom: 10px;">Matrix</h4>
                         <p class="dash-label">Memory Retention</p>
@@ -801,7 +673,7 @@
                 </div>
                 
                 <div id="cyber-puzzle-container" class="dash-card tilt-effect" style="display: none; margin-top: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center;">
-                    <button class="back-to-menu" style="background:none; border:none; color:var(--accent-blue); cursor:pointer; font-size:0.9rem; margin-bottom: 20px; text-align: left; width: 100%; font-weight: 600;">← Back to Menu</button>
+                    <button class="back-to-menu" style="background:none; border:none; color:var(--accent-blue); cursor:pointer; font-size:0.9rem; margin-bottom: 20px; text-align: left; width: 100%; font-weight: 500;">← Back to Menu</button>
             
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
                         <span id="matrix-level" style="font-weight: 500; color: var(--text-muted);">Level 1</span>
@@ -813,11 +685,11 @@
                     </div>
             
                     <p id="matrix-status" style="color: var(--text-muted); margin-top: 30px; height: 24px; font-weight: 500;">Ready.</p>
-                    <button id="matrix-start-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; margin-top: 15px; cursor: pointer;">Start Game</button>
+                    <button id="matrix-start-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; margin-top: 15px; cursor: pointer; transition: transform 0.2s, background 0.2s;">Start Game</button>
                 </div>
 
                 <div id="reaction-game-container" class="dash-card tilt-effect" style="display: none; margin-top: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center;">
-                    <button class="back-to-menu" style="background:none; border:none; color:var(--accent-blue); cursor:pointer; font-size:0.9rem; margin-bottom: 20px; text-align: left; width: 100%; font-weight: 600;">← Back to Menu</button>
+                    <button class="back-to-menu" style="background:none; border:none; color:var(--accent-blue); cursor:pointer; font-size:0.9rem; margin-bottom: 20px; text-align: left; width: 100%; font-weight: 500;">← Back to Menu</button>
                     
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
                         <span style="font-weight: 500; color: var(--text-muted);">Score: <span id="reaction-score" style="font-weight: 600; color: #fff;">0</span></span>
@@ -830,7 +702,7 @@
                     <div id="reaction-display" style="font-size: 2.2rem; font-weight: 500; color: var(--text-muted); margin-bottom: 25px; font-variant-numeric: tabular-nums;">0.00s</div>
         
                     <p id="reaction-status" style="color: var(--text-muted); height: 24px; font-weight: 500; margin-bottom: 20px;">Press Start when ready.</p>
-                    <button id="reaction-action-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer;">Start</button>
+                    <button id="reaction-action-btn" style="background: var(--text-main); color: var(--bg-color); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: transform 0.2s, background 0.2s; width: 200px; font-size: 1rem;">Start</button>
                 </div>
             </div>
         </section>
@@ -1125,343 +997,860 @@
             });
         });
 
-        // ===================== MESSAGING SYSTEM =====================
-        
         const navBtns = document.querySelectorAll('.nav-btn');
         const sections = document.querySelectorAll('.section');
-        const chatBox = document.getElementById('chat-box');
-        const messageInput = document.getElementById('message-input');
-        const sendBtn = document.getElementById('send-btn');
-        const globalChatContact = document.getElementById('global-chat-contact');
-        const mainDmContact = document.getElementById('main-dm-contact');
-        const sidebarContent = document.getElementById('sidebar-content');
 
-        // Chat data
-        let currentChatId = 'admin';
-        let directMessages = {};
-        let groupChats = {};
-        let selectedUsersForGroup = new Set();
-
-        // Sample users for global chat
-        const users = [
-            { id: 'alice', name: 'Alice', color: 'linear-gradient(135deg, #667eea, #764ba2)' },
-            { id: 'bob', name: 'Bob', color: 'linear-gradient(135deg, #f093fb, #f5576c)' },
-            { id: 'charlie', name: 'Charlie', color: 'linear-gradient(135deg, #4facfe, #00f2fe)' },
-            { id: 'diana', name: 'Diana', color: 'linear-gradient(135deg, #43e97b, #38f9d7)' },
-            { id: 'eve', name: 'Eve', color: 'linear-gradient(135deg, #fa709a, #fee140)' }
-        ];
-
-        // Initialize chat data
-        const globalMessages = [
-            { user: 'Alice', message: '👋 Welcome to Global Chat', isOwn: false, time: '10:30 AM' },
-            { user: 'Bob', message: 'Hey everyone!', isOwn: false, time: '10:32 AM' },
-            { user: 'You', message: 'Hi all', isOwn: true, time: '10:33 AM' }
-        ];
-
-        directMessages['admin'] = [
-            { user: 'Z. Nafis', message: 'Welcome to secure comms. Click on users in Global Chat to start private conversations.', isOwn: false }
-        ];
-
-        function renderChat(chatId) {
-            chatBox.innerHTML = '';
-            let messages = [];
-
-            if (chatId === 'admin') {
-                messages = directMessages['admin'] || [];
-            } else if (chatId === 'global') {
-                messages = globalMessages;
-            } else if (directMessages[chatId]) {
-                messages = directMessages[chatId];
-            } else if (groupChats[chatId]) {
-                messages = groupChats[chatId].messages || [];
-            }
-
-            messages.forEach((msg, index) => {
-                const msgWrapper = document.createElement('div');
-                msgWrapper.className = `msg-wrapper ${msg.isOwn ? 'sent' : ''}`;
-                
-                const isEmoji = /^[\p{Emoji_Presentation}]+$/u.test(msg.message?.trim());
-                const messageClass = `message ${isEmoji ? 'standalone-emoji' : msg.isOwn ? 'sent' : 'received'}`;
-                
-                msgWrapper.innerHTML = `
-                    <div class="${messageClass}">
-                        <div style="display: flex; flex-direction: column; width: 100%;">
-                            ${!msg.isOwn && chatId !== 'admin' && chatId !== 'global' ? `<span style="font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; opacity: 0.8;">${msg.user}</span>` : ''}
-                            ${msg.message}
-                        </div>
-                    </div>
-                    <button class="reply-btn">↩</button>
-                `;
-                
-                chatBox.appendChild(msgWrapper);
-                
-                setTimeout(() => {
-                    msgWrapper.style.opacity = '1';
-                    msgWrapper.style.transform = 'translateY(0) scale(1)';
-                }, 10 + index * 30);
-            });
-
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function updateSidebar() {
-            sidebarContent.innerHTML = '';
-
-            // Render direct message contacts
-            const dmKeys = Object.keys(directMessages).filter(k => k !== 'admin');
-            if (dmKeys.length > 0) {
-                dmKeys.forEach(userId => {
-                    const user = users.find(u => u.id === userId);
-                    if (user) {
-                        const contact = document.createElement('div');
-                        contact.className = `chat-contact ${currentChatId === userId ? 'active' : ''}`;
-                        contact.onclick = () => switchChat(userId);
-                        contact.innerHTML = `
-                            <div class="contact-avatar" style="background: ${user.color};">${user.name[0]}</div>
-                            <div class="contact-info">
-                                <div class="contact-name">${user.name}</div>
-                                <div class="contact-status">Direct Message</div>
-                            </div>
-                        `;
-                        sidebarContent.appendChild(contact);
-                    }
-                });
-            }
-
-            // Render group chats
-            const groupKeys = Object.keys(groupChats);
-            if (groupKeys.length > 0) {
-                groupKeys.forEach(groupId => {
-                    const groupChat = groupChats[groupId];
-                    const contact = document.createElement('div');
-                    contact.className = `chat-contact ${currentChatId === groupId ? 'active' : ''}`;
-                    contact.onclick = () => switchChat(groupId);
-                    contact.innerHTML = `
-                        <div class="contact-avatar" style="background: linear-gradient(135deg, #9b59b6, #3498db);">👥</div>
-                        <div class="contact-info">
-                            <div class="contact-name">${groupChat.name}</div>
-                            <div class="contact-status">${groupChat.members.length} members</div>
-                        </div>
-                    `;
-                    sidebarContent.appendChild(contact);
-                });
-            }
-        }
-
-        function switchChat(chatId) {
-            currentChatId = chatId;
-            
-            document.querySelectorAll('.chat-contact').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('#sidebar-content .chat-contact').forEach(c => {
-                if (c.onclick.toString().includes(chatId)) c.classList.add('active');
-            });
-
-            if (chatId === 'admin') {
-                mainDmContact.classList.add('active');
-                globalChatContact.classList.remove('active');
-            } else if (chatId === 'global') {
-                globalChatContact.classList.add('active');
-                mainDmContact.classList.remove('active');
-            } else {
-                mainDmContact.classList.remove('active');
-                globalChatContact.classList.remove('active');
-            }
-
-            renderChat(chatId);
-            updateSelectedUsersDisplay();
-        }
-
-        function startDirectMessage(userId) {
-            if (!directMessages[userId]) {
-                directMessages[userId] = [];
-            }
-            updateSidebar();
-            switchChat(userId);
-        }
-
-        function startGroupChat() {
-            if (selectedUsersForGroup.size < 2) {
-                alert('Select at least 2 users to create a group chat');
-                return;
-            }
-
-            const groupId = 'group_' + Array.from(selectedUsersForGroup).sort().join('_');
-            
-            if (!groupChats[groupId]) {
-                const memberNames = Array.from(selectedUsersForGroup)
-                    .map(id => users.find(u => u.id === id)?.name)
-                    .join(', ');
-                
-                groupChats[groupId] = {
-                    name: memberNames,
-                    members: Array.from(selectedUsersForGroup),
-                    messages: [{ user: 'System', message: '👥 Group chat created', isOwn: false }]
-                };
-            }
-
-            selectedUsersForGroup.clear();
-            updateSidebar();
-            switchChat(groupId);
-        }
-
-        function toggleUserSelection(userId) {
-            if (selectedUsersForGroup.has(userId)) {
-                selectedUsersForGroup.delete(userId);
-            } else {
-                selectedUsersForGroup.add(userId);
-            }
-            renderGlobalChat();
-            updateSelectedUsersDisplay();
-        }
-
-        function updateSelectedUsersDisplay() {
-            if (currentChatId === 'global') {
-                const container = document.querySelector('.selected-users-container');
-                if (selectedUsersForGroup.size > 0) {
-                    container.classList.add('active');
-                    let html = '<div class="selected-users-title">Selected Users:</div>';
-                    selectedUsersForGroup.forEach(userId => {
-                        const user = users.find(u => u.id === userId);
-                        if (user) {
-                            html += `<span class="selected-user-chip">${user.name}</span>`;
-                        }
-                    });
-                    html += '<button class="start-group-chat-btn" onclick="startGroupChat()">Start Group Chat</button>';
-                    container.innerHTML = html;
-                } else {
-                    container.classList.remove('active');
-                }
-            }
-        }
-
-        function renderGlobalChat() {
-            chatBox.innerHTML = '';
-            
-            // Show selected users container
-            const selectedContainer = document.createElement('div');
-            selectedContainer.className = 'selected-users-container';
-            selectedContainer.style.margin = '0 0 1rem 0';
-            if (selectedUsersForGroup.size > 0) {
-                selectedContainer.classList.add('active');
-                let html = '<div class="selected-users-title">Selected Users:</div>';
-                selectedUsersForGroup.forEach(userId => {
-                    const user = users.find(u => u.id === userId);
-                    if (user) {
-                        html += `<span class="selected-user-chip">${user.name}</span>`;
-                    }
-                });
-                html += '<button class="start-group-chat-btn">Start Group Chat</button>';
-                selectedContainer.innerHTML = html;
-                selectedContainer.querySelector('.start-group-chat-btn').onclick = startGroupChat;
-            }
-            chatBox.appendChild(selectedContainer);
-
-            // Show public messages
-            globalMessages.forEach((msg, index) => {
-                const msgWrapper = document.createElement('div');
-                msgWrapper.className = `msg-wrapper ${msg.isOwn ? 'sent' : ''}`;
-                
-                const messageClass = `message ${msg.isOwn ? 'sent' : 'received'}`;
-                msgWrapper.innerHTML = `
-                    <div class="${messageClass}">
-                        <span style="font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; opacity: 0.8;">${msg.user}</span>
-                        <div>${msg.message}</div>
-                    </div>
-                    <button class="reply-btn">↩</button>
-                `;
-                
-                chatBox.appendChild(msgWrapper);
-            });
-
-            // Show user profiles
-            const divider = document.createElement('div');
-            divider.style.cssText = 'text-align: center; margin: 1.5rem 0; color: var(--text-muted); font-size: 0.85rem; opacity: 0.5;';
-            divider.innerHTML = '─ Click to start direct message ─';
-            chatBox.appendChild(divider);
-
-            users.forEach(user => {
-                const isSelected = selectedUsersForGroup.has(user.id);
-                const card = document.createElement('div');
-                card.className = `user-profile-card ${isSelected ? 'selected' : ''}`;
-                card.style.cursor = 'pointer';
-                card.onclick = () => toggleUserSelection(user.id);
-                
-                card.innerHTML = `
-                    <div class="user-avatar" style="background: ${user.color};">${user.name[0]}</div>
-                    <div class="user-info">
-                        <div class="user-name">${user.name}</div>
-                        <div class="user-status-text">Click to select or message</div>
-                    </div>
-                    <button class="user-action-btn" onclick="event.stopPropagation(); startDirectMessage('${user.id}');">Message</button>
-                `;
-                
-                chatBox.appendChild(card);
-            });
-
-            chatBox.scrollTop = 0;
-        }
-
-        // Navigation
         navBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                const target = btn.getAttribute('data-target');
                 navBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
                 sections.forEach(s => s.classList.remove('active'));
-                document.getElementById(target).classList.add('active');
+                btn.classList.add('active');
+                const targetId = btn.getAttribute('data-target');
+                
+                const targetSection = document.getElementById(targetId);
+                targetSection.classList.add('active');
+                
+                targetSection.querySelectorAll('.reveal').forEach(el => {
+                    el.classList.remove('visible');
+                    setTimeout(() => { el.classList.add('visible'); }, 50);
+                });
 
-                if (target === 'messages' && currentChatId === 'global') {
-                    renderGlobalChat();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                if (targetId === 'home') {
+                    const bhVideo = document.getElementById('blackhole-video');
+                    const bhOverlay = document.getElementById('bh-overlay');
+                    if(bhVideo) {
+                        bhVideo.style.transform = 'scale(1)';
+                        bhVideo.style.filter = 'blur(0px)';
+                    }
+                    if(bhOverlay) bhOverlay.style.opacity = '0';
+                    hasEnteredBlackHole = false;
+                }
+
+                if (targetId === 'messages') {
+                    const chatBox = document.getElementById('chat-box');
+                    if (chatBox) {
+                        setTimeout(() => {
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                        }, 100); 
+                    }
                 }
             });
         });
 
-        // Chat controls
-        globalChatContact.addEventListener('click', () => switchChat('global'));
-        mainDmContact.addEventListener('click', () => switchChat('admin'));
+        (function initArcade() {
+            const gamesMenu = document.getElementById('games-menu');
+            const matrixGameContainer = document.getElementById('cyber-puzzle-container');
+            const reactionGameContainer = document.getElementById('reaction-game-container');
+            const backBtns = document.querySelectorAll('.back-to-menu');
+            
+            document.querySelectorAll('.game-selector').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    gamesMenu.style.display = 'none';
+                    if (btn.dataset.game === 'matrix') {
+                        matrixGameContainer.style.display = 'block';
+                    } else if (btn.dataset.game === 'reaction') {
+                        reactionGameContainer.style.display = 'block';
+                        setupReactionRound(true); 
+                    }
+                });
+            });
 
-        sendBtn.addEventListener('click', () => {
-            const message = messageInput.value.trim();
-            if (message) {
-                if (currentChatId === 'admin') {
-                    directMessages['admin'].push({ user: 'You', message, isOwn: true });
-                } else if (currentChatId === 'global') {
-                    globalMessages.push({ user: 'You', message, isOwn: true, time: new Date().toLocaleTimeString() });
-                } else if (directMessages[currentChatId]) {
-                    directMessages[currentChatId].push({ user: 'You', message, isOwn: true });
-                } else if (groupChats[currentChatId]) {
-                    groupChats[currentChatId].messages.push({ user: 'You', message, isOwn: true });
+            backBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    matrixGameContainer.style.display = 'none';
+                    reactionGameContainer.style.display = 'none';
+                    gamesMenu.style.display = 'grid'; 
+                });
+            });
+
+            const grid = document.getElementById('matrix-grid');
+            const startBtn = document.getElementById('matrix-start-btn');
+            const statusTxt = document.getElementById('matrix-status');
+            const levelTxt = document.getElementById('matrix-level');
+            const scoreTxt = document.getElementById('matrix-score');
+            const highScoreTxt = document.getElementById('matrix-highscore');
+
+            let sequence = [];
+            let playerSequence = [];
+            let level = 1;
+            let score = 0;
+            let matrixHighScore = localStorage.getItem('appleMatrixHighScore') || 0;
+            highScoreTxt.innerText = `Best: ${matrixHighScore}`;
+
+            for (let i = 0; i < 9; i++) {
+                const node = document.createElement('div');
+                node.className = 'matrix-node'; 
+                node.addEventListener('click', () => handleNodeClick(i, node));
+                grid.appendChild(node);
+            }
+            const nodes = document.querySelectorAll('.matrix-node');
+            startBtn.addEventListener('click', startMatrixGame);
+
+            function startMatrixGame() {
+                sequence = []; level = 1; score = 0;
+                updateMatrixUI();
+                startBtn.style.display = "none";
+                nextMatrixRound();
+            }
+
+            function nextMatrixRound() {
+                playerSequence = [];
+                grid.style.pointerEvents = "none"; 
+                statusTxt.innerText = "Watch the sequence...";
+                sequence.push(Math.floor(Math.random() * 9));
+                let delay = 400;
+                sequence.forEach((nodeIndex, i) => {
+                    setTimeout(() => flashNode(nodes[nodeIndex]), delay * (i + 1));
+                });
+                setTimeout(() => {
+                    grid.style.pointerEvents = "auto";
+                    statusTxt.innerText = "Your turn.";
+                }, delay * (sequence.length + 1));
+            }
+
+            function flashNode(node) {
+                node.style.background = "#ffffff";
+                node.style.boxShadow = "0 0 20px rgba(255,255,255,0.5)";
+                setTimeout(() => {
+                    node.style.background = "rgba(255,255,255,0.05)";
+                    node.style.boxShadow = "none";
+                }, 250);
+            }
+
+            function handleNodeClick(index, node) {
+                if (grid.style.pointerEvents === "none") return;
+                node.style.background = "#2997ff"; 
+                setTimeout(() => { node.style.background = "rgba(255,255,255,0.05)"; }, 200);
+
+                playerSequence.push(index);
+                const currentStep = playerSequence.length - 1;
+
+                if (playerSequence[currentStep] !== sequence[currentStep]) {
+                    matrixGameOver();
+                    return;
+                }
+
+                score += 10;
+                updateMatrixUI();
+
+                if (playerSequence.length === sequence.length) {
+                    grid.style.pointerEvents = "none";
+                    score += (level * 50); 
+                    level++;
+                    updateMatrixUI();
+                    statusTxt.innerText = "Correct. Next level...";
+                    setTimeout(nextMatrixRound, 1000);
+                }
+            }
+
+            function matrixGameOver() {
+                grid.style.pointerEvents = "none";
+                startBtn.style.display = "inline-block";
+                startBtn.innerText = "Try Again";
+                if (score > matrixHighScore) {
+                    matrixHighScore = score;
+                    localStorage.setItem('appleMatrixHighScore', matrixHighScore); 
+                    highScoreTxt.innerText = `Best: ${matrixHighScore}`;
+                    statusTxt.innerText = `New High Score!`;
+                } else {
+                    statusTxt.innerText = "Incorrect sequence.";
+                }
+                nodes.forEach(n => {
+                    n.style.background = "rgba(255, 59, 48, 0.5)"; 
+                    setTimeout(() => { n.style.background = "rgba(255,255,255,0.05)"; }, 500);
+                });
+            }
+
+            function updateMatrixUI() {
+                levelTxt.innerText = `Level ${level}`;
+                scoreTxt.innerText = score;
+            }
+
+            const reactScoreEl = document.getElementById('reaction-score');
+            const reactHighScoreEl = document.getElementById('reaction-highscore');
+            const reactTargetEl = document.getElementById('reaction-target');
+            const reactDisplayEl = document.getElementById('reaction-display');
+            const reactStatusEl = document.getElementById('reaction-status');
+            const reactActionBtn = document.getElementById('reaction-action-btn');
+
+            let reactScore = 0;
+            let reactHighScore = localStorage.getItem('appleReactionHighScore') || 0;
+            reactHighScoreEl.innerText = reactHighScore;
+            
+            let reactState = 'idle'; 
+            let targetTimeMs = 0;
+            let startTime = 0;
+            let timerInterval;
+
+            function setupReactionRound(isReset = false) {
+                if(isReset) {
+                    reactScore = 0;
+                    reactScoreEl.innerText = reactScore;
+                    reactHighScoreEl.innerText = reactHighScore;
+                }
+                reactState = 'idle';
+                targetTimeMs = Math.floor(Math.random() * 2500) + 1500; 
+                reactTargetEl.innerText = (targetTimeMs / 1000).toFixed(2) + 's';
+                reactDisplayEl.innerText = '0.00s';
+                reactStatusEl.innerText = 'Press Start when ready.';
+                reactActionBtn.innerText = 'Start';
+                reactActionBtn.style.background = "var(--text-main)";
+            }
+
+            reactActionBtn.addEventListener('click', () => {
+                if (reactState === 'idle') {
+                    reactState = 'running';
+                    startTime = performance.now();
+                    reactActionBtn.innerText = 'Stop!';
+                    reactActionBtn.style.background = "#ff3b30"; 
+                    reactStatusEl.innerText = 'Wait for it...';
+                    
+                    timerInterval = setInterval(() => {
+                        let elapsed = performance.now() - startTime;
+                        reactDisplayEl.innerText = (elapsed / 1000).toFixed(2) + 's';
+                    }, 10);
+
+                } else if (reactState === 'running') {
+                    clearInterval(timerInterval);
+                    let elapsed = performance.now() - startTime;
+                    reactDisplayEl.innerText = (elapsed / 1000).toFixed(2) + 's';
+                    
+                    let diff = Math.abs(elapsed - targetTimeMs);
+                    
+                    if (diff <= 150) {
+                        reactState = 'result';
+                        reactScore++;
+                        reactScoreEl.innerText = reactScore;
+                        reactStatusEl.innerText = `Perfect! You were off by only ${(diff/1000).toFixed(2)}s.`;
+                        reactActionBtn.innerText = 'Next Round';
+                        reactActionBtn.style.background = "var(--accent-blue)";
+                    } else {
+                        reactState = 'result';
+                        reactStatusEl.innerText = `Game Over. Off by ${(diff/1000).toFixed(2)}s.`;
+                        reactActionBtn.innerText = 'Try Again';
+                        reactActionBtn.style.background = "var(--text-main)";
+                        
+                        if (reactScore > reactHighScore) {
+                            reactHighScore = reactScore;
+                            localStorage.setItem('appleReactionHighScore', reactHighScore);
+                            reactHighScoreEl.innerText = reactHighScore;
+                            reactStatusEl.innerText = `New High Score! Off by ${(diff/1000).toFixed(2)}s.`;
+                        }
+                        reactScore = 0; 
+                    }
+                } else if (reactState === 'result') {
+                    if (reactScore === 0) {
+                        setupReactionRound(true); 
+                    } else {
+                        setupReactionRound(false); 
+                    }
+                }
+            });
+
+        })();
+    </script>
+
+   <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, setDoc, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMG0JPo0IB8Voc1Y4Qhk0XUGQzvGPtnyA",
+            authDomain: "backend-92af8.firebaseapp.com",
+            projectId: "backend-92af8",
+            storageBucket: "backend-92af8.firebasestorage.app",
+            messagingSenderId: "358664613828",
+            appId: "1:358664613828:web:2f46342863dd3bfbcfbe91",
+            measurementId: "G-G0RC26J94Z"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app); 
+
+        // FAVICON NOTIFICATION DEFINITIONS
+        const normalFavicon = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0%25' y1='100%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23147ce6'/><stop offset='50%25' stop-color='%232997ff'/><stop offset='100%25' stop-color='%237dd3fc'/></linearGradient></defs><circle cx='256' cy='256' r='230' fill='none' stroke='url(%23g)' stroke-width='8' stroke-dasharray='16 12' opacity='0.3'/><ellipse cx='256' cy='256' rx='245' ry='95' fill='none' stroke='url(%23g)' stroke-width='16' transform='rotate(-25 256 256)'/><circle cx='256' cy='256' r='165' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M165,165 L347,165 L165,347 L347,347' fill='none' stroke='url(%23g)' stroke-width='22' stroke-linecap='round' stroke-linejoin='round'/><path d='M165,347 L165,165 L347,347 L347,165' fill='none' stroke='url(%23g)' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' opacity='0.4'/><circle cx='165' cy='165' r='16' fill='%23fff'/><circle cx='347' cy='165' r='16' fill='%23fff'/><circle cx='165' cy='347' r='16' fill='%23fff'/><circle cx='347' cy='347' r='16' fill='%23fff'/><circle cx='256' cy='256' r='12' fill='%23fff'/></svg>`;
+        const alertFavicon = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0%25' y1='100%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23147ce6'/><stop offset='50%25' stop-color='%232997ff'/><stop offset='100%25' stop-color='%237dd3fc'/></linearGradient></defs><circle cx='256' cy='256' r='230' fill='none' stroke='url(%23g)' stroke-width='8' stroke-dasharray='16 12' opacity='0.3'/><ellipse cx='256' cy='256' rx='245' ry='95' fill='none' stroke='url(%23g)' stroke-width='16' transform='rotate(-25 256 256)'/><circle cx='256' cy='256' r='165' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M165,165 L347,165 L165,347 L347,347' fill='none' stroke='url(%23g)' stroke-width='22' stroke-linecap='round' stroke-linejoin='round'/><path d='M165,347 L165,165 L347,347 L347,165' fill='none' stroke='url(%23g)' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' opacity='0.4'/><circle cx='165' cy='165' r='16' fill='%23fff'/><circle cx='347' cy='165' r='16' fill='%23fff'/><circle cx='165' cy='347' r='16' fill='%23fff'/><circle cx='347' cy='347' r='16' fill='%23fff'/><circle cx='256' cy='256' r='12' fill='%23fff'/><circle cx='430' cy='82' r='70' fill='%23ff3b30' stroke='%23000' stroke-width='20'/></svg>`;
+
+        signInAnonymously(auth).then(() => { setupChat(); }).catch(console.error);
+
+        function setupChat() {
+            const messageInput = document.getElementById('message-input');
+            const sendBtn = document.getElementById('send-btn');
+            const chatBox = document.getElementById('chat-box');
+            const sidebarContent = document.getElementById('sidebar-content');
+            const mainDmContact = document.getElementById('main-dm-contact');
+            const globalChatContact = document.getElementById('global-chat-contact');
+            const secretTrigger = document.querySelector('#main-dm-contact .contact-avatar'); 
+
+            // GLOBAL UNREAD NOTIFICATION SYSTEM
+            let unreadChannels = new Set();
+            window.adminReadTimes = window.adminReadTimes || {};
+            
+            function notify(channelId) {
+                unreadChannels.add(channelId);
+                updateNotificationUI();
+            }
+
+            function clearNotify(channelId) {
+                unreadChannels.delete(channelId);
+                updateNotificationUI();
+            }
+
+            function updateNotificationUI() {
+                const favicon = document.getElementById('dynamic-favicon');
+                if (unreadChannels.size > 0) {
+                    if(favicon) favicon.href = alertFavicon;
+                    document.title = "(1) Z. Nafis | Domain";
+                } else {
+                    if(favicon) favicon.href = normalFavicon;
+                    document.title = "Z. Nafis | Domain";
+                }
+
+                const globalDot = document.getElementById('global-unread');
+                if(globalDot) globalDot.style.display = unreadChannels.has("global") ? "block" : "none";
+
+                const dmDot = document.getElementById('dm-unread');
+                if(dmDot) dmDot.style.display = unreadChannels.has(auth.currentUser.uid) ? "block" : "none";
+
+                if (isAdmin) {
+                    document.querySelectorAll('.session-unread').forEach(el => {
+                        const uid = el.getAttribute('data-uid');
+                        el.style.display = unreadChannels.has(uid) ? "block" : "none";
+                    });
+                }
+            }
+
+            document.addEventListener("visibilitychange", () => {
+                if (!document.hidden) {
+                    clearNotify(activeChatUserId);
+                    if (isAdmin && activeChatUserId !== "global") {
+                        window.adminReadTimes[activeChatUserId] = Date.now();
+                    }
+                }
+            });
+
+            // EMOJI PICKER LOGIC
+            const toggleEmojiBtn = document.getElementById('toggle-emoji-btn');
+            const emojiPicker = document.getElementById('emoji-picker');
+            
+            toggleEmojiBtn.addEventListener('click', () => {
+                emojiPicker.classList.toggle('active');
+            });
+            
+            document.querySelectorAll('.emoji-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    messageInput.value += e.target.innerText;
+                    emojiPicker.classList.remove('active');
+                    messageInput.focus();
+                });
+            });
+
+            const imageUploadBtn = document.getElementById('image-upload-btn');
+            const imageUploadInput = document.getElementById('image-upload');
+
+            imageUploadBtn.addEventListener('click', () => {
+                imageUploadInput.click();
+            });
+
+            imageUploadInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = async function() {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 500;
+                        const MAX_HEIGHT = 500;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                        } else {
+                            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.6); 
+                        
+                        try {
+                            let collectionRef = (activeChatUserId === "global") ? collection(db, "global_chat") : collection(db, "chats", activeChatUserId, "messages");
+                            let msgObj = { 
+                                imageUrl: dataUrl, 
+                                sender: isAdmin ? "admin" : "user", 
+                                timestamp: serverTimestamp() 
+                            };
+                            if (activeChatUserId === "global") {
+                                msgObj.uid = auth.currentUser.uid;
+                                msgObj.username = isAdmin ? "Z. Nafis (Admin)" : globalUsername;
+                            }
+                            await addDoc(collectionRef, msgObj);
+                            if (!isAdmin && activeChatUserId !== "global") { 
+                                await setDoc(doc(db, "active_chats", auth.currentUser.uid), { 
+                                    lastActive: serverTimestamp(),
+                                    lastMessageTime: serverTimestamp() 
+                                }, { merge: true }); 
+                            }
+                        } catch (error) { console.error("Transmission error:", error); }
+                    }
+                    img.src = event.target.result;
+                }
+                reader.readAsDataURL(file);
+                imageUploadInput.value = ""; 
+            });
+
+            let isAdmin = false;
+            let activeChatUserId = auth.currentUser.uid; 
+            let unsubscribeMessages = null;
+            let replyingToText = null;
+            let globalUsername = localStorage.getItem('global_chat_identity') || "";
+
+            function updatePlaceholder() {
+                if (activeChatUserId === "global") {
+                    const nameToDisplay = isAdmin ? "Z. Nafis (Admin)" : (globalUsername || "Assigning identity...");
+                    messageInput.placeholder = `Message as ${nameToDisplay}...`;
+                } else {
+                    messageInput.placeholder = "iMessage";
+                }
+            }
+
+            async function ensureUniqueUsername(promptMessage, defaultVal = "") {
+                if (isAdmin) return "Z. Nafis (Admin)";
+                
+                let attempts = 0;
+                while (attempts < 10) {
+                    let chosenName = prompt(promptMessage, defaultVal);
+                    if (chosenName === null) {
+                        return globalUsername; 
+                    }
+                    
+                    chosenName = chosenName.trim();
+                    if (chosenName === "") {
+                        alert("Username cannot be empty.");
+                        continue;
+                    }
+                    
+                    const nameKey = chosenName.toLowerCase();
+                    if (nameKey === "admin" || nameKey === "z. nafis" || nameKey === "nafis" || nameKey === "z.nafis") {
+                        alert("That username contains reserved administrator terms.");
+                        continue;
+                    }
+
+                    try {
+                        const usernameDocRef = doc(db, "global_usernames", nameKey);
+                        const docSnap = await getDoc(usernameDocRef);
+                        
+                        if (docSnap.exists()) {
+                            const ownerUid = docSnap.data().uid;
+                            if (ownerUid === auth.currentUser.uid) {
+                                globalUsername = chosenName;
+                                localStorage.setItem('global_chat_identity', globalUsername);
+                                return globalUsername;
+                            } else {
+                                alert(`The username "${chosenName}" is already taken by someone else. Please choose a different identity.`);
+                                defaultVal = chosenName;
+                                attempts++;
+                                continue;
+                            }
+                        } else {
+                            const oldUsername = localStorage.getItem('global_chat_identity');
+                            if (oldUsername && oldUsername.toLowerCase() !== nameKey) {
+                                try {
+                                    const oldRef = doc(db, "global_usernames", oldUsername.toLowerCase());
+                                    const oldSnap = await getDoc(oldRef);
+                                    if (oldSnap.exists() && oldSnap.data().uid === auth.currentUser.uid) {
+                                        await deleteDoc(oldRef);
+                                    }
+                                } catch (e) { console.warn("Failed to recycle old name registration:", e); }
+                            }
+                            
+                            await setDoc(usernameDocRef, { uid: auth.currentUser.uid, displayName: chosenName });
+                            globalUsername = chosenName;
+                            localStorage.setItem('global_chat_identity', globalUsername);
+                            return globalUsername;
+                        }
+                    } catch (err) {
+                        console.error("Uniqueness check error:", err);
+                        alert("System sync error while verifying name accessibility. Please try again.");
+                        return globalUsername;
+                    }
+                }
+                return globalUsername;
+            }
+
+            mainDmContact.addEventListener('click', () => {
+                clearNotify(auth.currentUser.uid);
+                if (activeChatUserId === auth.currentUser.uid && !isAdmin) return;
+                activeChatUserId = auth.currentUser.uid;
+                mainDmContact.classList.add('active');
+                globalChatContact.classList.remove('active');
+                
+                document.querySelector('#global-chat-contact .contact-status').innerText = "Public Room";
+                
+                if (isAdmin) {
+                    document.querySelectorAll('#user-sessions-list div').forEach(el => el.style.background = "rgba(255,255,255,0.05)");
+                }
+                listenToChat(activeChatUserId);
+                updatePlaceholder();
+            });
+
+            globalChatContact.addEventListener('click', async () => {
+                clearNotify("global");
+                if (activeChatUserId === "global") {
+                    if (!isAdmin) {
+                        await ensureUniqueUsername("Change your unique Global Chat username:", globalUsername);
+                        updatePlaceholder();
+                    }
+                    return;
                 }
                 
-                messageInput.value = '';
-                renderChat(currentChatId);
-            }
-        });
+                if (globalUsername) {
+                    try {
+                        const usernameDocRef = doc(db, "global_usernames", globalUsername.toLowerCase());
+                        const docSnap = await getDoc(usernameDocRef);
+                        if (docSnap.exists() && docSnap.data().uid !== auth.currentUser.uid) {
+                            alert(`Your old identity "${globalUsername}" has been taken by a new user. Please specify a new one.`);
+                            globalUsername = "";
+                            localStorage.removeItem('global_chat_identity');
+                            await ensureUniqueUsername("Enter a unique username for the Global Chat room:");
+                        } else if (!docSnap.exists() && !isAdmin) {
+                            await setDoc(usernameDocRef, { uid: auth.currentUser.uid, displayName: globalUsername });
+                        }
+                    } catch(e) { console.error(e); }
+                } else {
+                    await ensureUniqueUsername("Enter a unique username for the Global Chat room:");
+                }
 
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendBtn.click();
-        });
+                if (!globalUsername && !isAdmin) {
+                    alert("A unique username identification is required to enter the Global Chat.");
+                    return;
+                }
+                
+                activeChatUserId = "global";
+                globalChatContact.classList.add('active');
+                mainDmContact.classList.remove('active');
+                
+                document.querySelector('#global-chat-contact .contact-status').innerText = "Public Room (Tap to edit name)";
 
-        // Emoji picker
-        const emojiPicker = document.getElementById('emoji-picker');
-        const toggleEmojiBtn = document.getElementById('toggle-emoji-btn');
-
-        toggleEmojiBtn.addEventListener('click', () => {
-            emojiPicker.classList.toggle('active');
-        });
-
-        document.querySelectorAll('.emoji-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                messageInput.value += e.target.textContent;
-                emojiPicker.classList.remove('active');
-                messageInput.focus();
+                if (isAdmin) {
+                    document.querySelectorAll('#user-sessions-list div').forEach(el => el.style.background = "rgba(255,255,255,0.05)");
+                }
+                listenToChat("global");
+                updatePlaceholder();
             });
-        });
 
-        // Initialize
-        renderChat('admin');
-        updateSidebar();
+            document.getElementById('cancel-reply-btn').addEventListener('click', () => {
+                replyingToText = null;
+                document.getElementById('reply-preview').style.display = 'none';
+            });
+
+            window.initiateReply = function(text) {
+                replyingToText = text;
+                document.getElementById('reply-preview-text').innerText = text;
+                document.getElementById('reply-preview').style.display = 'flex';
+                messageInput.focus();
+            };
+
+            secretTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (isAdmin) return;
+                const passcode = prompt("Admin Passcode:");
+                if (passcode === "chittypoo99") {
+                    isAdmin = true;
+                    document.querySelector('#main-dm-contact .contact-status').innerHTML = `<span style="color:#34c759">Admin Mode</span>`;
+                    sidebarContent.innerHTML = `<h4 style="font-size:0.8rem; margin-top:20px; margin-bottom:10px; color:#86868b; text-transform:uppercase;">Active Sessions</h4><div id="user-sessions-list" style="display:flex; flex-direction:column; gap:8px;"></div>`;
+                    loadAdminUserList();
+                    updatePlaceholder();
+                }
+            });
+
+            if (!isAdmin) {
+                const updatePresence = () => {
+                    if (activeChatUserId !== "global") {
+                        setDoc(doc(db, "active_chats", auth.currentUser.uid), { lastActive: serverTimestamp() }, { merge: true }).catch(e => console.error("Presence Error:", e));
+                    }
+                };
+                updatePresence(); 
+                setInterval(updatePresence, 30000); 
+                document.addEventListener("visibilitychange", () => {
+                    if (document.visibilityState === 'visible') updatePresence();
+                });
+            }
+
+            // BACKGROUND LISTENERS FOR NOTIFICATIONS
+            let isGlobalInit = true;
+            onSnapshot(query(collection(db, "global_chat"), orderBy("timestamp", "asc")), (snapshot) => {
+                if (isGlobalInit) { isGlobalInit = false; return; }
+                let hasNew = false;
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const data = change.doc.data();
+                        if (data.uid !== auth.currentUser.uid) hasNew = true;
+                    }
+                });
+                if (hasNew && (activeChatUserId !== "global" || document.hidden)) {
+                    notify("global");
+                }
+            });
+
+            if (!isAdmin) {
+                let isDmInit = true;
+                onSnapshot(query(collection(db, "chats", auth.currentUser.uid, "messages"), orderBy("timestamp", "asc")), (snapshot) => {
+                    if (isDmInit) { isDmInit = false; return; }
+                    let hasNew = false;
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === "added") {
+                            const data = change.doc.data();
+                            if (data.sender === "admin") hasNew = true;
+                        }
+                    });
+                    if (hasNew && (activeChatUserId !== auth.currentUser.uid || document.hidden)) {
+                        notify(auth.currentUser.uid);
+                    }
+                });
+            }
+
+            function listenToChat(userId) {
+                if (unsubscribeMessages) unsubscribeMessages();
+                
+                let collectionRef = (userId === "global") ? collection(db, "global_chat") : collection(db, "chats", userId, "messages");
+                const q = query(collectionRef, orderBy("timestamp", "asc"));
+
+                chatBox.innerHTML = `
+                <div class="msg-wrapper received" style="align-self: flex-start; animation: none; opacity: 1; transform: none; max-width: 100%;">
+                    <div class="message received"><p>${userId === "global" ? 'Global public room connection active. Messages sent here are visible to everyone currently on the domain.' : 'Secure end-to-end connection established.'}</p></div>
+                </div>`;
+
+                unsubscribeMessages = onSnapshot(q, (snapshot) => {
+                    let hasNewMessages = false;
+
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === "added") {
+                            hasNewMessages = true;
+                            const data = change.doc.data();
+                            if (!data.text && !data.imageUrl) return; 
+
+                            const isSentByMe = (userId === "global") ? (data.uid === auth.currentUser.uid) : (isAdmin ? (data.sender === "admin") : (data.sender === "user"));
+                            const messageClass = isSentByMe ? "sent" : "received";
+                            
+                            let isStandaloneEmoji = false;
+                            if (data.text && !data.imageUrl) {
+                                const emojiRegex = /^[\p{Emoji_Presentation}\p{Extended_Pictographic}\uFE0F\u200D\s]+$/gu;
+                                isStandaloneEmoji = emojiRegex.test(data.text.trim());
+                            }
+
+                            let timeString = "";
+                            if (data.timestamp) {
+                                const date = data.timestamp.toDate();
+                                timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            } else {
+                                timeString = "Just now";
+                            }
+
+                            const wrapper = document.createElement("div");
+                            wrapper.className = `msg-wrapper ${isSentByMe ? 'sent' : 'received'}`;
+                            wrapper.style.alignSelf = isSentByMe ? "flex-end" : "flex-start";
+                            
+                            const bubble = document.createElement("div");
+                            bubble.className = `message ${messageClass} ${isStandaloneEmoji ? 'standalone-emoji' : ''}`;
+                            
+                            let contentHtml = "";
+
+                            if (userId === "global" && data.username) {
+                                const nameColor = isSentByMe ? '#ffffff' : 'var(--accent-blue)';
+                                contentHtml += `<div style="font-size: 0.72rem; font-weight: 700; color: ${nameColor}; margin-bottom: 3px; opacity: 0.9;">${data.username.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`;
+                            }
+
+                            if (data.replyTo) {
+                                let safeReply = data.replyTo.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                                contentHtml += `<div class="reply-context"><strong>Replying to:</strong><br>${safeReply}</div>`;
+                            }
+
+                            if (data.imageUrl) {
+                                contentHtml += `<img src="${data.imageUrl}" class="chat-img" alt="Attached Image">`;
+                            }
+                            if (data.text) {
+                                let safeText = data.text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                                let linkedText = safeText.replace(urlRegex, function(url) {
+                                    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+                                });
+                                contentHtml += `<p>${linkedText}</p>`;
+                            }
+                            
+                            contentHtml += `<div style="font-size: 0.65rem; color: rgba(255,255,255,0.5); text-align: right; margin-top: 4px; pointer-events: none; ${isStandaloneEmoji ? 'text-shadow: 0 1px 3px rgba(0,0,0,0.8);' : ''}">${timeString}</div>`;
+
+                            bubble.innerHTML = contentHtml;
+                            
+                            const replyBtn = document.createElement("button");
+                            replyBtn.className = "reply-btn";
+                            replyBtn.innerHTML = "↩";
+                            replyBtn.title = "Reply";
+                            
+                            let previewText = data.text ? data.text : (data.imageUrl ? "📸 Image" : "Message");
+                            replyBtn.onclick = () => window.initiateReply(previewText);
+
+                            wrapper.appendChild(bubble);
+                            wrapper.appendChild(replyBtn);
+                            chatBox.appendChild(wrapper);
+                        }
+                    });
+
+                    if (hasNewMessages) {
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                        setTimeout(() => { 
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                        }, 50);
+                    }
+                });
+            }
+
+            function loadAdminUserList() {
+                onSnapshot(collection(db, "active_chats"), (snapshot) => {
+                    const listContainer = document.getElementById('user-sessions-list');
+                    if(!listContainer) return;
+                    listContainer.innerHTML = "";
+                    
+                    const nowTime = new Date().getTime();
+                    const cutoffTime = new Date(nowTime - (24 * 60 * 60 * 1000));
+
+                    snapshot.forEach((userDoc) => {
+                        const uId = userDoc.id;
+                        const data = userDoc.data();
+                        let lastActive = data.lastActive ? data.lastActive.toDate() : new Date();
+                        let contactName = data.name || `Session: ${uId.substring(0, 6)}...`;
+
+                        if (lastActive > cutoffTime) {
+                            
+                            const isOnline = (nowTime - lastActive.getTime()) < 60000;
+                            const statusColor = isOnline ? '#34c759' : '#86868b'; 
+
+                            if (uId === activeChatUserId && isAdmin && activeChatUserId !== "global") {
+                                const statusEl = document.querySelector('#main-dm-contact .contact-status');
+                                if (statusEl) {
+                                    statusEl.innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
+                                }
+                            }
+
+                            const lastMsgTime = data.lastMessageTime ? data.lastMessageTime.toDate().getTime() : 0;
+                            
+                            if (window.adminReadTimes[uId] === undefined) {
+                                window.adminReadTimes[uId] = lastMsgTime; 
+                            }
+
+                            const readTime = window.adminReadTimes[uId];
+                            
+                            if (lastMsgTime > readTime && (activeChatUserId !== uId || document.hidden)) {
+                                notify(uId);
+                            }
+
+                            const sessionBtn = document.createElement('div');
+                            sessionBtn.style.padding = "10px";
+                            sessionBtn.style.background = (activeChatUserId === uId && activeChatUserId !== "global") ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)";
+                            sessionBtn.style.borderRadius = "12px";
+                            sessionBtn.style.fontSize = "0.85rem";
+                            sessionBtn.style.cursor = "pointer";
+                            sessionBtn.style.display = "flex";
+                            sessionBtn.style.justifyContent = "space-between";
+                            sessionBtn.style.alignItems = "center";
+
+                            const isUnread = unreadChannels.has(uId) ? "block" : "none";
+
+                            sessionBtn.innerHTML = `
+                                <div style="display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 75%; pointer-events: none;">
+                                    <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${statusColor}; margin-right:8px; flex-shrink: 0; box-shadow: 0 0 5px ${statusColor};"></span>
+                                    <span>${contactName}</span>
+                                </div>
+                                <div class="session-unread" data-uid="${uId}" style="width:10px; height:10px; background:#ff3b30; border-radius:50%; display:${isUnread}; margin-left:auto; margin-right: 10px; box-shadow: 0 0 8px #ff3b30; flex-shrink:0;"></div>
+                                <button class="rename-btn" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; cursor: pointer; padding: 4px 8px; font-size: 10px; transition: background 0.2s;">Rename</button>
+                            `;
+
+                            sessionBtn.addEventListener('click', (e) => {
+                                if (e.target.classList.contains('rename-btn')) {
+                                    e.stopPropagation();
+                                    const newName = prompt("Enter a new name for this contact:", data.name || "");
+                                    if (newName !== null && newName.trim() !== "") {
+                                        setDoc(doc(db, "active_chats", uId), { name: newName.trim() }, { merge: true }).catch(console.error);
+                                    }
+                                    return;
+                                }
+                                
+                                window.adminReadTimes[uId] = Date.now();
+                                clearNotify(uId);
+
+                                activeChatUserId = uId;
+                                globalChatContact.classList.remove('active');
+                                mainDmContact.classList.remove('active');
+                                
+                                const nameEl = document.querySelector('#main-dm-contact .contact-name');
+                                const statusEl = document.querySelector('#main-dm-contact .contact-status');
+                                if (nameEl) nameEl.innerText = contactName;
+                                if (statusEl) statusEl.innerHTML = `<span style="color:${statusColor}">${isOnline ? 'Online' : 'Offline'}</span>`;
+                                
+                                loadAdminUserList(); 
+                                listenToChat(uId); 
+                                updatePlaceholder();
+                            });
+                            listContainer.appendChild(sessionBtn);
+                        }
+                    });
+                });
+            }
+
+            async function sendMessage() {
+                const text = messageInput.value.trim();
+                if (text === "" || !activeChatUserId) return;
+                
+                messageInput.value = "";
+                emojiPicker.classList.remove('active'); 
+                
+                let collectionRef = (activeChatUserId === "global") ? collection(db, "global_chat") : collection(db, "chats", activeChatUserId, "messages");
+                
+                const messageData = { 
+                    text: text, 
+                    sender: isAdmin ? "admin" : "user", 
+                    timestamp: serverTimestamp() 
+                };
+
+                if (activeChatUserId === "global") {
+                    messageData.uid = auth.currentUser.uid;
+                    messageData.username = isAdmin ? "Z. Nafis (Admin)" : globalUsername;
+                }
+
+                if (replyingToText) {
+                    messageData.replyTo = replyingToText;
+                    replyingToText = null;
+                    document.getElementById('reply-preview').style.display = 'none';
+                }
+
+                try {
+                    await addDoc(collectionRef, messageData);
+                    if (!isAdmin && activeChatUserId !== "global") { 
+                        await setDoc(doc(db, "active_chats", auth.currentUser.uid), { 
+                            lastActive: serverTimestamp(),
+                            lastMessageTime: serverTimestamp() 
+                        }, { merge: true }); 
+                    }
+                } catch (error) { console.error("Transmission error:", error); }
+            }
+
+            listenToChat(activeChatUserId);
+            updatePlaceholder();
+            sendBtn.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        }
     </script>
 </body>
 </html>
