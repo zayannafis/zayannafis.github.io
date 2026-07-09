@@ -387,7 +387,7 @@
             word-break: break-word;
         }
 
-        .reply-btn {
+        .reply-btn, .delete-btn {
             flex-shrink: 0;
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; 
             width: 28px; height: 28px; color: white; cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 14px;
@@ -395,6 +395,12 @@
         }
         .reply-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
         .msg-wrapper:hover .reply-btn { display: flex; }
+
+        .delete-btn {
+            background: rgba(255,59,48,0.1); border-color: rgba(255,59,48,0.3); color: #ff3b30;
+        }
+        .delete-btn:hover { background: rgba(255,59,48,0.2); transform: scale(1.1); }
+        .msg-wrapper:hover .delete-btn { display: flex; }
 
         .chat-img {
             max-width: 100%;
@@ -413,13 +419,22 @@
         .chat-action-btn:hover { transform: scale(1.1); color: #fff; }
 
         .emoji-picker {
-            display: none; position: absolute; bottom: 85px; left: 20px; background: rgba(28, 28, 30, 0.95); border: 1px solid var(--glass-border); padding: 12px; border-radius: 16px; gap: 8px; backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10;
-            flex-wrap: wrap; width: 220px; justify-content: center;
+            display: none; position: absolute; bottom: 85px; left: 20px; 
+            background: rgba(28, 28, 30, 0.95); border: 1px solid var(--glass-border); 
+            padding: 12px; border-radius: 16px; gap: 8px; backdrop-filter: blur(20px); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10;
+            width: 320px; flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start;
         }
+        
+        .emoji-picker::-webkit-scrollbar { height: 8px; }
+        .emoji-picker::-webkit-scrollbar-track { background: transparent; }
+        .emoji-picker::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        .emoji-picker::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
         .emoji-picker.active { display: flex; animation: messagePop 0.2s forwards; }
         
         .emoji-btn {
-            background: none; border: none; font-size: 1.5rem; cursor: pointer; transition: transform 0.2s; padding: 4px;
+            background: none; border: none; font-size: 1.5rem; cursor: pointer; transition: transform 0.2s; padding: 4px; flex-shrink: 0;
         }
         .emoji-btn:hover { transform: scale(1.2); }
 
@@ -465,7 +480,7 @@
             .chat-input-area { padding: 0.8rem; }
             .chat-input-area input[type="text"] { font-size: 16px !important; padding: 0.7rem 1rem; } 
             .chat-messages { padding: 1rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-            .emoji-picker { width: 100%; left: 0; bottom: 70px; justify-content: space-evenly; }
+            .emoji-picker { width: 100%; left: 0; bottom: 70px; }
             
             /* Responsive Leave button on mobile */
             #leave-room-btn { font-size: 0.65rem !important; padding: 4px 10px !important; }
@@ -641,27 +656,14 @@
 
                         <div class="chat-input-area">
                             <div class="emoji-picker" id="emoji-picker">
-                                <button class="emoji-btn">😀</button>
-                                <button class="emoji-btn">😂</button>
-                                <button class="emoji-btn">😭</button>
-                                <button class="emoji-btn">😢</button>
-                                <button class="emoji-btn">🥺</button>
-                                <button class="emoji-btn">😡</button>
-                                <button class="emoji-btn">🔥</button>
-                                <button class="emoji-btn">❤️</button>
-                                <button class="emoji-btn">✨</button>
-                                <button class="emoji-btn">👍</button>
-                                <button class="emoji-btn">👎</button>
-                                <button class="emoji-btn">🎉</button>
-                                <button class="emoji-btn">👀</button>
-                                <button class="emoji-btn">🤔</button>
+                                <!-- Dynamically populated by JS -->
                             </div>
                             <button class="chat-action-btn" id="toggle-emoji-btn" title="Add Emoji">😀</button>
                             
                             <input type="file" id="image-upload" accept="image/*" style="display: none;">
                             <button class="chat-action-btn" id="image-upload-btn" title="Attach Image">📷</button>
                             
-                            <input type="text" id="message-input" placeholder="iMessage" autocomplete="off">
+                            <input type="text" id="message-input" placeholder="iMessage" autocomplete="off" maxlength="1000">
                             <button id="send-btn">↑</button>
                         </div>
                     </div>
@@ -1355,16 +1357,22 @@
             const toggleEmojiBtn = document.getElementById('toggle-emoji-btn');
             const emojiPicker = document.getElementById('emoji-picker');
             
+            // Build Massive Emoji Array dynamically
+            const emojiList = ["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","🥹","☺️","😊","😇","🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚","😋","😛","😝","😜","🤪","🤨","🧐","🤓","😎","🥸","🤩","🥳","😏","😒","😞","😔","😟","😕","🙁","☹️","😣","😖","😫","😩","🥺","😢","😭","😮‍💨","😤","😠","😡","🤬","🤯","😳","🥵","🥶","😱","😨","😰","😥","😓","🫣","🤗","🫡","🤔","🫣","🤭","🫢","🤫","🤥","😶","😶‍🌫️","😐","😑","😬","🫠","🙄","😯","😦","😧","😮","😲","🥱","😴","🤤","😪","😵","😵‍💫","🫥","🤐","🥴","🤢","🤮","🤧","😷","🤒","🤕","🤑","🤠","😈","👿","👹","👺","🤡","💩","👻","💀","☠️","👽","👾","🤖","🎃","😺","😸","😹","😻","😼","😽","🙀","😿","😾","❤️","🔥","✨","👍","👎","🎉","👀","💯","✔️","❌"];
+            
+            emojiList.forEach(emoji => {
+                const btn = document.createElement('button');
+                btn.className = 'emoji-btn';
+                btn.innerText = emoji;
+                btn.onclick = () => {
+                    messageInput.value += emoji;
+                    messageInput.focus();
+                };
+                emojiPicker.appendChild(btn);
+            });
+
             toggleEmojiBtn.addEventListener('click', () => {
                 emojiPicker.classList.toggle('active');
-            });
-            
-            document.querySelectorAll('.emoji-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    messageInput.value += e.target.innerText;
-                    emojiPicker.classList.remove('active');
-                    messageInput.focus();
-                });
             });
 
             function getCollectionRef(id) {
@@ -1702,6 +1710,7 @@
                     sidebarContent.innerHTML = `<h4 style="font-size:0.8rem; margin-top:20px; margin-bottom:10px; color:#86868b; text-transform:uppercase;">Active Sessions</h4><div id="user-sessions-list" style="display:flex; flex-direction:column; gap:8px;"></div>`;
                     loadAdminUserList();
                     updatePlaceholder();
+                    listenToChat(activeChatUserId); 
                 }
             });
 
@@ -1878,6 +1887,15 @@
                     let hasNewMessages = false;
 
                     snapshot.docChanges().forEach((change) => {
+                        // Handle Deleted Messages Dynamically
+                        if (change.type === "removed") {
+                            const deletedMsgEl = document.getElementById(`msg-${change.doc.id}`);
+                            if (deletedMsgEl) {
+                                deletedMsgEl.remove();
+                            }
+                            return;
+                        }
+
                         if (change.type === "added") {
                             hasNewMessages = true;
                             const data = change.doc.data();
@@ -1907,6 +1925,7 @@
                             }
 
                             const wrapper = document.createElement("div");
+                            wrapper.id = `msg-${change.doc.id}`; // Add ID for deletion sync
                             wrapper.className = `msg-wrapper ${isSentByMe ? 'sent' : 'received'}`;
                             wrapper.style.alignSelf = isSentByMe ? "flex-end" : "flex-start";
                             
@@ -1951,6 +1970,25 @@
 
                             wrapper.appendChild(bubble);
                             wrapper.appendChild(replyBtn);
+
+                            // ADMIN DELETE BUTTON
+                            if (isAdmin) {
+                                const deleteBtn = document.createElement("button");
+                                deleteBtn.className = "delete-btn";
+                                deleteBtn.innerHTML = "🗑️";
+                                deleteBtn.title = "Delete Message";
+                                deleteBtn.onclick = async () => {
+                                    if (confirm("Are you sure you want to permanently delete this message?")) {
+                                        try {
+                                            await deleteDoc(doc(db, collectionRef.path, change.doc.id));
+                                        } catch (e) {
+                                            console.error("Delete failed:", e);
+                                        }
+                                    }
+                                };
+                                wrapper.appendChild(deleteBtn);
+                            }
+
                             chatBox.appendChild(wrapper);
                         }
                     });
@@ -2057,7 +2095,8 @@
             }
 
             async function sendMessage() {
-                const text = messageInput.value.trim();
+                // Programmatic backup limit enforcement
+                const text = messageInput.value.trim().substring(0, 1000); 
                 if (text === "" || !activeChatUserId) return;
                 
                 messageInput.value = "";
