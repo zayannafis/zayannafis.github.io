@@ -7,9 +7,17 @@
     <link id="dynamic-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0%25' y1='100%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23147ce6'/><stop offset='50%25' stop-color='%232997ff'/><stop offset='100%25' stop-color='%237dd3fc'/></linearGradient></defs><circle cx='256' cy='256' r='230' fill='none' stroke='url(%23g)' stroke-width='8' stroke-dasharray='16 12' opacity='0.3'/><ellipse cx='256' cy='256' rx='245' ry='95' fill='none' stroke='url(%23g)' stroke-width='16' transform='rotate(-25 256 256)'/><circle cx='256' cy='256' r='165' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M165,165 L347,165 L165,347 L347,347' fill='none' stroke='url(%23g)' stroke-width='22' stroke-linecap='round' stroke-linejoin='round'/><path d='M165,347 L165,165 L347,347 L347,165' fill='none' stroke='url(%23g)' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' opacity='0.4'/><circle cx='165' cy='165' r='16' fill='%23fff'/><circle cx='347' cy='165' r='16' fill='%23fff'/><circle cx='165' cy='347' r='16' fill='%23fff'/><circle cx='347' cy='347' r='16' fill='%23fff'/><circle cx='256' cy='256' r='12' fill='%23fff'/></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <!-- MathJax for rendering equations in the secret section -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    
+    <!-- MathJax Configuration and Script -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
     <style>
         :root {
             --bg-color: #000000;
@@ -232,6 +240,24 @@
             color: var(--text-muted); 
             font-size: 0.9rem;
             font-weight: 500;
+        }
+
+        /* Database Specific Styling */
+        .db-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .db-card-title {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #86868b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
         }
 
         .matrix-node {
@@ -485,7 +511,6 @@
             .chat-messages { padding: 1rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
             .emoji-picker { width: 100%; left: 0; bottom: 70px; }
             
-            /* Responsive Leave button on mobile */
             #leave-room-btn { font-size: 0.65rem !important; padding: 4px 10px !important; }
         }
     </style>
@@ -571,76 +596,70 @@
             </div>
         </section>
 
+        <!-- REVAMPED CLASSIFIED DATABASE SECTION -->
         <section id="secret-space" class="section">
-            <div style="padding-top: 15vh; max-width: 800px; margin: 0 auto; text-align: center;">
+            <div style="padding-top: 15vh; max-width: 1000px; margin: 0 auto; text-align: center;">
                 <div class="reveal fade-up visible">
                     <div class="badge" style="background: rgba(255, 59, 48, 0.1); color: #ff3b30; border-color: rgba(255, 59, 48, 0.3);">Classified Database</div>
                     <h2 class="hero-title" style="font-size: clamp(2.5rem, 6vw, 4rem);">The <span>Singularity.</span></h2>
-                    <p class="hero-desc" style="margin: 0;">You have successfully crossed the Event Horizon. Below is the recovered telemetry data regarding supermassive black holes.</p>
+                    <!-- CENTERED PARAGRAPH -->
+                    <p class="hero-desc" style="margin: 0 auto; text-align: center;">You have successfully crossed the Event Horizon. Below is the recovered telemetry data regarding supermassive black holes.</p>
                 </div>
                 
-                <div class="reveal fade-up delay-200 visible" style="margin-top: 4rem; display: grid; gap: 2rem;">
+                <div class="db-grid reveal fade-up delay-200 visible">
                     
-                    <!-- Updated Content Block -->
-                    <div class="dash-card tilt-effect" style="text-align: left;">
-                        <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">The Singularity</h3>
-                        <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;">
+                    <div class="dash-card tilt-effect" style="text-align: left; grid-column: 1 / -1; border-color: rgba(41, 151, 255, 0.3); background: rgba(41, 151, 255, 0.05);">
+                        <h3 class="db-card-title">The Singularity</h3>
+                        <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.1rem;">
                             At the exact center of a black hole lies the <strong>Singularity</strong>. It is a common misconception that this is a point of infinite matter; rather, it is a point of finite mass compressed into an infinitely small space, resulting in infinite <em>density</em>. At this point, the current laws of physics as we understand them completely break down.
                         </p>
                     </div>
                     
                     <div class="dash-card tilt-effect" style="text-align: left;">
-                        <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">Formation & Demise</h3>
+                        <h3 class="db-card-title">Formation & Demise</h3>
                         <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;">
                             Most common black holes are born from the explosive deaths of massive stars. When a star exhausts its nuclear fuel, it can no longer support its own weight. The core collapses inward, creating a brilliant supernova, while the remaining mass crushes itself into a stellar-mass black hole.
                         </p>
                     </div>
 
                     <div class="dash-card tilt-effect" style="text-align: left;">
-                        <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">The Heart of Galaxies</h3>
+                        <h3 class="db-card-title">The Heart of Galaxies</h3>
                         <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;">
                             Humongous <strong>Supermassive Black Holes</strong> act as the central gravitational anchors of almost all large galaxies. While ours (Sagittarius A*) is currently dormant—meaning it isn't actively consuming large amounts of material—others in the universe are actively "feeding," creating the brightest objects in the cosmos known as quasars.
                         </p>
                     </div>
 
                     <div class="dash-card tilt-effect" style="text-align: left; grid-column: 1 / -1;">
-                        <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">General Relativity & Spacetime</h3>
+                        <h3 class="db-card-title">General Relativity & Spacetime</h3>
                         <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;">
                             Albert Einstein's Theory of General Relativity fundamentally changed our understanding of gravity, describing it not as a pulling force, but as the warping of the <strong>fabric of spacetime</strong>. This theory mathematically predicted the existence of black holes (calculable via the Schwarzschild radius: $R_s = \frac{2GM}{c^2}$). Furthermore, the mathematics of relativity also permit hypothetical structures like <strong>White Holes</strong> (regions of spacetime that nothing can enter) and <strong>Wormholes</strong> (Einstein-Rosen bridges connecting distant points in space and time).
                         </p>
                     </div>
 
-                    <div class="dash-card tilt-effect" style="text-align: left; grid-column: 1 / -1;">
-                        <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">Types of Black Holes</h3>
-                        <ul style="color: var(--text-muted); line-height: 1.6; font-size: 1.05rem; margin-left: 1.5rem;">
-                            <li style="margin-bottom: 0.5rem;"><strong>Stellar-Mass:</strong> Created by collapsing stars (typically 5 to 100 times the mass of our Sun).</li>
-                            <li style="margin-bottom: 0.5rem;"><strong>Intermediate:</strong> The elusive "middleweight" black holes (hundreds to hundreds of thousands of solar masses).</li>
-                            <li style="margin-bottom: 0.5rem;"><strong>Supermassive:</strong> The giants at galactic centers (millions to billions of solar masses).</li>
-                            <li><strong>Primordial:</strong> Theoretical miniature black holes formed from extreme density fluctuations mere seconds after the Big Bang.</li>
-                        </ul>
-                    </div>
-
-                    <!-- Original Content Preserved -->
                     <div class="dash-card tilt-effect" style="text-align: left;">
-                        <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">Gargantua & Accretion Disks</h3>
+                        <h3 class="db-card-title">Gargantua & Accretion Disks</h3>
                         <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;">
-                            A black hole's gravity is so immense that nothing can escape it. However, the glowing ring you see around it is called an <strong>Accretion Disk</strong>. It is made of superheated gas and dust spinning at nearly the speed of light. The friction causes it to glow incredibly bright, which is what illuminates the silhouette of the black hole itself.
+                            A black hole's gravity is so immense that nothing can escape it. However, the glowing ring you see around it is called an <strong>Accretion Disk</strong>. It is made of superheated gas and dust spinning at nearly the speed of light. The friction causes it to glow incredibly bright.
                         </p>
                     </div>
                     
                     <div class="dash-card tilt-effect" style="text-align: left;">
-                        <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">Gravitational Lensing</h3>
+                        <h3 class="db-card-title">Gravitational Lensing</h3>
                         <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;">
-                            Notice how the disk appears to bend over the top and bottom of the black hole? That is a visual illusion caused by <strong>Gravitational Lensing</strong>. The black hole's gravity literally warps the spacetime around it, bending the light from the back of the disk over the top so you can see it from the front!
+                            Notice how the disk appears to bend over the top and bottom of the black hole? That is a visual illusion caused by <strong>Gravitational Lensing</strong>. The gravity literally warps spacetime, bending the light from the back of the disk over the top!
                         </p>
                     </div>
 
-                    <div class="dash-card tilt-effect" style="text-align: left;">
-                        <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">Time Dilation</h3>
-                        <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.05rem;">
-                            Because extreme gravity curves spacetime, time moves significantly slower near the black hole compared to an observer further away. On Miller's Planet (which orbits Gargantua in the movie), one hour equals seven years on Earth.
-                        </p>
+                    <div class="dash-card tilt-effect" style="text-align: left; grid-column: 1 / -1;">
+                        <h3 class="db-card-title">Types of Black Holes</h3>
+                        <ul style="color: var(--text-muted); line-height: 1.7; font-size: 1.05rem; margin-left: 1.5rem;">
+                            <li><strong>Stellar-Mass:</strong> Created by collapsing stars (typically 5 to 100 times the mass of our Sun).</li>
+                            <li><strong>Intermediate:</strong> The elusive "middleweight" black holes (hundreds to hundreds of thousands of solar masses).</li>
+                            <li><strong>Supermassive:</strong> The giants at galactic centers (millions to billions of solar masses).</li>
+                            <li><strong>Primordial:</strong> Theoretical miniature black holes formed from extreme density fluctuations mere seconds after the Big Bang.</li>
+                        </ul>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -1401,7 +1420,6 @@
             const toggleEmojiBtn = document.getElementById('toggle-emoji-btn');
             const emojiPicker = document.getElementById('emoji-picker');
             
-            // Build Massive Emoji Array dynamically
             const emojiList = ["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","🥹","☺️","😊","😇","🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚","😋","😛","😝","😜","🤪","🤨","🧐","🤓","😎","🥸","🤩","🥳","😏","😒","😞","😔","😟","😕","🙁","☹️","😣","😖","😫","😩","🥺","😢","😭","😮‍💨","😤","😠","😡","🤬","🤯","😳","🥵","🥶","😱","😨","😰","😥","😓","🫣","🤗","🫡","🤔","🫣","🤭","🫢","🤫","🤥","😶","😶‍🌫️","😐","😑","😬","🫠","🙄","😯","😦","😧","😮","😲","🥱","😴","🤤","😪","😵","😵‍💫","🫥","🤐","🥴","🤢","🤮","🤧","😷","🤒","🤕","🤑","🤠","😈","👿","👹","👺","🤡","💩","👻","💀","☠️","👽","👾","🤖","🎃","😺","😸","😹","😻","😼","😽","🙀","😿","😾","❤️","🔥","✨","👍","👎","🎉","👀","💯","✔️","❌"];
             
             emojiList.forEach(emoji => {
@@ -1931,7 +1949,6 @@
                     let hasNewMessages = false;
 
                     snapshot.docChanges().forEach((change) => {
-                        // Handle Deleted Messages Dynamically
                         if (change.type === "removed") {
                             const deletedMsgEl = document.getElementById(`msg-${change.doc.id}`);
                             if (deletedMsgEl) {
@@ -1969,7 +1986,7 @@
                             }
 
                             const wrapper = document.createElement("div");
-                            wrapper.id = `msg-${change.doc.id}`; // Add ID for deletion sync
+                            wrapper.id = `msg-${change.doc.id}`; 
                             wrapper.className = `msg-wrapper ${isSentByMe ? 'sent' : 'received'}`;
                             wrapper.style.alignSelf = isSentByMe ? "flex-end" : "flex-start";
                             
@@ -2015,7 +2032,6 @@
                             wrapper.appendChild(bubble);
                             wrapper.appendChild(replyBtn);
 
-                            // ADMIN DELETE BUTTON
                             if (isAdmin) {
                                 const deleteBtn = document.createElement("button");
                                 deleteBtn.className = "delete-btn";
@@ -2139,7 +2155,6 @@
             }
 
             async function sendMessage() {
-                // Programmatic backup limit enforcement
                 const text = messageInput.value.trim().substring(0, 1000); 
                 if (text === "" || !activeChatUserId) return;
                 
